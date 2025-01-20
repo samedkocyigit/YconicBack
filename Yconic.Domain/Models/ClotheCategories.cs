@@ -2,12 +2,13 @@
 using Yconic.Domain.Enums;
 
 namespace Yconic.Domain.Models;
-public class GarderobeCategories
+public class ClotheCategories
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public ClothesTypes ClothesType { get; set; }
+    public Guid GarderobeId { get; set; }
     [JsonIgnore]
-    public virtual ICollection<Garderobe> Garderobes { get; set; }
+    public Garderobe? Garderobe { get; set; }
+    public  ICollection<Clothe>? Clothes { get; set; }
 }

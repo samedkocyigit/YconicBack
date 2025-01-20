@@ -1,14 +1,14 @@
 ﻿namespace Yconic.Domain.Enums;
 public enum Personas
 {
-    OldMoney = 1,
-    SmartCasual = 2,
-    BusinessCasual = 3,
-    Gothic = 4,
-    Boho = 5,
-    Preppy = 6,
-    Hipster = 7,
-    Minimalist = 8,
-    Streetwear = 9,
-    Rocker = 10,
+    OldMoney = 0,
+    SmartCasual = 1,
+    BusinessCasual = 2,
+    Gothic = 3,
+    Boho = 4,
+    Preppy = 5,
+    Hipster =6,
+    Minimalist = 7,
+    Streetwear = 8,
+    Rocker = 9
 }
