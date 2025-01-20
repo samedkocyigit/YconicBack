@@ -5,37 +5,39 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Yconic.Domain.Models;
 
-namespace Yconic.Application.Services.TokenServices;
-public class TokenService : ITokenService
+namespace Yconic.Application.Services.TokenServices
 {
-    private readonly IConfiguration _configuration;
-
-    public TokenService(IConfiguration configuration)
+    public class TokenService : ITokenService
     {
-        _configuration = configuration;
-    }
+        private readonly IConfiguration _configuration;
 
-    public string CreateToken(User user)
-    {
-        var claims = new[]
+        public TokenService(IConfiguration configuration)
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Name),
-            new Claim(JwtRegisteredClaimNames.Sub, user.Surname),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
+            _configuration = configuration;
+        }
 
-        var temp = _configuration["JwtSettings:Secret"];
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        public string CreateToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email), 
+                new Claim(ClaimTypes.Name, user.Name),  
+                new Claim(ClaimTypes.Surname, user.Surname), 
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.ToString()) 
+            };
 
-        var token = new JwtSecurityToken(
-            issuer: _configuration["JwtSettings:Issuer"],
-            audience: _configuration["JwtSettings:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtSettings:ExpireDays"])),
-            signingCredentials: creds);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration["JwtSettings:ExpireDays"])),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }

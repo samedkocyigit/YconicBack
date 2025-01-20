@@ -37,19 +37,19 @@ namespace Yconic.Application.Extensions
         {
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
-                // Bearer Token Authentication için Security tanımı ekle
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Bearer Token. Örn: 'Bearer {token}'"
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+                    In = ParameterLocation.Header,  
+                    Name = "Authorization",         
+                    Type = SecuritySchemeType.Http, 
+                    Scheme = "bearer",              
+                    BearerFormat = "JWT"            
                 });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
+
             return services;
         }
     }
