@@ -10,5 +10,6 @@ namespace Yconic.Infrastructure.Repositories.GarderobeRepositories
 {
     public interface IGarderobeRepository:IGenericRepository<Garderobe>
     {
+        Task<IEnumerable<Garderobe>> GetAllGarderobes();
     }
 }

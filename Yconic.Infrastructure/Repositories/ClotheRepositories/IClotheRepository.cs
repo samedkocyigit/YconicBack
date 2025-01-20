@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
 
-namespace Yconic.Infrastructure.Repositories.UserRepositories
+namespace Yconic.Infrastructure.Repositories.ClotheRepositories
 {
-    public interface IUserRepository:IGenericRepository<User>
+    public interface IClotheRepository:IGenericRepository<Clothe>
     {
-        Task<User> GetUserByEmail(string email);
+        Task<IEnumerable<Clothe>> GetAllClothes();
     }
 }

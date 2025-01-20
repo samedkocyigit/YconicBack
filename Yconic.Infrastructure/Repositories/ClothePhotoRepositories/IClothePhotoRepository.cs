@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
 
-namespace Yconic.Infrastructure.Repositories.UserRepositories
+namespace Yconic.Infrastructure.Repositories.ClothePhotoRepositories
 {
-    public interface IUserRepository:IGenericRepository<User>
+    public interface IClothePhotoRepository:IGenericRepository<ClothePhoto>
     {
-        Task<User> GetUserByEmail(string email);
     }
 }

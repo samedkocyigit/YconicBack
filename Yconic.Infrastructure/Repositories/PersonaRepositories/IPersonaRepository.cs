@@ -8,7 +8,7 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.PersonaRepositories
 {
-    internal interface IPersonaRepository:IGenericRepository<Persona>
+    public interface IPersonaRepository:IGenericRepository<Persona>
     {
     }
 }

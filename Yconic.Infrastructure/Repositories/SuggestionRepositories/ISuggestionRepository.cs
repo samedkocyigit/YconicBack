@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
 
-namespace Yconic.Infrastructure.Repositories.GarderobeCategoriesRepositories
+namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
 {
-    public interface IGarderobeCategoriesRepository:IGenericRepository<GarderobeCategories>
+    public interface ISuggestionRepository:IGenericRepository<Suggestions>
     {
     }
 }

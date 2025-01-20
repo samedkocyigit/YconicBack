@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,10 @@ namespace Yconic.Infrastructure.Repositories.GarderobeRepositories
         public GarderobeRepository(AppDbContext context):base(context)
         {
             _context = context;
+        }
+        public async Task<IEnumerable<Garderobe>> GetAllGarderobes()
+        {
+            return await _context.Garderobes.Include(x => x.ClothesCategory).ToListAsync();
         }
     }
 }

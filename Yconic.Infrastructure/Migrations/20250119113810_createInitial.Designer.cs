@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Yconic.Infrastructure.ApplicationDbContext;
@@ -11,9 +12,11 @@ using Yconic.Infrastructure.ApplicationDbContext;
 namespace Yconic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250119113810_createInitial")]
+    partial class createInitial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,52 +31,28 @@ namespace Yconic.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("MainPhoto")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Clothes");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("GarderobeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GarderobeId");
-
-                    b.ToTable("ClotheCategories");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.ClothePhoto", b =>
@@ -115,6 +94,31 @@ namespace Yconic.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Garderobes");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.GarderobeCategories", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("GarderobeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GarderobeId");
+
+                    b.ToTable("GarderobeCategories");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.Persona", b =>
@@ -196,12 +200,6 @@ namespace Yconic.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpiry")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -233,24 +231,13 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.ClotheCategories", "Category")
+                    b.HasOne("Yconic.Domain.Models.GarderobeCategories", "Category")
                         .WithMany("Clothes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
-                {
-                    b.HasOne("Yconic.Domain.Models.Garderobe", "Garderobe")
-                        .WithMany("ClothesCategory")
-                        .HasForeignKey("GarderobeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Garderobe");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.ClothePhoto", b =>
@@ -275,6 +262,17 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Yconic.Domain.Models.GarderobeCategories", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.Garderobe", "Garderobe")
+                        .WithMany("ClothesCategory")
+                        .HasForeignKey("GarderobeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Garderobe");
+                });
+
             modelBuilder.Entity("Yconic.Domain.Models.Persona", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.User", "User")
@@ -291,14 +289,14 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Photos");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
-                {
-                    b.Navigation("Clothes");
-                });
-
             modelBuilder.Entity("Yconic.Domain.Models.Garderobe", b =>
                 {
                     b.Navigation("ClothesCategory");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.GarderobeCategories", b =>
+                {
+                    b.Navigation("Clothes");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.User", b =>

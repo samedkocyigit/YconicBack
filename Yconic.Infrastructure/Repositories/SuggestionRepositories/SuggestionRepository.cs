@@ -7,14 +7,15 @@ using Yconic.Domain.Models;
 using Yconic.Infrastructure.ApplicationDbContext;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
 
-namespace Yconic.Infrastructure.Repositories.GarderobeCategoriesRepositories
+namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
 {
-    public class GarderobeCategoriesRepository:GenericRepository<GarderobeCategories>,IGarderobeCategoriesRepository
+    public class SuggestionRepository:GenericRepository<Suggestions>,ISuggestionRepository
     {
         protected readonly AppDbContext _context;
-        public GarderobeCategoriesRepository(AppDbContext context):base(context)
+        public SuggestionRepository(AppDbContext context):base(context)
         {
             _context = context;
         }
+
     }
 }
