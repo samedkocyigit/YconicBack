@@ -22,7 +22,7 @@ namespace Yconic.API.Controllers
         }
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetSuggestionById(int id)
+        public async Task<IActionResult> GetSuggestionById(Guid id)
         {
             var suggestion = await _suggestionService.GetSuggestionById(id);
             return Ok(suggestion);
@@ -41,7 +41,7 @@ namespace Yconic.API.Controllers
         }
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteSuggestion(int id)
+        public async Task<IActionResult> DeleteSuggestion(Guid id)
         {
             await _suggestionService.DeleteSuggestion(id);
             return Ok();

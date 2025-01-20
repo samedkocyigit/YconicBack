@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Yconic.Application.Services.GarderobeServices;
+using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
 {
@@ -20,7 +22,7 @@ namespace Yconic.API.Controllers
         }
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetGarderobeById(int id)
+        public async Task<IActionResult> GetGarderobeById(Guid id)
         {
             var garderobe = await _garderobeService.GetGarderobeById(id);
             return Ok(garderobe);
@@ -39,7 +41,7 @@ namespace Yconic.API.Controllers
         }
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteGarderobe(int id)
+        public async Task<IActionResult> DeleteGarderobe(Guid id)
         {
             await _garderobeService.DeleteGarderobe(id);
             return Ok();

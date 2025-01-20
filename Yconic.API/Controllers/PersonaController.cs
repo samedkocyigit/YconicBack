@@ -21,7 +21,7 @@ namespace Yconic.API.Controllers
         }
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetPersonaById(int id)
+        public async Task<IActionResult> GetPersonaById(Guid id)
         {
             var persona = await _personaService.GetPersonaById(id);
             return Ok(persona);
@@ -40,7 +40,7 @@ namespace Yconic.API.Controllers
         }
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeletePersona(int id)
+        public async Task<IActionResult> DeletePersona(Guid id)
         {
             await _personaService.DeletePersona(id);
             return Ok();
