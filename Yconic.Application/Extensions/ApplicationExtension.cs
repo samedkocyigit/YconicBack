@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using Yconic.Application.Services.AuthServices;
 using Yconic.Application.Services.ClothePhotoServices;
 using Yconic.Application.Services.ClotheServices;
@@ -11,6 +10,7 @@ using Yconic.Application.Services.SuggestionService;
 using Yconic.Application.Services.UserServices;
 using Yconic.Application.Services.EmailServices;
 using Yconic.Application.Services.TokenServices;
+using System.Reflection;
 
 namespace Yconic.Application.Extensions
 {
@@ -18,6 +18,9 @@ namespace Yconic.Application.Extensions
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClotheCategoriesService, ClotheCategoriesService>();
             services.AddScoped<IGarderobeService, GarderobeService>();
