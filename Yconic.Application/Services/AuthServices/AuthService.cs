@@ -1,4 +1,5 @@
-﻿using BCrypt.Net;
+﻿using AutoMapper;
+using BCrypt.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,8 +8,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Yconic.Application.Services.EmailServices;
 using Yconic.Application.Services.TokenServices;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.Auth;
+using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
@@ -21,15 +24,17 @@ namespace Yconic.Application.Services.AuthServices
         protected readonly ILogger<AuthService> _logger;
         protected readonly IEmailService _emailService;
         protected readonly ITokenService _tokenService;
-        public AuthService(IUserRepository userRepository,IGarderobeRepository garderobeRepository, IEmailService emailService,ITokenService tokenService)
+        protected readonly IMapper _mapper;
+        public AuthService(IUserRepository userRepository,IGarderobeRepository garderobeRepository, IEmailService emailService,ITokenService tokenService,IMapper mapper)
         {
             _userRepository = userRepository;
             _garderobeRepository = garderobeRepository;
             _emailService = emailService;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
-        public async Task<string> Login(LoginDto loginModel)
+        public async Task<ApiResult<LoginResponse>> Login(LoginDto loginModel)
         {
             var user = await _userRepository.GetUserByEmail(loginModel.Email);
             if(user == null)
@@ -45,10 +50,16 @@ namespace Yconic.Application.Services.AuthServices
             else
             {
                 var token = _tokenService.CreateToken(user);
-                return token;
+                var userDto = _mapper.Map<UserDto>(user);
+                var loginResponse =new LoginResponse
+                {
+                    token = token,
+                    user = userDto
+                };
+                return ApiResult<LoginResponse>.Success(loginResponse);
             }
         }
-        public async Task<User> Register(RegisterDto registerModel)
+        public async Task<ApiResult<User>> Register(RegisterDto registerModel)
         {
             var user = new User
             {
@@ -69,7 +80,7 @@ namespace Yconic.Application.Services.AuthServices
             createdUser.UserGarderobe = newGarderobe;
             createdUser.UpdatedAt = DateTime.UtcNow;
             var lastseen =await _userRepository.Update(createdUser);
-            return lastseen;
+            return ApiResult<User>.Success(lastseen);
         }
         public async Task ForgotPassword(string email)
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Application.Services.UserServices
@@ -19,26 +20,26 @@ namespace Yconic.Application.Services.UserServices
             _logger = logger;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<ApiResult<List<User>>> GetAllUsers()
         {
-            var users = await _userRepository.GetAll();
+            var users = await _userRepository.GetAllUsers();
             var listUser =users.ToList();
-            return listUser;
+            return ApiResult<List<User>>.Success(listUser);
         }
-        public async Task<User> GetUserById(Guid id)
+        public async Task<ApiResult<User>> GetUserById(Guid id)
         {
             var user = await _userRepository.GetById(id);
-            return user;
+            return ApiResult<User>.Success(user);
         }
-        public async Task<User> CreateUser(User user)
+        public async Task<ApiResult<User>> CreateUser(User user)
         {
             var newUser = await _userRepository.Add(user);
-            return newUser;
+            return ApiResult<User>.Success(newUser);
         }
-        public async Task<User> UpdateUser(User user)
+        public async Task<ApiResult<User>> UpdateUser(User user)
         {
             var updatedUser = await _userRepository.Update(user);
-            return updatedUser;
+            return ApiResult<User>.Success(updatedUser);
         }
         public async Task DeleteUser(Guid id)
         {
