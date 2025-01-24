@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yconic.Application.Services.AuthServices;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.Auth;
 
 namespace Yconic.API.Controllers
 {
