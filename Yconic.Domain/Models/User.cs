@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Yconic.Domain.Enums;
+﻿using Yconic.Domain.Enums;
 
 namespace Yconic.Domain.Models;
     public class User
@@ -23,8 +22,6 @@ namespace Yconic.Domain.Models;
         public DateTime? DeletedAt { get; set; }
         public Guid? UserPersonaId { get; set; }
         public Guid? UserGarderobeId { get; set; }
-        [JsonIgnore]
         public Persona? UserPersona { get; set; }
-        [JsonIgnore]
         public Garderobe? UserGarderobe { get; set; }
     }
