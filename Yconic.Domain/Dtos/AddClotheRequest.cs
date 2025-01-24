@@ -9,10 +9,9 @@ namespace Yconic.Domain.Dtos
 {
     public class AddClotheRequest
     {
-        public string Name { get; set; }  // Required name
-        public string? Brand { get; set; }  // Optional brand
-        public Guid CategoryId { get; set; }  // Required category
-        public List<IFormFile> Photos { get; set; }  // Required photos
+        public string Name { get; set; }  
+        public string? Brand { get; set; }  
+        public Guid CategoryId { get; set; }  
+        public List<IFormFile> Photos { get; set; }  
     }
-
 }

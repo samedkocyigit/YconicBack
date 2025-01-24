@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yconic.Domain.Dtos
+namespace Yconic.Domain.Dtos.Auth
 {
-    public class ResetPasswordDto
+    public class LoginDto
     {
         public string Email { get; set; }
-        public string Token { get; set; }
-        public string NewPassword { get; set; }
+        public string Password { get; set; }
     }
 }
