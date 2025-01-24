@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yconic.Domain", "Yconic.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yconic.Infrastructure", "Yconic.Infrastructure\Yconic.Infrastructure.csproj", "{779B03C2-3854-4738-BB80-075B9A2473C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yconic.Tests", "Yconic.Tests\Yconic.Tests.csproj", "{9479463E-9A06-46DD-836F-5600BE0D8E05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{779B03C2-3854-4738-BB80-075B9A2473C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{779B03C2-3854-4738-BB80-075B9A2473C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{779B03C2-3854-4738-BB80-075B9A2473C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9479463E-9A06-46DD-836F-5600BE0D8E05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9479463E-9A06-46DD-836F-5600BE0D8E05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9479463E-9A06-46DD-836F-5600BE0D8E05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9479463E-9A06-46DD-836F-5600BE0D8E05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
