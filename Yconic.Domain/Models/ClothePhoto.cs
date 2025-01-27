@@ -10,10 +10,10 @@ namespace Yconic.Domain.Models
     public class ClothePhoto
     {
         public Guid Id { get; set; }
-        public string Url { get; set; } // URL or file path of the photo
-        public Guid ClotheId { get; set; } // Foreign key
+        public string Url { get; set; } 
+        public Guid ClotheId { get; set; } 
         [JsonIgnore]
-        public Clothe? Clothe { get; set; } // Navigation property
+        public Clothe? Clothe { get; set; } 
     }
 
 }
