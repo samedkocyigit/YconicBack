@@ -15,6 +15,8 @@ public class AppDbContext:DbContext
     public DbSet<Suggestions> Suggestions { get; set; }
     public DbSet<Clothe> Clothes { get; set; }
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
+    public DbSet<AiResponse> AiResponses { get; set; } 
+    public DbSet<Choice> Choices { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -97,6 +99,8 @@ public class AppDbContext:DbContext
                   .HasForeignKey(cp => cp.ClotheId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+        modelBuilder.Entity<Choice>()
+                .Ignore(c => c.Logprobs);
     }
 
 }
