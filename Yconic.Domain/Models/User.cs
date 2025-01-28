@@ -24,4 +24,5 @@ namespace Yconic.Domain.Models;
         public Guid? UserGarderobeId { get; set; }
         public Persona? UserPersona { get; set; }
         public Garderobe? UserGarderobe { get; set; }
+        public ICollection<Suggestions>? Suggestions { get; set; } = new List<Suggestions>();
     }
