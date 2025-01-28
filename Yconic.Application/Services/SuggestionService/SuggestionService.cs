@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Yconic.Application.Services.AiSuggestionServices;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.SuggestionRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
@@ -10,12 +11,13 @@ namespace Yconic.Application.Services.SuggestionService
         protected readonly ISuggestionRepository _suggestionRepository;
         protected readonly IUserRepository _userRepository;
         protected readonly ILogger<SuggestionService> _logger;
-
-        public SuggestionService(ISuggestionRepository suggestionRepository,IUserRepository userRepository,ILogger<SuggestionService> logger )
+        protected readonly IAiSuggestionService _aiSuggestionService;
+        public SuggestionService(ISuggestionRepository suggestionRepository,IUserRepository userRepository,ILogger<SuggestionService> logger ,IAiSuggestionService aiSuggestionService)
         {
             _suggestionRepository = suggestionRepository;
             _userRepository= userRepository;
             _logger = logger;
+            _aiSuggestionService = aiSuggestionService;
         }
         
         public async Task<List<Suggestions>> GetAllSuggestions()
@@ -32,9 +34,24 @@ namespace Yconic.Application.Services.SuggestionService
         public async Task<Suggestions> CreateSuggestion(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
-            var newSuggestion = await _suggestionRepository.CreateSuggestion(user);
-            return newSuggestion;
+
+            var suggestedClothes = await _aiSuggestionService.GenerateSuggestedLook(user.UserPersona, user, otherParameters: null);
+
+            var suggestion = new Suggestions
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Description = "AI-Generated Suggestion Look"
+            };
+
+            foreach (var item in suggestedClothes)
+            {
+                suggestion.SuggestedLook.Add(item);
+            }
+
+            return await _suggestionRepository.Update(suggestion);
         }
+
         public async Task<Suggestions> UpdateSuggestion(Suggestions suggestion)
         {
             var updatedSuggestion = await _suggestionRepository.Update(suggestion);
