@@ -38,7 +38,7 @@ namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
             {
                 suggestion.SuggestedLook.Add(item.Clothes.FirstOrDefault());
             }
-            var createdSuggestion = await _dbSet.AddAsync(suggestion);
+            await _dbSet.AddAsync(suggestion);
             await _context.SaveChangesAsync();
             
             return suggestion;
