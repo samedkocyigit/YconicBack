@@ -11,6 +11,7 @@ using Yconic.Application.Services.UserServices;
 using Yconic.Application.Services.EmailServices;
 using Yconic.Application.Services.TokenServices;
 using System.Reflection;
+using Yconic.Application.Services.AiSuggestionServices;
 
 namespace Yconic.Application.Extensions
 {
@@ -19,7 +20,7 @@ namespace Yconic.Application.Extensions
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
+            services.AddHttpClient();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClotheCategoriesService, ClotheCategoriesService>();
@@ -31,6 +32,7 @@ namespace Yconic.Application.Extensions
             services.AddScoped<IClothePhotoService, ClothePhotoService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAiSuggestionService, AiSuggestionService>();
 
 
             services.AddSwagger();
