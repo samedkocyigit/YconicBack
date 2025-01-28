@@ -12,5 +12,6 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
     {
         Task<ICollection<User>> GetAllUsers();
         Task<User> GetUserByEmail(string email);
+        Task<User> GetUserById(Guid id);
     }
 }

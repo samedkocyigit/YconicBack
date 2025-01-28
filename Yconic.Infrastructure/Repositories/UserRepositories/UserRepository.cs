@@ -26,5 +26,9 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
         {
             return await _context.Users.Include(x => x.UserGarderobe).ThenInclude(x => x.ClothesCategory).ThenInclude(x => x.Clothes).ThenInclude(x=>x.Photos).Include(x => x.UserPersona).ToListAsync();
         }
+        public async Task<User> GetUserById(Guid id)
+        {
+            return await _context.Users.Include(x => x.UserGarderobe).ThenInclude(x => x.ClothesCategory).ThenInclude(x => x.Clothes).ThenInclude(x=>x.Photos).Include(x => x.UserPersona).FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }
