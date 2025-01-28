@@ -36,6 +36,10 @@ public class AppDbContext:DbContext
                   .WithOne(g => g.User)
                   .HasForeignKey<Persona>(g => g.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(u => u.Suggestions)
+                  .WithOne(s => s.User)
+                  .HasForeignKey(s => s.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
         //Configure Persona
         modelBuilder.Entity<Persona>(entity =>
