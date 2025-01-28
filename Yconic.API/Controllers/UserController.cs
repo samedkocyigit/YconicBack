@@ -6,7 +6,7 @@ using Yconic.Domain.Models;
 namespace Yconic.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     public class UserController:ControllerBase
     {

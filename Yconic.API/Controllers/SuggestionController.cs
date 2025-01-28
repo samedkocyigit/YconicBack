@@ -28,9 +28,9 @@ namespace Yconic.API.Controllers
             return Ok(suggestion);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateSuggestion( Suggestions suggestion)
+        public async Task<IActionResult> CreateSuggestion(Guid userId)
         {
-            var createdSuggestion = await _suggestionService.CreateSuggestion(suggestion);
+            var createdSuggestion = await _suggestionService.CreateSuggestion(userId);
             return Ok(createdSuggestion);
         }
         [HttpPut]
