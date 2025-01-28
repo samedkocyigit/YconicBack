@@ -28,7 +28,7 @@ namespace Yconic.Application.Services.UserServices
         }
         public async Task<ApiResult<User>> GetUserById(Guid id)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetUserById(id);
             return ApiResult<User>.Success(user);
         }
         public async Task<ApiResult<User>> CreateUser(User user)

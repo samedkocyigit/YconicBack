@@ -11,7 +11,7 @@ namespace Yconic.Application.Services.SuggestionService
     {
         public Task<List<Suggestions>> GetAllSuggestions();
         public Task<Suggestions> GetSuggestionById(Guid id);
-        public Task<Suggestions> CreateSuggestion(Suggestions suggestion);
+        public Task<Suggestions> CreateSuggestion(Guid id);
         public Task<Suggestions> UpdateSuggestion(Suggestions suggestion);
         public Task DeleteSuggestion(Guid id);
     }

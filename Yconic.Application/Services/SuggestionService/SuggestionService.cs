@@ -1,22 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.SuggestionRepositories;
+using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Application.Services.SuggestionService
 {
     public class SuggestionService:ISuggestionService
     {
         protected readonly ISuggestionRepository _suggestionRepository;
+        protected readonly IUserRepository _userRepository;
         protected readonly ILogger<SuggestionService> _logger;
 
-        public SuggestionService(ISuggestionRepository suggestionRepository,ILogger<SuggestionService> logger )
+        public SuggestionService(ISuggestionRepository suggestionRepository,IUserRepository userRepository,ILogger<SuggestionService> logger )
         {
             _suggestionRepository = suggestionRepository;
+            _userRepository= userRepository;
             _logger = logger;
         }
         
@@ -28,12 +26,13 @@ namespace Yconic.Application.Services.SuggestionService
         }
         public async Task<Suggestions> GetSuggestionById(Guid id)
         {
-            var suggestion = await _suggestionRepository.GetById(id);
+            var suggestion = await _suggestionRepository.GetSuggestionById(id);
             return suggestion;
         }
-        public async Task<Suggestions> CreateSuggestion(Suggestions suggestion)
+        public async Task<Suggestions> CreateSuggestion(Guid userId)
         {
-            var newSuggestion = await _suggestionRepository.Add(suggestion);
+            var user = await _userRepository.GetUserById(userId);
+            var newSuggestion = await _suggestionRepository.CreateSuggestion(user);
             return newSuggestion;
         }
         public async Task<Suggestions> UpdateSuggestion(Suggestions suggestion)
