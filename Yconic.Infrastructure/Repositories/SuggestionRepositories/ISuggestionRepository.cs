@@ -10,5 +10,7 @@ namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
 {
     public interface ISuggestionRepository:IGenericRepository<Suggestions>
     {
+        Task<Suggestions> CreateSuggestion(User user);
+        Task<Suggestions> GetSuggestionById(Guid id);
     }
 }
