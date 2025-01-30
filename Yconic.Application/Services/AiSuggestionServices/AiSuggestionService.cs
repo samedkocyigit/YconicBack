@@ -84,28 +84,6 @@ namespace Yconic.Application.Services.AiSuggestionServices
                 .Where(c => suggestedIds.Contains(c.Id))
                 .ToList();
         }
-
-
-        private List<Clothe> ParseAiSuggestions(string aiText, List<Clothe> clothesInGarderobe)
-        {
-            var clothes = new List<Clothe>();
-
-            var normalizedText = aiText.Trim().ToLower();
-            var suggestions = normalizedText.Split("\n", StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var suggestion in suggestions)
-            {
-                var suggestedCloth = clothesInGarderobe.FirstOrDefault(c =>
-                    suggestion.Contains(c.Name.ToLower(), StringComparison.OrdinalIgnoreCase));
-
-                if (suggestedCloth != null)
-                {
-                    clothes.Add(suggestedCloth);
-                }
-            }
-
-            return clothes;
-        }
     }
 }
 
