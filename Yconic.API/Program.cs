@@ -5,10 +5,11 @@ using Yconic.Application.Extensions;
 using Yconic.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationLayer();
+builder.Services.AddApplicationLayer(builder.Configuration);
 builder.Services.AddInfrastructureLayer();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
