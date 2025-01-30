@@ -12,12 +12,13 @@ using Yconic.Application.Services.EmailServices;
 using Yconic.Application.Services.TokenServices;
 using System.Reflection;
 using Yconic.Application.Services.AiSuggestionServices;
+using Microsoft.Extensions.Configuration;
 
 namespace Yconic.Application.Extensions
 {
     public static class ApplicationExtension
     {
-        public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
+        public static IServiceCollection AddApplicationLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddHttpClient();
@@ -34,10 +35,10 @@ namespace Yconic.Application.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAiSuggestionService, AiSuggestionService>();
 
-
             services.AddSwagger();
             return services;
         }
+
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
