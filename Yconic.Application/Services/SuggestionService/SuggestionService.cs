@@ -49,7 +49,7 @@ namespace Yconic.Application.Services.SuggestionService
                 suggestion.SuggestedLook.Add(item);
             }
 
-            return await _suggestionRepository.Update(suggestion);
+            return await _suggestionRepository.Add(suggestion);
         }
 
         public async Task<Suggestions> UpdateSuggestion(Suggestions suggestion)
