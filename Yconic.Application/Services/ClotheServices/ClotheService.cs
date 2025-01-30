@@ -45,6 +45,8 @@ namespace Yconic.Application.Services.ClotheServices
             foreach (var photo in clothe.Photos)
             {
                 var photoUrl = await SavePhoto(photo);
+                if (newClothe.MainPhoto == null)
+                    newClothe.MainPhoto = photoUrl;
 
                 var photoObj = new ClothePhoto
                 {
