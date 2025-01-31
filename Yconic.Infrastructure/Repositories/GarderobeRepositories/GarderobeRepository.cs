@@ -19,7 +19,7 @@ namespace Yconic.Infrastructure.Repositories.GarderobeRepositories
         }
         public async Task<IEnumerable<Garderobe>> GetAllGarderobes()
         {
-            return await _context.Garderobes.Include(x => x.ClothesCategory).ToListAsync();
+            return await _context.Garderobes.Include(x => x.ClothesCategory).ThenInclude(x=> x.Clothes).ToListAsync();
         }
     }
 }
