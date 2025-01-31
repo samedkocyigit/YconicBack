@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Models;
 using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.UserRepositories;
@@ -14,32 +16,38 @@ namespace Yconic.Application.Services.UserServices
     {
         protected readonly IUserRepository _userRepository;
         protected readonly ILogger<UserService> _logger;
-        public UserService(IUserRepository userRepository , ILogger<UserService> logger)
+        protected readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository , ILogger<UserService> logger,IMapper mapper)
         {
             _userRepository = userRepository;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<ApiResult<List<User>>> GetAllUsers()
+        public async Task<ApiResult<List<UserDto>>> GetAllUsers()
         {
             var users = await _userRepository.GetAllUsers();
-            var listUser =users.ToList();
-            return ApiResult<List<User>>.Success(listUser);
+            var listUser = _mapper.Map<List<UserDto>>(users);
+            return ApiResult<List<UserDto>>.Success(listUser);
         }
-        public async Task<ApiResult<User>> GetUserById(Guid id)
+        public async Task<ApiResult<UserDto>> GetUserById(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
-            return ApiResult<User>.Success(user);
+            var mappedUser = _mapper.Map<UserDto>(user);    
+            return ApiResult<UserDto>.Success(mappedUser);
         }
-        public async Task<ApiResult<User>> CreateUser(User user)
+        public async Task<ApiResult<UserDto>> CreateUser(User user)
         {
             var newUser = await _userRepository.Add(user);
-            return ApiResult<User>.Success(newUser);
+            var mappedUser = _mapper.Map<UserDto>(newUser);
+            return ApiResult<UserDto>.Success(mappedUser);
         }
-        public async Task<ApiResult<User>> UpdateUser(User user)
+        public async Task<ApiResult<UserDto>> UpdateUser(User user)
         {
             var updatedUser = await _userRepository.Update(user);
-            return ApiResult<User>.Success(updatedUser);
+            var mappedUser = _mapper.Map<UserDto>(updatedUser);
+
+            return ApiResult<UserDto>.Success(mappedUser);
         }
         public async Task DeleteUser(Guid id)
         {
