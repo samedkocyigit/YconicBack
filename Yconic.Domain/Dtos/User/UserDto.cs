@@ -1,4 +1,5 @@
 ﻿using Yconic.Domain.Enums;
+using Yconic.Domain.Models;
 
 namespace Yconic.Domain.Dtos.User
 {
@@ -15,6 +16,9 @@ namespace Yconic.Domain.Dtos.User
         public string? phoneNumeber { get; set; }
         public Guid userPersonaId { get; set; }
         public Guid userGarderobeId { get; set; }
+        public Garderobe? garderobe { get; set; }
+        public Persona? persona { get; set; }
+
 
     }
 }
