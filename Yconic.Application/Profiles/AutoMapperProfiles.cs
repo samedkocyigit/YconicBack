@@ -24,7 +24,9 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
                 .ForMember(dest => dest.phoneNumeber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.userPersonaId, opt => opt.MapFrom(src => src.UserPersonaId))
-                .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId));
+                .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
+                .ForMember(dest => dest.garderobe,opt => opt.MapFrom(src => src.UserGarderobe))
+                .ForMember(dest => dest.persona, opt => opt.MapFrom(src=> src.UserPersona));
         }
     }
 }
