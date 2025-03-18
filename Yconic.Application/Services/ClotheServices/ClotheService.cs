@@ -34,13 +34,17 @@ namespace Yconic.Application.Services.ClotheServices
             var clotheObj = new Clothe
             {
                 Name = clothe.Name,
-                Brand = clothe.Brand ?? "Unknown", 
+                Brand = clothe.Brand ?? "Unknown",
                 CategoryId = clothe.CategoryId
             };
             var clotheCategory = await _clotheCategoriesRepository.GetById(clothe.CategoryId);
 
+            if (clothe.Photos == null || !clothe.Photos.Any())
+            {
+                throw new ArgumentException("At least one photo must be provided.");
+            }
+
             var newClothe = await _clotheRepository.Add(clotheObj);
-            clotheCategory.Clothes.Add(newClothe);
 
             foreach (var photo in clothe.Photos)
             {
@@ -56,7 +60,12 @@ namespace Yconic.Application.Services.ClotheServices
 
                 await _clothePhotoRepository.Add(photoObj);
             }
+            await _clotheRepository.Update(newClothe);
+
+            clotheCategory.Clothes.Add(newClothe);
+            await _clotheCategoriesRepository.Update(clotheCategory);
         }
+
 
         private async Task<string> SavePhoto(IFormFile photo)
         {
@@ -83,6 +92,5 @@ namespace Yconic.Application.Services.ClotheServices
         {
             await _clotheRepository.Delete(id);
         }
-
     }
 }
