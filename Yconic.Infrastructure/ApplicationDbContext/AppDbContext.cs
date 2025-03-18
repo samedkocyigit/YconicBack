@@ -41,6 +41,7 @@ public class AppDbContext:DbContext
                   .HasForeignKey(s => s.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+
         //Configure Persona
         modelBuilder.Entity<Persona>(entity =>
         {
@@ -52,6 +53,7 @@ public class AppDbContext:DbContext
                   .HasForeignKey<Persona>(p => p.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+
         // Configure Garderobe
         modelBuilder.Entity<Garderobe>(entity =>
         {
