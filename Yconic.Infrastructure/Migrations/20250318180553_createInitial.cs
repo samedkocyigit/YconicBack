@@ -12,19 +12,6 @@ namespace Yconic.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Suggestions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Image = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suggestions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -33,6 +20,8 @@ namespace Yconic.Infrastructure.Migrations
                     Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     Surname = table.Column<string>(type: "text", nullable: false),
+                    PasswordResetToken = table.Column<string>(type: "text", nullable: true),
+                    PasswordResetTokenExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Role = table.Column<string>(type: "text", nullable: false),
                     Birthday = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Age = table.Column<int>(type: "integer", nullable: true),
@@ -90,7 +79,28 @@ namespace Yconic.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GarderobeCategories",
+                name: "Suggestions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Image = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suggestions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Suggestions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClotheCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -100,9 +110,9 @@ namespace Yconic.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GarderobeCategories", x => x.Id);
+                    table.PrimaryKey("PK_ClotheCategories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GarderobeCategories_Garderobes_GarderobeId",
+                        name: "FK_ClotheCategories_Garderobes_GarderobeId",
                         column: x => x.GarderobeId,
                         principalTable: "Garderobes",
                         principalColumn: "Id",
@@ -114,20 +124,27 @@ namespace Yconic.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    MainPhoto = table.Column<string>(type: "text", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Brand = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    MainPhoto = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SuggestionsId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clothes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clothes_GarderobeCategories_CategoryId",
+                        name: "FK_Clothes_ClotheCategories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "GarderobeCategories",
+                        principalTable: "ClotheCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clothes_Suggestions_SuggestionsId",
+                        column: x => x.SuggestionsId,
+                        principalTable: "Suggestions",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -150,6 +167,11 @@ namespace Yconic.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClotheCategories_GarderobeId",
+                table: "ClotheCategories",
+                column: "GarderobeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClothePhotos_ClotheId",
                 table: "ClothePhotos",
                 column: "ClotheId");
@@ -160,9 +182,9 @@ namespace Yconic.Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GarderobeCategories_GarderobeId",
-                table: "GarderobeCategories",
-                column: "GarderobeId");
+                name: "IX_Clothes_SuggestionsId",
+                table: "Clothes",
+                column: "SuggestionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Garderobes_UserId",
@@ -175,6 +197,11 @@ namespace Yconic.Infrastructure.Migrations
                 table: "Personas",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Suggestions_UserId",
+                table: "Suggestions",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -187,13 +214,13 @@ namespace Yconic.Infrastructure.Migrations
                 name: "Personas");
 
             migrationBuilder.DropTable(
-                name: "Suggestions");
-
-            migrationBuilder.DropTable(
                 name: "Clothes");
 
             migrationBuilder.DropTable(
-                name: "GarderobeCategories");
+                name: "ClotheCategories");
+
+            migrationBuilder.DropTable(
+                name: "Suggestions");
 
             migrationBuilder.DropTable(
                 name: "Garderobes");

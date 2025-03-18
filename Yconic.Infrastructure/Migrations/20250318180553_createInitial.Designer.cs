@@ -12,8 +12,8 @@ using Yconic.Infrastructure.ApplicationDbContext;
 namespace Yconic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250128220731_AiResponse")]
-    partial class AiResponse
+    [Migration("20250318180553_createInitial")]
+    partial class createInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,51 +24,6 @@ namespace Yconic.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Yconic.Domain.Models.AiResponse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("Created")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Object")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AiResponses");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.Choice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("AiResponseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FinishReason")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Index")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AiResponseId");
-
-                    b.ToTable("Choices");
-                });
 
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
@@ -290,13 +245,6 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Choice", b =>
-                {
-                    b.HasOne("Yconic.Domain.Models.AiResponse", null)
-                        .WithMany("Choices")
-                        .HasForeignKey("AiResponseId");
-                });
-
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.ClotheCategories", "Category")
@@ -365,11 +313,6 @@ namespace Yconic.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.AiResponse", b =>
-                {
-                    b.Navigation("Choices");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
