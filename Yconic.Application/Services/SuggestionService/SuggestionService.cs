@@ -35,7 +35,7 @@ namespace Yconic.Application.Services.SuggestionService
         {
             var user = await _userRepository.GetUserById(userId);
 
-            var suggestedClothes = await _aiSuggestionService.GenerateSuggestedLook(user.UserPersona, user, otherParameters: null);
+            var suggestedClothes = await _aiSuggestionService.GenerateSuggestedLook(user.Id);
 
             var suggestion = new Suggestions
             {
