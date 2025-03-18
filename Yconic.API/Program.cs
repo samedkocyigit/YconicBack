@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Yconic.Application.Extensions;
+using Yconic.Application.Services.MigrationServices;
 using Yconic.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var migrationService = scope.ServiceProvider.GetRequiredService<MigrationService>();
+    MigrationService.InitializeMigration(app); 
+}
+
 app.UseCors("AllowAll");
 
 app.UseAuthentication();    
