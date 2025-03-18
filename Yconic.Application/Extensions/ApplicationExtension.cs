@@ -13,6 +13,7 @@ using Yconic.Application.Services.TokenServices;
 using System.Reflection;
 using Yconic.Application.Services.AiSuggestionServices;
 using Microsoft.Extensions.Configuration;
+using Yconic.Application.Services.MigrationServices;
 
 namespace Yconic.Application.Extensions
 {
@@ -23,6 +24,7 @@ namespace Yconic.Application.Extensions
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddHttpClient();
 
+            services.AddScoped<MigrationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClotheCategoriesService, ClotheCategoriesService>();
             services.AddScoped<IGarderobeService, GarderobeService>();
