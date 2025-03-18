@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Yconic.Application.Services.GarderobeServices;
@@ -15,7 +16,7 @@ namespace Yconic.Tests.Application.TestGarderobe.GarderobeTests
         private readonly IGarderobeService _garderobeService;
         private readonly IUserService _userService;
         private readonly Mock<ILogger<UserService>> _loggerMock;
-
+        private readonly Mock<IMapper> _mapperMock;
 
         public GarderobeTests()
         {
@@ -23,7 +24,8 @@ namespace Yconic.Tests.Application.TestGarderobe.GarderobeTests
             _userRepositoryMock = new Mock<IUserRepository>();
             _garderobeService = new GarderobeService(_garderobeRepositoryMock.Object);
             _loggerMock = new Mock<ILogger<UserService>>();
-            _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object);
+            _mapperMock = new Mock<IMapper>();
+            _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object,_mapperMock.Object);
         }
         [Fact]
         public async Task CreateGarderobe_Should_Return_Garderobe()
@@ -36,6 +38,7 @@ namespace Yconic.Tests.Application.TestGarderobe.GarderobeTests
                 Surname = "TestSurname",
                 PhoneNumber = "5555555555"
             };
+
             await _userService.CreateUser(user);
 
             var garderobe = new Garderobe{
@@ -53,12 +56,11 @@ namespace Yconic.Tests.Application.TestGarderobe.GarderobeTests
 
             Assert.Equal(garderobe.Name, result.Name);
             Assert.Equal(garderobe.UserId, result.UserId);
-            Assert.Equal(user.Id, userResult.Data.Id);
-            Assert.Equal(user.Name, userResult.Data.Name);
-            Assert.Equal(user.Email, userResult.Data.Email);
-            Assert.Equal(user.Password, userResult.Data.Password);
-            Assert.Equal(user.Surname, userResult.Data.Surname);
-            Assert.Equal(user.PhoneNumber, userResult.Data.PhoneNumber);
+            Assert.Equal(user.Id, userResult.Data.id);
+            Assert.Equal(user.Name, userResult.Data.name);
+            Assert.Equal(user.Email, userResult.Data.email);
+            Assert.Equal(user.Surname, userResult.Data.surname);
+            Assert.Equal(user.PhoneNumber, userResult.Data.phoneNumber);
         }
     }
 }
