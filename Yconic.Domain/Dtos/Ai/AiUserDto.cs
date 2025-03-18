@@ -1,0 +1,22 @@
+using Yconic.Domain.Enums;
+
+namespace Yconic.Domain.Dtos.Ai;
+public class AiUserDto{
+    public Personas  persona { get; set; }
+    public GarderobeDto userGarderobe { get; set; }
+}
+
+public class GarderobeDto
+{
+    public Dictionary<string, List<ClotheItemDto>> categories { get; set; }
+}
+public class ClotheItemDto
+{
+    public string clotheId { get; set; }
+    public string image_path { get; set; }
+}
+public class AiUserDtoForAI
+{
+    public string userPersona { get; set; }
+    public GarderobeDto garderobe { get; set; }
+}
