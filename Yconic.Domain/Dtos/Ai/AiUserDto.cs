@@ -12,11 +12,12 @@ public class GarderobeDto
 }
 public class ClotheItemDto
 {
+    public string categoryId {get; set;}
     public string clotheId { get; set; }
     public string image_path { get; set; }
 }
-public class AiUserDtoForAI
-{
-    public string userPersona { get; set; }
-    public GarderobeDto garderobe { get; set; }
-}
+//public class AiUserDtoForAI
+//{
+//    public string userPersona { get; set; }
+//    public GarderobeDto garderobe { get; set; }
+//}
