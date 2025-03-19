@@ -20,8 +20,12 @@ namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
             _context = context;
             _dbSet = _context.Set<Suggestions>();
         }
+        
+        public async Task<List<Suggestions>> GetAllSuggestions(){
+            return _dbSet.Include(x=> x.SuggestedLook).ThenInclude(x=> x.Photos).ToList();
+        }
         public async Task<Suggestions> GetSuggestionById(Guid id){
-            return _dbSet.Include(x => x.SuggestedLook).FirstOrDefault(x=> x.Id ==id);
+            return _dbSet.Include(x => x.SuggestedLook).ThenInclude(x=> x.Photos).FirstOrDefault(x=> x.Id ==id);
         }
         public async Task<Suggestions> CreateSuggestion(User user)
         {
