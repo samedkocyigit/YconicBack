@@ -16,7 +16,8 @@ namespace Yconic.Application.Profiles
         {
             CreateMap<Clothe, ClotheItemDto>()
                 .ForMember(dest => dest.clotheId, opt => opt.MapFrom(src => src.Id.ToString()))
-                .ForMember(dest => dest.image_path, opt => opt.MapFrom(src => src.MainPhoto));
+                .ForMember(dest => dest.image_path, opt => opt.MapFrom(src => src.MainPhoto))
+                .ForMember(dest => dest.categoryId,opt => opt.MapFrom(src => src.CategoryId));
 
             CreateMap<Garderobe, GarderobeDto>()
                 .ForMember(dest => dest.categories, opt => opt.MapFrom(src =>
