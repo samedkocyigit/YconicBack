@@ -22,9 +22,8 @@ namespace Yconic.Application.Services.SuggestionService
         
         public async Task<List<Suggestions>> GetAllSuggestions()
         {
-            var suggestions = await _suggestionRepository.GetAll();
-            var listSuggestions = suggestions.ToList();
-            return listSuggestions;
+            var suggestions = await _suggestionRepository.GetAllSuggestions();
+            return suggestions;
         }
         public async Task<Suggestions> GetSuggestionById(Guid id)
         {
