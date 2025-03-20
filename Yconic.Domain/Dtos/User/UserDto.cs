@@ -18,6 +18,7 @@ namespace Yconic.Domain.Dtos.User
         public Guid userGarderobeId { get; set; }
         public Garderobe? garderobe { get; set; }
         public Persona? persona { get; set; }
+        public List<Suggestions>? suggestions {get; set;}
 
 
     }

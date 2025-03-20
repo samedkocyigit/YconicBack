@@ -46,7 +46,8 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.userPersonaId, opt => opt.MapFrom(src => src.UserPersonaId))
                 .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
                 .ForMember(dest => dest.garderobe,opt => opt.MapFrom(src => src.UserGarderobe))
-                .ForMember(dest => dest.persona, opt => opt.MapFrom(src=> src.UserPersona));
+                .ForMember(dest => dest.persona, opt => opt.MapFrom(src=> src.UserPersona))
+                .ForMember(dest => dest.suggestions, opt => opt.MapFrom(src => src.Suggestions));
 
         }
     }

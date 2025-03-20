@@ -19,11 +19,27 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
         }
         public async Task<ICollection<User>> GetAllUsers()
         {
-            return await _context.Users.Include(x => x.UserGarderobe).ThenInclude(x => x.ClothesCategory).ThenInclude(x => x.Clothes).ThenInclude(x=>x.Photos).Include(x => x.UserPersona).ToListAsync();
+            return await _context.Users
+                    .Include(x => x.UserGarderobe)
+                        .ThenInclude(x => x.ClothesCategory)
+                            .ThenInclude(x => x.Clothes)
+                                .ThenInclude(x=>x.Photos)
+                    .Include(x => x.UserPersona)
+                    .Include(x=> x.Suggestions)
+                        .ThenInclude(x => x.SuggestedLook)
+                    .ToListAsync();
         }
         public async Task<User> GetUserById(Guid id)
         {
-            return await _context.Users.Include(x => x.UserGarderobe).ThenInclude(x => x.ClothesCategory).ThenInclude(x => x.Clothes).ThenInclude(x=>x.Photos).Include(x => x.UserPersona).Include(x=> x.Suggestions).ThenInclude(x=> x.SuggestedLook).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Users
+                .Include(x => x.UserGarderobe)
+                    .ThenInclude(x => x.ClothesCategory)
+                        .ThenInclude(x => x.Clothes)
+                            .ThenInclude(x=>x.Photos)
+                .Include(x => x.UserPersona)
+                .Include(x=> x.Suggestions)
+                    .ThenInclude(x=> x.SuggestedLook)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
