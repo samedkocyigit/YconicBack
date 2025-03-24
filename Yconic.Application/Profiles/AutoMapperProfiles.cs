@@ -40,6 +40,7 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.surname,opt => opt.MapFrom(src => src.Surname))
                 .ForMember(dest => dest.role, opt => opt.MapFrom(src => src.Role))
                 .ForMember(dest => dest.age, opt => opt.MapFrom(src => src.Age))
+                .ForMember(dest => dest.birthday, opt => opt.MapFrom(opt => opt.Birthday))
                 .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.Weight))
                 .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
                 .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))

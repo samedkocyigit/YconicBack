@@ -14,6 +14,7 @@ namespace Yconic.Domain.Dtos.User
         public decimal? weight { get; set; }
         public decimal? height { get; set; }
         public string? phoneNumber { get; set; }
+        public DateTime birthday {get; set;}
         public Guid userPersonaId { get; set; }
         public Guid userGarderobeId { get; set; }
         public Garderobe? garderobe { get; set; }
