@@ -15,7 +15,16 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users
+                    .Include(x=> x.UserGarderobe)
+                        .ThenInclude(x=> x.ClothesCategory)
+                            .ThenInclude(x=> x.Clothes)
+                                .ThenInclude(x=> x.Photos)
+                    .Include(x=>x.UserPersona)
+                    .Include(x=>x.Suggestions)
+                        .ThenInclude(x=>x.SuggestedLook)
+                            .ThenInclude(x=>x.Photos)
+                    .FirstOrDefaultAsync(x => x.Email == email);
         }
         public async Task<ICollection<User>> GetAllUsers()
         {
@@ -27,6 +36,7 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                     .Include(x => x.UserPersona)
                     .Include(x=> x.Suggestions)
                         .ThenInclude(x => x.SuggestedLook)
+                            .ThenInclude(x=>x.Photos)
                     .ToListAsync();
         }
         public async Task<User> GetUserById(Guid id)
@@ -39,6 +49,7 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                 .Include(x => x.UserPersona)
                 .Include(x=> x.Suggestions)
                     .ThenInclude(x=> x.SuggestedLook)
+                            .ThenInclude(x=>x.Photos)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
