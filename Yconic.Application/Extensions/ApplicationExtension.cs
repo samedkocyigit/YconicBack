@@ -23,6 +23,7 @@ namespace Yconic.Application.Extensions
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddHttpClient();
+            services.AddLogging();
 
             services.AddScoped<MigrationService>();
             services.AddScoped<IUserService, UserService>();
