@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Yconic.Domain.Dtos;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
@@ -65,6 +66,21 @@ namespace Yconic.Application.Services.ClotheServices
             clotheCategory.Clothes.Add(newClothe);
             await _clotheCategoriesRepository.Update(clotheCategory);
         }
+        private string NormalizeFileName(string fileName)
+        {
+            var normalized = fileName
+                .ToLowerInvariant()
+                .Replace("ı", "i")
+                .Replace("ğ", "g")
+                .Replace("ü", "u")
+                .Replace("ş", "s")
+                .Replace("ö", "o")
+                .Replace("ç", "c")
+                .Replace(" ", "_");
+
+            return Regex.Replace(normalized, @"[^a-zA-Z0-9_\.\-]", "");
+        }
+
 
 
         private async Task<string> SavePhoto(IFormFile photo)
@@ -72,7 +88,11 @@ namespace Yconic.Application.Services.ClotheServices
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
             Directory.CreateDirectory(uploadsFolder);
 
-            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(photo.FileName)}";
+            var originalName = Path.GetFileNameWithoutExtension(photo.FileName);
+            var extension = Path.GetExtension(photo.FileName);
+            var normalized = NormalizeFileName(originalName);
+            var uniqueFileName = $"{Guid.NewGuid()}_{normalized}{extension}";
+
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -80,8 +100,9 @@ namespace Yconic.Application.Services.ClotheServices
                 await photo.CopyToAsync(fileStream);
             }
 
-            return $"/uploads/{uniqueFileName}"; 
+            return $"/uploads/{uniqueFileName}";
         }
+
 
         public async Task<Clothe> UpdateClothe(Clothe clothe)
         {
