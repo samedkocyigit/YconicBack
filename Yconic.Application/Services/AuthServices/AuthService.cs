@@ -21,17 +21,18 @@ namespace Yconic.Application.Services.AuthServices
     {
         protected readonly IUserRepository  _userRepository;
         protected readonly IGarderobeRepository _garderobeRepository;
-        protected readonly ILogger<AuthService> _logger;
         protected readonly IEmailService _emailService;
         protected readonly ITokenService _tokenService;
         protected readonly IMapper _mapper;
-        public AuthService(IUserRepository userRepository,IGarderobeRepository garderobeRepository, IEmailService emailService,ITokenService tokenService,IMapper mapper)
+        protected readonly ILogger<AuthService> _logger;
+        public AuthService(IUserRepository userRepository,IGarderobeRepository garderobeRepository, IEmailService emailService,ITokenService tokenService,IMapper mapper,ILogger<AuthService> logger)
         {
             _userRepository = userRepository;
             _garderobeRepository = garderobeRepository;
             _emailService = emailService;
             _tokenService = tokenService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ApiResult<LoginResponse>> Login(LoginDto loginModel)
