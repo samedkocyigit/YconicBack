@@ -17,5 +17,9 @@ namespace Yconic.Infrastructure.Repositories.ClotheRepositories
         {
             return await _context.Clothes.Include(s=> s.Photos).ToListAsync();
         }
+        public async Task<Clothe> GetClotheById(Guid id)
+        {
+            return await _context.Clothes.Include(s => s.Photos).FirstOrDefaultAsync(x=>x.Id == id);
+        }
     }
 }

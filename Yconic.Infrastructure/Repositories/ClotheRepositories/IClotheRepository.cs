@@ -11,5 +11,6 @@ namespace Yconic.Infrastructure.Repositories.ClotheRepositories
     public interface IClotheRepository:IGenericRepository<Clothe>
     {
         Task<IEnumerable<Clothe>> GetAllClothes();
+        Task<Clothe> GetClotheById(Guid id);
     }
 }

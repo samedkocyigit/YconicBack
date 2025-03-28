@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,11 @@ namespace Yconic.Infrastructure.Repositories.ClothePhotoRepositories
         public ClothePhotoRepository(AppDbContext context):base(context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<ClothePhoto>> GetClothePhotosByClotheId(Guid clotheId)
+        {
+            return await _context.ClothePhotos.Where(cp => cp.ClotheId == clotheId).ToListAsync();
         }
     }
 }

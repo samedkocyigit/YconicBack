@@ -53,7 +53,7 @@ public class ClotheTest
         fakeFile.Setup(f => f.FileName).Returns("test.jpg");
         fakeFile.Setup(f => f.Length).Returns(1024);
 
-        var clotheRequest = new AddClotheRequest
+        var clotheRequest = new AddClotheRequestDto
         {
             Name = "Test",
             Brand = "Test",

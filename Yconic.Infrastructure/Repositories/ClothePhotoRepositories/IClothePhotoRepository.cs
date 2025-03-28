@@ -10,5 +10,6 @@ namespace Yconic.Infrastructure.Repositories.ClothePhotoRepositories
 {
     public interface IClothePhotoRepository:IGenericRepository<ClothePhoto>
     {
+        public Task<IEnumerable<ClothePhoto>> GetClothePhotosByClotheId(Guid clotheId);
     }
 }
