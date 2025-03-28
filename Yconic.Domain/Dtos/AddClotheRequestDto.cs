@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Yconic.Domain.Dtos
 {
-    public class AddClotheRequest
+    public class AddClotheRequestDto
     {
         public string Name { get; set; }  
         public string? Brand { get; set; }  
