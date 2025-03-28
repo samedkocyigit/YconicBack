@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yconic.Application.Services.ClothePhotoServices;
+using Yconic.Domain.Dtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
@@ -32,6 +33,14 @@ namespace Yconic.API.Controllers
         {
             var createdClothePhoto = await _clothePhotoService.CreateClothePhoto(clothePhoto);
             return Ok(createdClothePhoto);
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        public async Task<IActionResult> AddClothePhotos(Guid id, AddClothePhotosDto clothePhotos)
+        {
+            var addedClothePhotos = await _clothePhotoService.AddClothePhotos(id, clothePhotos);
+            return Ok(addedClothePhotos);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateClothePhoto(ClothePhoto clothePhoto)

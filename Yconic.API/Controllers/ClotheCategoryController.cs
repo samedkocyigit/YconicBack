@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yconic.Application.Services.ClotheCategoriesServices;
+using Yconic.Domain.Dtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
@@ -34,11 +35,20 @@ namespace Yconic.API.Controllers
             return Ok(createdClotheCategory);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateClotheCategory(ClotheCategories clotheCategory)
+        public async Task<IActionResult> UpdateClotheCategoryWithPut(ClotheCategories clotheCategory)
         {
             var updatedClotheCategory = await _clotheCategoryService.UpdateClotheCategories(clotheCategory);
             return Ok(updatedClotheCategory);
         }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateClotheCategoryWithPatch(Guid id,[FromBody] UpdateClotheCategoryDto dto)
+        {
+            var updatedCategory = await _clotheCategoryService.UpdateClotheCategoryWithPatch(id,dto);
+            return Ok(updatedCategory);
+        }
+        
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteClotheCategory(Guid id)

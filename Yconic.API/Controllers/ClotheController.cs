@@ -29,7 +29,7 @@ namespace Yconic.API.Controllers
             return Ok(clothe);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateClothe([FromForm] AddClotheRequest request)
+        public async Task<IActionResult> CreateClothe([FromForm] AddClotheRequestDto request)
         {
             if (request.Photos == null || !request.Photos.Any())
             {
@@ -46,6 +46,14 @@ namespace Yconic.API.Controllers
         public async Task<IActionResult> UpdateClothe(Clothe clothe)
         {
             var updatedClothe = await _clotheService.UpdateClothe(clothe);
+            return Ok(updatedClothe);
+        }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateClotheWithPatch(Guid id, [FromBody] PatchClotheRequestDto dto)
+        {
+            var updatedClothe = await _clotheService.PatchClothe(id, dto);
             return Ok(updatedClothe);
         }
         [HttpDelete]
