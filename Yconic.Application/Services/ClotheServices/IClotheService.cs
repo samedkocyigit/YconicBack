@@ -12,8 +12,9 @@ namespace Yconic.Application.Services.ClotheServices
     {
         Task<List<Clothe>> GetAllClothes();
         Task<Clothe> GetClotheById(Guid id);
-        Task CreateClothe(AddClotheRequest clothe);
+        Task CreateClothe(AddClotheRequestDto clothe);
         Task<Clothe> UpdateClothe(Clothe clothe);
+        Task<Clothe> PatchClothe(Guid id, PatchClotheRequestDto dto);
         Task DeleteClothe(Guid id);
     }
 }

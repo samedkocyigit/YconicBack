@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Yconic.Domain.Dtos;
+using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
@@ -44,6 +46,21 @@ namespace Yconic.Application.Services.ClotheCategoriesServices
         {
             return await _clotheCategoriesRepository.Update(clotheCategories);
         }
+        public async Task<ClotheCategories> UpdateClotheCategoryWithPatch(Guid id, UpdateClotheCategoryDto dto)
+        {
+            var existing = await _clotheCategoriesRepository.GetById(id);
+            if (existing == null)
+                throw new Exception("Category not found");
+
+            if (!string.IsNullOrWhiteSpace(dto.Name))
+                existing.Name = dto.Name;
+
+            if (dto.CategoryType.HasValue)
+                existing.CategoryType = (CategoryTypes)dto.CategoryType.Value;
+
+            return await _clotheCategoriesRepository.Update(existing);
+        }
+
         public async Task DeleteClotheCategories(Guid id)
         {
             await _clotheCategoriesRepository.Delete(id);

@@ -27,10 +27,10 @@ namespace Yconic.Application.Services.ClotheServices
         }
         public async Task<Clothe> GetClotheById(Guid id)
         {
-            var clothe = await _clotheRepository.GetById(id);
+            var clothe = await _clotheRepository.GetClotheById(id);
             return clothe;
         }
-        public async Task CreateClothe(AddClotheRequest clothe)
+        public async Task CreateClothe(AddClotheRequestDto clothe)
         {
             var clotheObj = new Clothe
             {
@@ -106,6 +106,17 @@ namespace Yconic.Application.Services.ClotheServices
 
         public async Task<Clothe> UpdateClothe(Clothe clothe)
         {
+            await _clotheRepository.Update(clothe);
+            return clothe;
+        }
+
+        public async Task<Clothe> PatchClothe(Guid id, PatchClotheRequestDto dto)
+        {
+            var clothe = await _clotheRepository.GetById(id);
+            if (dto.Name != null)
+                clothe.Name = dto.Name;
+            if (dto.Brand != null)
+                clothe.Brand = dto.Brand;
             await _clotheRepository.Update(clothe);
             return clothe;
         }
