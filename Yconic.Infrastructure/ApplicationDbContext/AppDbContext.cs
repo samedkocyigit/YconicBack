@@ -16,6 +16,8 @@ public class AppDbContext:DbContext
     public DbSet<Suggestions> Suggestions { get; set; }
     public DbSet<Clothe> Clothes { get; set; }
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
+    public DbSet<Friendship> Friendships { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +55,26 @@ public class AppDbContext:DbContext
                   .HasForeignKey<Persona>(p => p.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+
+        // Configure Friendship
+        modelBuilder.Entity<Friendship>(entity =>
+        {
+            entity.HasKey(f => f.Id);
+
+            entity.Property(f => f.Status)
+                  .HasConversion<string>();
+
+            entity.HasOne(f => f.Requester)
+                  .WithMany(u => u.FriendsSent)
+                  .HasForeignKey(f => f.RequesterId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(f => f.Addressee)
+                  .WithMany(u => u.FriendsReceived)
+                  .HasForeignKey(f => f.AddresseeId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
 
         // Configure Garderobe
         modelBuilder.Entity<Garderobe>(entity =>
