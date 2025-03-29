@@ -117,6 +117,8 @@ namespace Yconic.Application.Services.ClotheServices
                 clothe.Name = dto.Name;
             if (dto.Brand != null)
                 clothe.Brand = dto.Brand;
+            if(dto.Description != null)
+                clothe.Description = dto.Description;
             await _clotheRepository.Update(clothe);
             return clothe;
         }
