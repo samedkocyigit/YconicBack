@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yconic.Domain.Dtos
+namespace Yconic.Domain.Dtos.ClothePhotoDtos
 {
     public class AddClothePhotosDto
     {

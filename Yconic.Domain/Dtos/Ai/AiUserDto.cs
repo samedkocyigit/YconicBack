@@ -3,10 +3,10 @@ using Yconic.Domain.Enums;
 namespace Yconic.Domain.Dtos.Ai;
 public class AiUserDto{
     public Personas  persona { get; set; }
-    public GarderobeDto userGarderobe { get; set; }
+    public AiGarderobeDto userGarderobe { get; set; }
 }
 
-public class GarderobeDto
+public class AiGarderobeDto
 {
     public Dictionary<string, List<ClotheItemDto>> categories { get; set; }
 }
