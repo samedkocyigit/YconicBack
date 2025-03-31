@@ -12,8 +12,8 @@ public class AppDbContext:DbContext
     public DbSet<Persona> Personas { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Garderobe> Garderobes { get; set; }
-    public DbSet<ClotheCategories> ClotheCategories { get; set; }
-    public DbSet<Suggestions> Suggestions { get; set; }
+    public DbSet<ClotheCategory> ClotheCategories { get; set; }
+    public DbSet<Suggestion> Suggestions { get; set; }
     public DbSet<Clothe> Clothes { get; set; }
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
     public DbSet<Friendship> Friendships { get; set; }
@@ -25,8 +25,12 @@ public class AppDbContext:DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(u => u.Id);
-            entity.Property(u => u.Name).IsRequired().HasMaxLength(100);
-            entity.Property(u => u.Email).IsRequired().HasMaxLength(150);
+            entity.Property(u => u.Name).HasMaxLength(30);
+            entity.Property(u => u.Surname).HasMaxLength(30);
+            entity.Property(u => u.Username).IsRequired().HasMaxLength(30);
+            entity.HasIndex(u => u.Username).IsUnique();
+            entity.Property(u => u.Email).IsRequired().HasMaxLength(40);
+            entity.HasIndex(u => u.Email).IsUnique();
             entity.Property(u => u.Password).IsRequired();
             entity.Property(u => u.IsActive).HasConversion<string>();
             entity.Property(u => u.Role).HasConversion<string>();
@@ -91,7 +95,7 @@ public class AppDbContext:DbContext
         });
 
         // Configure GarderobeCategory
-        modelBuilder.Entity<ClotheCategories>(entity =>
+        modelBuilder.Entity<ClotheCategory>(entity =>
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.Name).IsRequired().HasMaxLength(50);
