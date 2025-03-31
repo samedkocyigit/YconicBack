@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yconic.Application.Services.ClothePhotoServices;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.ClothePhotoDtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers

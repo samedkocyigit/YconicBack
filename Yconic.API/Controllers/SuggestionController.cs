@@ -34,7 +34,7 @@ namespace Yconic.API.Controllers
             return Ok(createdSuggestion);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateSuggestion(Suggestions suggestion)
+        public async Task<IActionResult> UpdateSuggestion(Suggestion suggestion)
         {
             var updatedSuggestion = await _suggestionService.UpdateSuggestion(suggestion);
             return Ok(updatedSuggestion);

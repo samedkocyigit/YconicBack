@@ -23,14 +23,14 @@ namespace Yconic.Api.Controllers
         public async Task<IActionResult> SendFriendRequest(Guid requesterId, Guid addresseeId)
         {
             var result = await _friendshipService.SendRequest(requesterId, addresseeId);
-            return Ok(ApiResult<Friendship>.Success(result));
+            return Ok(result);
         }
 
         [HttpPost("accept")]
         public async Task<IActionResult> AcceptFriendRequest(Guid requesterId, Guid addresseeId)
         {
             var result = await _friendshipService.AcceptRequest(requesterId, addresseeId);
-            return Ok(ApiResult<Friendship>.Success(result));
+            return Ok(result);
         }
 
         [HttpPost("decline")]
@@ -58,14 +58,14 @@ namespace Yconic.Api.Controllers
         public async Task<IActionResult> GetFriends(Guid userId)
         {
             var friends = await _friendshipService.GetFriends(userId);
-            return Ok(ApiResult<List<User>>.Success(friends));
+            return Ok(friends);
         }
 
         [HttpGet("pending")]
         public async Task<IActionResult> GetPendingRequests(Guid userId)
         {
             var requests = await _friendshipService.GetPendingRequests(userId);
-            return Ok(ApiResult<List<Friendship>>.Success(requests));
+            return Ok(requests);
         }
 
         [HttpGet("can-view-profile")]
@@ -76,7 +76,7 @@ namespace Yconic.Api.Controllers
                 return NotFound(ApiResult<string>.Fail("Target user not found"));
 
             var result = await _friendshipService.CanViewProfile(viewerId, targetUser);
-            return Ok(ApiResult<bool>.Success(result));
+            return Ok(result);
         }
 
     }
