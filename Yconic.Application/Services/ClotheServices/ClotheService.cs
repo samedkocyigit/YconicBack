@@ -1,7 +1,9 @@
 ﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.ClotheDtos;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
 using Yconic.Infrastructure.Repositories.ClothePhotoRepositories;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
@@ -13,22 +15,26 @@ namespace Yconic.Application.Services.ClotheServices
         protected readonly IClotheRepository _clotheRepository;
         protected readonly IClothePhotoRepository _clothePhotoRepository;
         protected readonly IClotheCategoriesRepository _clotheCategoriesRepository;
-        public ClotheService(IClotheRepository clotheRepository ,IClothePhotoRepository clothePhotoRepository,IClotheCategoriesRepository clotheCategoriesRepository)
+        protected readonly IMapper _mapper;
+        public ClotheService(IClotheRepository clotheRepository ,IClothePhotoRepository clothePhotoRepository,IClotheCategoriesRepository clotheCategoriesRepository,IMapper mapper)
         {
             _clotheRepository = clotheRepository;
             _clothePhotoRepository = clothePhotoRepository;
             _clotheCategoriesRepository = clotheCategoriesRepository;
+            _mapper = mapper;
         }
 
-        public async Task<List<Clothe>> GetAllClothes()
+        public async Task<ApiResult<List<ClotheDto>>> GetAllClothes()
         {
             var clothes =  await _clotheRepository.GetAllClothes();
-            return clothes.ToList();
+            var mappedClothes = _mapper.Map<List<ClotheDto>>(clothes);
+            return ApiResult<List<ClotheDto>>.Success(mappedClothes);
         }
-        public async Task<Clothe> GetClotheById(Guid id)
+        public async Task<ApiResult<ClotheDto>> GetClotheById(Guid id)
         {
             var clothe = await _clotheRepository.GetClotheById(id);
-            return clothe;
+            var mappedClothe = _mapper.Map<ClotheDto>(clothe);
+            return ApiResult<ClotheDto>.Success(mappedClothe);
         }
         public async Task CreateClothe(AddClotheRequestDto clothe)
         {
@@ -110,7 +116,7 @@ namespace Yconic.Application.Services.ClotheServices
             return clothe;
         }
 
-        public async Task<Clothe> PatchClothe(Guid id, PatchClotheRequestDto dto)
+        public async Task<ApiResult<ClotheDto>> PatchClothe(Guid id, PatchClotheRequestDto dto)
         {
             var clothe = await _clotheRepository.GetById(id);
             if (dto.Name != null)
@@ -119,8 +125,9 @@ namespace Yconic.Application.Services.ClotheServices
                 clothe.Brand = dto.Brand;
             if(dto.Description != null)
                 clothe.Description = dto.Description;
-            await _clotheRepository.Update(clothe);
-            return clothe;
+            var updated =await _clotheRepository.Update(clothe);
+            var mapped = _mapper.Map<ClotheDto>(updated);
+            return ApiResult<ClotheDto>.Success(mapped);
         }
         public async Task DeleteClothe(Guid id)
         {

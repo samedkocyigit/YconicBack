@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Yconic.Domain.Dtos.FriendshipDtos;
+using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.FriendshipRepositories;
 
 namespace Yconic.Application.Services.FriendshipServices
@@ -9,14 +13,16 @@ namespace Yconic.Application.Services.FriendshipServices
     {
         private readonly IFriendshipRepository _friendshipRepository;
         private readonly ILogger<FriendshipService> _logger;
+        private readonly IMapper _mapper;
 
-        public FriendshipService(IFriendshipRepository friendshipRepository, ILogger<FriendshipService> logger)
+        public FriendshipService(IFriendshipRepository friendshipRepository, ILogger<FriendshipService> logger,IMapper mapper)
         {
             _friendshipRepository = friendshipRepository;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<Friendship> SendRequest(Guid requesterId, Guid addresseeId)
+        public async Task<ApiResult<FriendshipDto>> SendRequest(Guid requesterId, Guid addresseeId)
         {
             var existing = await _friendshipRepository.GetFriendship(requesterId, addresseeId);
             if (existing != null)
@@ -29,17 +35,21 @@ namespace Yconic.Application.Services.FriendshipServices
                 Status = FriendshipStatus.Pending
             };
 
-            return await _friendshipRepository.SendFriendRequest(newRequest);
+            var resp =  await _friendshipRepository.SendFriendRequest(newRequest);
+            var mapped = _mapper.Map<FriendshipDto>(resp);
+            return ApiResult<FriendshipDto>.Success(mapped);
         }
 
-        public async Task<Friendship> AcceptRequest(Guid requesterId, Guid addresseeId)
+        public async Task<ApiResult<FriendshipDto>> AcceptRequest(Guid requesterId, Guid addresseeId)
         {
             var friendship = await _friendshipRepository.GetFriendship(requesterId, addresseeId);
             if (friendship == null || friendship.Status != FriendshipStatus.Pending)
                 throw new Exception("No pending request found.");
 
             friendship.Status = FriendshipStatus.Accepted;
-            return await _friendshipRepository.UpdateFriendship(friendship);
+            var res = await _friendshipRepository.UpdateFriendship(friendship);
+            var mapped = _mapper.Map<FriendshipDto>(res);
+            return ApiResult<FriendshipDto>.Success(mapped);
         }
 
         public async Task DeclineRequest(Guid requesterId, Guid addresseeId)
@@ -84,19 +94,21 @@ namespace Yconic.Application.Services.FriendshipServices
             return friendship != null && friendship.Status == FriendshipStatus.Accepted;
         }
 
-        public async Task<List<User>> GetFriends(Guid userId)
+        public async Task<ApiResult<List<UserDto>>> GetFriends(Guid userId)
         {
             var friendships = await _friendshipRepository.GetFriends(userId);
             var friends = friendships.Select(f =>
                 f.RequesterId == userId ? f.Addressee : f.Requester
             ).ToList();
-
-            return friends;
+            var mapped = _mapper.Map<List<UserDto>>(friends);
+            return ApiResult<List<UserDto>>.Success(mapped);
         }
 
-        public async Task<List<Friendship>> GetPendingRequests(Guid userId)
+        public async Task<ApiResult<List<FriendshipDto>>> GetPendingRequests(Guid userId)
         {
-            return await _friendshipRepository.GetPendingRequests(userId);
+            var frienship = await _friendshipRepository.GetPendingRequests(userId);
+            var mapped = _mapper.Map<List<FriendshipDto>>(frienship);
+            return ApiResult<List<FriendshipDto>>.Success(mapped);
         }
     }
 }

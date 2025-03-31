@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Yconic.Application.Services.ClotheServices;
 using Yconic.Application.Services.UserServices;
 using Yconic.Domain.Dtos.Ai;
+using Yconic.Domain.Dtos.ClotheDtos;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
@@ -34,18 +35,18 @@ namespace Yconic.Application.Services.AiSuggestionServices
             _apiKey = Environment.GetEnvironmentVariable("OpenAiApiKey");
         }
 
-        public async Task<List<Clothe>> GenerateSuggestedLook(Guid userId)
+        public async Task<List<ClotheDto>> GenerateSuggestedLook(Guid userId)
         {
             var user = await _userService.GetUserById(userId);
             var mapperUserDto = _mapper.Map<AiUserDto>(user.Data);
 
-            var clothesCategories = user.Data.garderobe.ClothesCategory;
+            var clothesCategories = user.Data.garderobe.categories;
 
             var groupedGarderobe = new Dictionary<string, List<object>>();
 
             foreach (var category in mapperUserDto.userGarderobe.categories)
             {
-                var type = clothesCategories.FirstOrDefault(cat => cat.Name == category.Key)?.CategoryType.ToString().ToLower();
+                var type = clothesCategories.FirstOrDefault(cat => cat.name == category.Key)?.categoryType.ToString().ToLower();
                 if (type == null) continue;
 
                 if (!groupedGarderobe.ContainsKey(type))
@@ -93,13 +94,15 @@ namespace Yconic.Application.Services.AiSuggestionServices
             foreach (var id in suggestedImageIds)
             {
                 var clothe = await _clotheService.GetClotheById(Guid.Parse(id));
+                var mappedClothe = _mapper.Map<Clothe>(clothe);
                 if (clothe != null)
                 {
-                    suggestedClothes.Add(clothe);
+                    suggestedClothes.Add(mappedClothe);
                 }
             }
+            var mappedClothes = _mapper.Map<List<ClotheDto>>(suggestedClothes);
 
-            return suggestedClothes;
+            return mappedClothes;
         }
 
 

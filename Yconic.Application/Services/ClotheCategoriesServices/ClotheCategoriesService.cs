@@ -1,11 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.ClotheCategoryDtos;
 using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 
@@ -15,38 +17,48 @@ namespace Yconic.Application.Services.ClotheCategoriesServices
     {
         protected readonly IClotheCategoriesRepository _clotheCategoriesRepository;
         protected readonly IGarderobeRepository _garderobeRepository;
-        public ClotheCategoriesService(IClotheCategoriesRepository clotheCategoriesRepository,IGarderobeRepository garderobeRepository)
+        protected readonly IMapper _mapper;
+        public ClotheCategoriesService(IClotheCategoriesRepository clotheCategoriesRepository,IGarderobeRepository garderobeRepository,IMapper mapper)
         {
             _clotheCategoriesRepository = clotheCategoriesRepository;
             _garderobeRepository = garderobeRepository;
+            _mapper = mapper;
         }
-        public async Task<List<ClotheCategories>> GetAllClotheCategories()
+        public async Task<ApiResult<List<ClotheCategoryDto>>> GetAllClotheCategories()
         {
             var clotheCategories =  await _clotheCategoriesRepository.GetAllClotheCategories();
-            return clotheCategories.ToList();
+            var mappedCategories = _mapper.Map<List<ClotheCategoryDto>>(clotheCategories);
+            return ApiResult<List<ClotheCategoryDto>>.Success(mappedCategories);
         }
-        public async Task<ClotheCategories> GetClotheCategoriesById(Guid id)
+        public async Task<ApiResult<ClotheCategoryDto>> GetClotheCategoriesById(Guid id)
         {
-            return await _clotheCategoriesRepository.GetById(id);
+            var category=  await _clotheCategoriesRepository.GetById(id);
+            var mappedCategory = _mapper.Map<ClotheCategoryDto>(category);
+            return ApiResult<ClotheCategoryDto>.Success(mappedCategory);
         }
-        public async Task<ClotheCategories> CreateClotheCategories(ClotheCategories clotheCategories)
+        public async Task<ApiResult<ClotheCategoryDto>> CreateClotheCategories(ClotheCategory clotheCategories)
         {
             var newClotheCategory = await _clotheCategoriesRepository.Add(clotheCategories);
             var garderobe = await _garderobeRepository.GetById(newClotheCategory.GarderobeId);
             if(garderobe.ClothesCategory == null)
             {
-                garderobe.ClothesCategory = new List<ClotheCategories>();
+                garderobe.ClothesCategory = new List<ClotheCategory>();
             }
             garderobe.ClothesCategory.Add(newClotheCategory);
 
             await _garderobeRepository.Update(garderobe);
-            return newClotheCategory;
+            
+            var mappedCategory = _mapper.Map<ClotheCategoryDto>(newClotheCategory);
+
+            return ApiResult<ClotheCategoryDto>.Success(mappedCategory);
         }
-        public async Task<ClotheCategories> UpdateClotheCategories(ClotheCategories clotheCategories)
+        public async Task<ApiResult<ClotheCategoryDto>> UpdateClotheCategories(ClotheCategory clotheCategories)
         {
-            return await _clotheCategoriesRepository.Update(clotheCategories);
+            var category =  await _clotheCategoriesRepository.Update(clotheCategories);
+            var mappedCategory = _mapper.Map<ClotheCategoryDto>(category);
+            return ApiResult<ClotheCategoryDto>.Success(mappedCategory);
         }
-        public async Task<ClotheCategories> UpdateClotheCategoryWithPatch(Guid id, UpdateClotheCategoryDto dto)
+        public async Task<ApiResult<ClotheCategoryDto>> UpdateClotheCategoryWithPatch(Guid id, UpdateClotheCategoryDto dto)
         {
             var existing = await _clotheCategoriesRepository.GetById(id);
             if (existing == null)
@@ -58,7 +70,10 @@ namespace Yconic.Application.Services.ClotheCategoriesServices
             if (dto.CategoryType.HasValue)
                 existing.CategoryType = (CategoryTypes)dto.CategoryType.Value;
 
-            return await _clotheCategoriesRepository.Update(existing);
+            var updatedCategory = await _clotheCategoriesRepository.Update(existing);
+            var mappedCategory = _mapper.Map<ClotheCategoryDto>(updatedCategory);
+            
+            return ApiResult<ClotheCategoryDto>.Success(mappedCategory);
         }
 
         public async Task DeleteClotheCategories(Guid id)

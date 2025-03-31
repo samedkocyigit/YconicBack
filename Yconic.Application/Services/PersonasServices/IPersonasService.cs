@@ -1,13 +1,15 @@
-﻿using Yconic.Domain.Models;
+﻿using Yconic.Domain.Dtos.PersonaDtos;
+using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 
 namespace Yconic.Application.Services.PersonasServices
 {
     public interface IPersonasService
     {
-        Task<List<Persona>> GetAllPersonas();
-        Task<Persona> GetPersonaById(Guid id);
-        Task<Persona> CreatePersona(Persona persona);
-        Task<Persona> UpdatePersona(Persona persona);
+        Task<ApiResult<List<PersonaDto>>> GetAllPersonas();
+        Task<ApiResult<PersonaDto>> GetPersonaById(Guid id);
+        Task<ApiResult<PersonaDto>> CreatePersona(Persona persona);
+        Task<ApiResult<PersonaDto>> UpdatePersona(Persona persona);
         Task DeletePersona(Guid id);
     }
 }

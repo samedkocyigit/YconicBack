@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Yconic.Application.Services.ClotheServices;
-using Yconic.Domain.Dtos;
+using Yconic.Domain.Dtos.ClothePhotoDtos;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.ClothePhotoRepositories;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
 
@@ -17,25 +19,32 @@ namespace Yconic.Application.Services.ClothePhotoServices
     {
         protected readonly IClothePhotoRepository _clothePhotoRepository;
         protected readonly IClotheRepository _clotheRepository;
-        public ClothePhotoService(IClothePhotoRepository clothePhotoRepository , IClotheRepository clotheRepository)
+        protected readonly IMapper _mapper;
+        public ClothePhotoService(IClothePhotoRepository clothePhotoRepository , IClotheRepository clotheRepository,IMapper mapper)
         {
             _clothePhotoRepository = clothePhotoRepository;
             _clotheRepository = clotheRepository;
+            _mapper = mapper;
         }
-        public async Task<List<ClothePhoto>> GetAllClothePhotos()
+        public async Task<ApiResult<List<ClothePhotoDto>>> GetAllClothePhotos()
         {
             var clothePhotos =  await _clothePhotoRepository.GetAll();
-            return clothePhotos.ToList();
+            var mappedClothePhotos = _mapper.Map<List<ClothePhotoDto>>(clothePhotos);
+            return ApiResult<List<ClothePhotoDto>>.Success(mappedClothePhotos);
         }
-        public async Task<ClothePhoto> GetClothePhotoById(Guid id)
+        public async Task<ApiResult<ClothePhotoDto>> GetClothePhotoById(Guid id)
         {
-            return await _clothePhotoRepository.GetById(id);
+            var clothe = await _clothePhotoRepository.GetById(id);
+            var mappedClothe = _mapper.Map<ClothePhotoDto>(clothe); 
+            return ApiResult<ClothePhotoDto>.Success(mappedClothe);
         }
-        public async Task<ClothePhoto> CreateClothePhoto(ClothePhoto clothePhoto)
+        public async Task<ApiResult<ClothePhotoDto>> CreateClothePhoto(ClothePhoto clothePhoto)
         {
-            return await _clothePhotoRepository.Add(clothePhoto);
+            var photo = await _clothePhotoRepository.Add(clothePhoto);
+            var mappedPhoto = _mapper.Map<ClothePhotoDto>(photo);
+            return ApiResult<ClothePhotoDto>.Success(mappedPhoto);
         }
-        public async Task<List<ClothePhoto>> AddClothePhotos(Guid clotheId, AddClothePhotosDto clothePhotos)
+        public async Task<ApiResult<List<ClothePhotoDto>>> AddClothePhotos(Guid clotheId, AddClothePhotosDto clothePhotos)
         {
             var savedPhotos = new List<ClothePhoto>();
             foreach (var photo in clothePhotos.Photos)
@@ -49,11 +58,14 @@ namespace Yconic.Application.Services.ClothePhotoServices
                 await _clothePhotoRepository.Add(photoObj);
                 savedPhotos.Add(photoObj);
             }
-            return savedPhotos;
+            var mappedPhotos = _mapper.Map<List<ClothePhotoDto>>(savedPhotos);
+            return ApiResult<List<ClothePhotoDto>>.Success(mappedPhotos);
         }
-        public async Task<ClothePhoto> UpdateClothePhoto(ClothePhoto clothePhoto)
+        public async Task<ApiResult<ClothePhotoDto>> UpdateClothePhoto(ClothePhoto clothePhoto)
         {
-            return await _clothePhotoRepository.Update(clothePhoto);
+            var photo = await _clothePhotoRepository.Update(clothePhoto);
+            var mappedPhoto = _mapper.Map<ClothePhotoDto>(photo);
+            return ApiResult<ClothePhotoDto>.Success(mappedPhoto);
         }
         public async Task DeleteClothePhoto(Guid id)
         {

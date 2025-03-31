@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Yconic.Application.Services.AiSuggestionServices;
+using Yconic.Domain.Dtos.SuggestionDtos;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.SuggestionRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
@@ -12,31 +15,35 @@ namespace Yconic.Application.Services.SuggestionService
         protected readonly IUserRepository _userRepository;
         protected readonly ILogger<SuggestionService> _logger;
         protected readonly IAiSuggestionService _aiSuggestionService;
-        public SuggestionService(ISuggestionRepository suggestionRepository,IUserRepository userRepository,ILogger<SuggestionService> logger ,IAiSuggestionService aiSuggestionService)
+        protected readonly IMapper _mapper;
+        public SuggestionService(ISuggestionRepository suggestionRepository,IUserRepository userRepository,ILogger<SuggestionService> logger ,IAiSuggestionService aiSuggestionService,IMapper mapper)
         {
             _suggestionRepository = suggestionRepository;
             _userRepository= userRepository;
             _logger = logger;
             _aiSuggestionService = aiSuggestionService;
+            _mapper = mapper;
         }
         
-        public async Task<List<Suggestions>> GetAllSuggestions()
+        public async Task<ApiResult<List<SuggestionDto>>> GetAllSuggestions()
         {
             var suggestions = await _suggestionRepository.GetAllSuggestions();
-            return suggestions;
+            var mappedSuggestions = _mapper.Map<List<SuggestionDto>>(suggestions);
+            return ApiResult<List<SuggestionDto>>.Success(mappedSuggestions);
         }
-        public async Task<Suggestions> GetSuggestionById(Guid id)
+        public async Task<ApiResult<SuggestionDto>> GetSuggestionById(Guid id)
         {
             var suggestion = await _suggestionRepository.GetSuggestionById(id);
-            return suggestion;
+            var mappedSuggestion = _mapper.Map<SuggestionDto>(suggestion);
+            return ApiResult<SuggestionDto>.Success(mappedSuggestion);
         }
-        public async Task<Suggestions> CreateSuggestion(Guid userId)
+        public async Task<ApiResult<SuggestionDto>> CreateSuggestion(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
 
             var suggestedClothes = await _aiSuggestionService.GenerateSuggestedLook(user.Id);
 
-            var suggestion = new Suggestions
+            var suggestion = new Suggestion
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
@@ -45,16 +52,20 @@ namespace Yconic.Application.Services.SuggestionService
 
             foreach (var item in suggestedClothes)
             {
-                suggestion.SuggestedLook.Add(item);
+                var itemDto = _mapper.Map<Clothe>(item);
+                suggestion.SuggestedLook.Add(itemDto);
             }
 
-            return await _suggestionRepository.Add(suggestion);
+            var newSug = await _suggestionRepository.Add(suggestion);
+            var mappedSug = _mapper.Map<SuggestionDto>(newSug);
+            return ApiResult<SuggestionDto>.Success(mappedSug);
         }
 
-        public async Task<Suggestions> UpdateSuggestion(Suggestions suggestion)
+        public async Task<ApiResult<SuggestionDto>> UpdateSuggestion(Suggestion suggestion)
         {
             var updatedSuggestion = await _suggestionRepository.Update(suggestion);
-            return updatedSuggestion;
+            var mappedSuggestion = _mapper.Map<SuggestionDto>(updatedSuggestion);
+            return ApiResult<SuggestionDto>.Success(mappedSuggestion);
         }
         public async Task DeleteSuggestion(Guid id)
         {

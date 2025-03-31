@@ -1,10 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yconic.Application.Services.UserServices;
+using Yconic.Domain.Dtos.GarderobeDtos;
 using Yconic.Domain.Models;
+using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 
 namespace Yconic.Application.Services.GarderobeServices
@@ -12,27 +15,36 @@ namespace Yconic.Application.Services.GarderobeServices
     public class GarderobeService:IGarderobeService
     {
         protected readonly IGarderobeRepository _garderobeRepository;
-        public GarderobeService(IGarderobeRepository garderobeRepository)
+        protected readonly IMapper _mapper;
+        public GarderobeService(IGarderobeRepository garderobeRepository, IMapper mapper)
         {
             _garderobeRepository = garderobeRepository;
+            _mapper = mapper;
         }
-        public async Task<List<Garderobe>> GetAllGarderobes()
+        public async Task<ApiResult<List<GarderobeDto>>> GetAllGarderobes()
         {
 
-           var  garderobe = await _garderobeRepository.GetAllGarderobes();
-            return garderobe.ToList();
+            var  garderobe = await _garderobeRepository.GetAllGarderobes();
+            var mappedGarderobe = _mapper.Map<List<GarderobeDto>>(garderobe);
+            return ApiResult<List<GarderobeDto>>.Success(mappedGarderobe);
         }
-        public async Task<Garderobe> GetGarderobeById(Guid id)
+        public async Task<ApiResult<GarderobeDto>> GetGarderobeById(Guid id)
         {
-            return await _garderobeRepository.GetById(id);
+            var garderobe = await _garderobeRepository.GetById(id);
+            var mappedGarderobe = _mapper.Map<GarderobeDto>(garderobe);
+            return ApiResult<GarderobeDto>.Success(mappedGarderobe);
         }
-        public async Task<Garderobe> CreateGarderobe(Garderobe garderobe)
+        public async Task<ApiResult<GarderobeDto>> CreateGarderobe(Garderobe garderobe)
         {
-            return await _garderobeRepository.Add(garderobe);
+            var newGarderobe = await _garderobeRepository.Add(garderobe);
+            var mappedGarderobe = _mapper.Map<GarderobeDto>(newGarderobe);
+            return ApiResult<GarderobeDto>.Success(mappedGarderobe);
         }
-        public async Task<Garderobe> UpdateGarderobe(Garderobe garderobe)
+        public async Task<ApiResult<GarderobeDto>> UpdateGarderobe(Garderobe garderobe)
         {
-            return await _garderobeRepository.Update(garderobe);
+            var updatedGarderobe = await _garderobeRepository.Update(garderobe);
+            var mappedGarderobe = _mapper.Map<GarderobeDto>(updatedGarderobe);
+            return ApiResult<GarderobeDto>.Success(mappedGarderobe);
         }
         public async Task DeleteGarderobe(Guid id)
         {

@@ -60,28 +60,28 @@ namespace Yconic.Application.Services.AuthServices
                 return ApiResult<LoginResponse>.Success(loginResponse);
             }
         }
-        public async Task<ApiResult<User>> Register(RegisterDto registerModel)
+        public async Task<ApiResult<UserDto>> Register(RegisterDto registerModel)
         {
             var user = new User
             {
                 Email = registerModel.Email,
+                Username = registerModel.Username,
                 Password = BCrypt.Net.BCrypt.HashPassword(registerModel.Password),
-                Name = registerModel.Name,
-                Surname = registerModel.Surname,
-                PhoneNumber = registerModel.PhoneNumber,
-                Birthday = registerModel.Birthday.ToUniversalTime()
             };
+
             var createdUser = await _userRepository.Add(user);
             var garderobe = new Garderobe
             {
                 UserId = createdUser.Id
             };
+
             var newGarderobe = await _garderobeRepository.Add(garderobe);
             createdUser.UserGarderobeId = newGarderobe.Id;
             createdUser.UserGarderobe = newGarderobe;
             createdUser.UpdatedAt = DateTime.UtcNow;
-            var lastseen =await _userRepository.Update(createdUser);
-            return ApiResult<User>.Success(lastseen);
+            var lastSeen = await _userRepository.Update(createdUser);
+            var mappedUser = _mapper.Map<UserDto>(lastSeen);
+            return ApiResult<UserDto>.Success(mappedUser);
         }
         public async Task ForgotPassword(string email)
         {
