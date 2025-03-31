@@ -21,7 +21,7 @@ public class ClothePhotoTests
             Name = "Test",
             UserId = user.Id
         };
-        var clotheCategory = new ClotheCategories
+        var clotheCategory = new ClotheCategory
         {
             Id = Guid.NewGuid(),
             Name = "Test",

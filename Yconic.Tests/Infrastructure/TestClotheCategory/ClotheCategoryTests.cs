@@ -38,7 +38,7 @@ public class ClotheCategoryTests
         await context.Garderobes.AddAsync(garderobe);
         await context.SaveChangesAsync();
 
-        var clotheCategory = new ClotheCategories
+        var clotheCategory = new ClotheCategory
         {
             Id = Guid.NewGuid(),
             Name = "Test",

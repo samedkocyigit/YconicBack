@@ -39,9 +39,9 @@ public class ClotheTest
             Id = Guid.NewGuid(),
             Name = "Test",
             UserId = user.Id,
-            ClothesCategory = new List<ClotheCategories>()
+            ClothesCategory = new List<ClotheCategory>()
         };
-        var clotheCategory = new ClotheCategories{
+        var clotheCategory = new ClotheCategory{
             Id = Guid.NewGuid(),
             Name = "Test",
             Description = "Test Description",

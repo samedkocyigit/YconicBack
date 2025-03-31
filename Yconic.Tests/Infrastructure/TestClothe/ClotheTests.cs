@@ -35,12 +35,12 @@ public class ClotheTests
             Id = Guid.NewGuid(),
             Name = "Test",
             UserId = user.Id,
-            ClothesCategory = new List<ClotheCategories>()
+            ClothesCategory = new List<ClotheCategory>()
         };  
         await context.Garderobes.AddAsync(garderobe);
         await context.SaveChangesAsync();
 
-        var clotheCategory = new ClotheCategories
+        var clotheCategory = new ClotheCategory
         {
             Id = Guid.NewGuid(),
             Name = "Test",
