@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Yconic.Domain.Models;
-public class Suggestions
+public class Suggestion
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

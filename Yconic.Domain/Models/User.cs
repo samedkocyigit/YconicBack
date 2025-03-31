@@ -4,17 +4,18 @@ namespace Yconic.Domain.Models;
     public class User
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string Username { get; set; }
+        public string? Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Surname { get; set; }
+        public string? Surname { get; set; }
         public DateTime? Birthday { get; set; }
         public UserRoles Role { get; set; } = UserRoles.User;
         public bool IsPrivate { get; set; } = false; 
         public int? Age { get; set; }
         public decimal? Height { get; set; }
         public decimal? Weight { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpiry { get; set; }
@@ -31,7 +32,7 @@ namespace Yconic.Domain.Models;
         public Guid? UserGarderobeId { get; set; }
         public Garderobe? UserGarderobe { get; set; }
 
-        public ICollection<Suggestions>? Suggestions { get; set; } = new List<Suggestions>();
+        public ICollection<Suggestion>? Suggestions { get; set; } = new List<Suggestion>();
         public ICollection<Friendship> FriendsSent { get; set; } = new List<Friendship>();     
         public ICollection<Friendship> FriendsReceived { get; set; } = new List<Friendship>(); 
 

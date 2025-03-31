@@ -13,10 +13,12 @@ namespace Yconic.Domain.Models
         public string Brand { get; set; }
         public string? Name { get; set; } 
         public string? Description { get; set; } 
-        public string? MainPhoto { get; set; } 
+        public string? MainPhoto { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
         public Guid CategoryId { get; set; } 
         [JsonIgnore]
-        public ClotheCategories? Category { get; set; } 
+        public ClotheCategory? Category { get; set; } 
         public ICollection<ClothePhoto>? Photos { get; set; } 
     }
 }

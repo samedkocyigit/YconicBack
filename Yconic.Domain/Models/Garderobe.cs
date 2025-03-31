@@ -8,5 +8,5 @@ public class Garderobe
     public Guid UserId { get; set; }
     [JsonIgnore]
     public User? User { get; set; }
-    public ICollection<ClotheCategories>? ClothesCategory { get; set; } = new List<ClotheCategories>();
+    public ICollection<ClotheCategory>? ClothesCategory { get; set; } = new List<ClotheCategory>();
 }
