@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories
 {
-    public class ClotheCategoriesRepository:GenericRepository<ClotheCategories>,IClotheCategoriesRepository
+    public class ClotheCategoriesRepository:GenericRepository<ClotheCategory>,IClotheCategoriesRepository
     {
         protected readonly AppDbContext _context;
         public ClotheCategoriesRepository(AppDbContext context):base(context)
         {
             _context = context;
         }
-        public async Task<IEnumerable<ClotheCategories>> GetAllClotheCategories()
+        public async Task<IEnumerable<ClotheCategory>> GetAllClotheCategories()
         {
            return await _context.ClotheCategories.Include(s=> s.Clothes).ToListAsync();
         }

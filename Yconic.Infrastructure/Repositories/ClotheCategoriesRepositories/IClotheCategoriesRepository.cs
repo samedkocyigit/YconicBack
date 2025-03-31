@@ -8,8 +8,8 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories
 {
-    public interface IClotheCategoriesRepository:IGenericRepository<ClotheCategories>
+    public interface IClotheCategoriesRepository:IGenericRepository<ClotheCategory>
     {
-        Task<IEnumerable<ClotheCategories>> GetAllClotheCategories();
+        Task<IEnumerable<ClotheCategory>> GetAllClotheCategories();
     }
 }
