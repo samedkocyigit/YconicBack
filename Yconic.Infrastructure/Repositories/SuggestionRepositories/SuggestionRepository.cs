@@ -11,25 +11,25 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
 {
-    public class SuggestionRepository:GenericRepository<Suggestions>,ISuggestionRepository
+    public class SuggestionRepository:GenericRepository<Suggestion>,ISuggestionRepository
     {
         protected readonly AppDbContext _context;
-        protected readonly DbSet<Suggestions> _dbSet;
+        protected readonly DbSet<Suggestion> _dbSet;
         public SuggestionRepository(AppDbContext context):base(context)
         {
             _context = context;
-            _dbSet = _context.Set<Suggestions>();
+            _dbSet = _context.Set<Suggestion>();
         }
         
-        public async Task<List<Suggestions>> GetAllSuggestions(){
+        public async Task<List<Suggestion>> GetAllSuggestions(){
             return _dbSet.Include(x=> x.SuggestedLook).ThenInclude(x=> x.Photos).ToList();
         }
-        public async Task<Suggestions> GetSuggestionById(Guid id){
+        public async Task<Suggestion> GetSuggestionById(Guid id){
             return _dbSet.Include(x => x.SuggestedLook).ThenInclude(x=> x.Photos).FirstOrDefault(x=> x.Id ==id);
         }
-        public async Task<Suggestions> CreateSuggestion(User user)
+        public async Task<Suggestion> CreateSuggestion(User user)
         {
-            var suggestion = new Suggestions{
+            var suggestion = new Suggestion{
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 Description = "Suggested Look",

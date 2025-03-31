@@ -8,10 +8,10 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.SuggestionRepositories
 {
-    public interface ISuggestionRepository:IGenericRepository<Suggestions>
+    public interface ISuggestionRepository:IGenericRepository<Suggestion>
     {
-        Task<List<Suggestions>> GetAllSuggestions();
-        Task<Suggestions> CreateSuggestion(User user);
-        Task<Suggestions> GetSuggestionById(Guid id);
+        Task<List<Suggestion>> GetAllSuggestions();
+        Task<Suggestion> CreateSuggestion(User user);
+        Task<Suggestion> GetSuggestionById(Guid id);
     }
 }

@@ -40,18 +40,20 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                             .ThenInclude(x=>x.Photos)
                     .ToListAsync();
         }
+        
         public async Task<User> GetUserById(Guid id)
         {
-            return await _context.Users
-                .Include(x => x.UserGarderobe)
-                    .ThenInclude(x => x.ClothesCategory)
-                        .ThenInclude(x => x.Clothes)
-                            .ThenInclude(x=>x.Photos)
-                .Include(x => x.UserPersona)
-                .Include(x=> x.Suggestions)
-                    .ThenInclude(x=> x.SuggestedLook)
-                            .ThenInclude(x=>x.Photos)
-                .FirstOrDefaultAsync(x => x.Id == id);
+           return await _context.Users
+               .Include(x => x.UserGarderobe)
+                   .ThenInclude(x => x.ClothesCategory)
+                       .ThenInclude(x => x.Clothes)
+                           .ThenInclude(x=>x.Photos)
+               .Include(x => x.UserPersona)
+               .Include(x=> x.Suggestions)
+                   .ThenInclude(x=> x.SuggestedLook)
+                           .ThenInclude(x=>x.Photos)
+               .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
+
