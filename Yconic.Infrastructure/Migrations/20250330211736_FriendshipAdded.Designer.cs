@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Yconic.Infrastructure.ApplicationDbContext;
@@ -11,9 +12,11 @@ using Yconic.Infrastructure.ApplicationDbContext;
 namespace Yconic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330211736_FriendshipAdded")]
+    partial class FriendshipAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SuggestionId")
+                    b.Property<Guid?>("SuggestionsId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -57,12 +60,12 @@ namespace Yconic.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("SuggestionId");
+                    b.HasIndex("SuggestionsId");
 
                     b.ToTable("Clothes");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategory", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -191,7 +194,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("Personas");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.Suggestions", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,20 +307,20 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.ClotheCategory", "Category")
+                    b.HasOne("Yconic.Domain.Models.ClotheCategories", "Category")
                         .WithMany("Clothes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.Suggestion", null)
+                    b.HasOne("Yconic.Domain.Models.Suggestions", null)
                         .WithMany("SuggestedLook")
-                        .HasForeignKey("SuggestionId");
+                        .HasForeignKey("SuggestionsId");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategory", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.Garderobe", "Garderobe")
                         .WithMany("ClothesCategory")
@@ -380,7 +383,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.Suggestions", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.User", "User")
                         .WithMany("Suggestions")
@@ -396,7 +399,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Photos");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategory", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategories", b =>
                 {
                     b.Navigation("Clothes");
                 });
@@ -406,7 +409,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("ClothesCategory");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.Suggestions", b =>
                 {
                     b.Navigation("SuggestedLook");
                 });
