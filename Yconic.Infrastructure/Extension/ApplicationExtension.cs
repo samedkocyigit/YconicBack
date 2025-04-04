@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Yconic.Infrastructure.Repositories.ClothePhotoRepositories;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
+using Yconic.Infrastructure.Repositories.FollowRepositories;
+using Yconic.Infrastructure.Repositories.FollowRequestRepositories;
 
 namespace Yconic.Infrastructure.Extension
 {
@@ -16,7 +18,7 @@ namespace Yconic.Infrastructure.Extension
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql("Host=db;Port=5432;Database=yconic;Username=postgres;Password=samed123"));
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Database=yconic;Username=postgres;Password=samed123"));
             services.AddScoped<IPersonaRepository, PersonaRepository>();
             services.AddScoped<IClotheCategoriesRepository, ClotheCategoriesRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -24,6 +26,8 @@ namespace Yconic.Infrastructure.Extension
             services.AddScoped<IGarderobeRepository, GarderobeRepository>();
             services.AddScoped<IClotheRepository, ClotheRepository>();
             services.AddScoped<IClothePhotoRepository , ClothePhotoRepository>();
+            services.AddScoped<IFollowRepository, FollowRepository>();
+            services.AddScoped<IFollowRequestRepository,FollowRequestRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             return services;
         }
