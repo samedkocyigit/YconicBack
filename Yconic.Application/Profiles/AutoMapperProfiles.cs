@@ -7,6 +7,8 @@ using Yconic.Domain.Dtos.GarderobeDtos;
 using Yconic.Domain.Dtos.PersonaDtos;
 using Yconic.Domain.Dtos.SuggestionDtos;
 using Yconic.Domain.Dtos.User;
+using Yconic.Domain.Dtos.UserDtos;
+using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
 
 namespace Yconic.Application.Profiles
@@ -40,6 +42,11 @@ namespace Yconic.Application.Profiles
                 .ReverseMap();
 
             //For user
+            CreateMap<User, UserMiniDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto));
+
             CreateMap<User,UserDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
@@ -50,6 +57,13 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.birthday, opt => opt.MapFrom(opt => opt.Birthday))
                 .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.Weight))
                 .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto))
+                .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.Bio))
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.IsPrivate))
+                .ForMember(dest => dest.followerCount,opt => opt.MapFrom(src => src.Followers.Count))
+                .ForMember(dest => dest.followingCount,opt => opt.MapFrom(src => src.Following.Count))
+                .ForMember(dest => dest.followers, opt => opt.MapFrom(src => src.Followers.Select(f=> f.Follower)))
+                .ForMember(dest => dest.following, opt => opt.MapFrom(src => src.Following.Select(f => f.Followed)))
                 .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.userPersonaId, opt => opt.MapFrom(src => src.UserPersonaId))
                 .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
