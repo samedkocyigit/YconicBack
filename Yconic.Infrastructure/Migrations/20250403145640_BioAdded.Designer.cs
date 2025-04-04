@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Yconic.Infrastructure.ApplicationDbContext;
@@ -11,9 +12,11 @@ using Yconic.Infrastructure.ApplicationDbContext;
 namespace Yconic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250403145640_BioAdded")]
+    partial class BioAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,58 +118,35 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("ClothePhotos");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Follow", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.Friendship", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AddresseeId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FollowedId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("FollowerId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FollowedId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("Follows");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.FollowRequest", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsRejected")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("RequesterId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("TargetUserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddresseeId");
+
                     b.HasIndex("RequesterId");
 
-                    b.HasIndex("TargetUserId");
-
-                    b.ToTable("FollowRequests");
+                    b.ToTable("Friendships");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.Garderobe", b =>
@@ -368,42 +348,23 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Clothe");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Follow", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.Friendship", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "Followed")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowedId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("Yconic.Domain.Models.User", "Addressee")
+                        .WithMany("FriendsReceived")
+                        .HasForeignKey("AddresseeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "Follower")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Followed");
-
-                    b.Navigation("Follower");
-                });
-
-            modelBuilder.Entity("Yconic.Domain.Models.FollowRequest", b =>
-                {
                     b.HasOne("Yconic.Domain.Models.User", "Requester")
-                        .WithMany("FollowRequestsReceived")
+                        .WithMany("FriendsSent")
                         .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "TargetUser")
-                        .WithMany("FollowRequestsSent")
-                        .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("Addressee");
 
                     b.Navigation("Requester");
-
-                    b.Navigation("TargetUser");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.Garderobe", b =>
@@ -461,13 +422,9 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.User", b =>
                 {
-                    b.Navigation("FollowRequestsReceived");
+                    b.Navigation("FriendsReceived");
 
-                    b.Navigation("FollowRequestsSent");
-
-                    b.Navigation("Followers");
-
-                    b.Navigation("Following");
+                    b.Navigation("FriendsSent");
 
                     b.Navigation("Suggestions");
 
