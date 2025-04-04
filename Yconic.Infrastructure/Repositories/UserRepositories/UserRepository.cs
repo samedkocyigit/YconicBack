@@ -25,6 +25,8 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                     .Include(x=>x.Suggestions)
                         .ThenInclude(x=>x.SuggestedLook)
                             .ThenInclude(x=>x.Photos)
+                    .Include(x => x.Followers)
+                    .Include(x => x.Following)
                     .FirstOrDefaultAsync(x => x.Email == email);
         }
         public async Task<ICollection<User>> GetAllUsers()
@@ -38,21 +40,25 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                     .Include(x=> x.Suggestions)
                         .ThenInclude(x => x.SuggestedLook)
                             .ThenInclude(x=>x.Photos)
+                    .Include(x => x.Followers)
+                    .Include(x => x.Following)
                     .ToListAsync();
         }
         
         public async Task<User> GetUserById(Guid id)
         {
            return await _context.Users
-               .Include(x => x.UserGarderobe)
-                   .ThenInclude(x => x.ClothesCategory)
-                       .ThenInclude(x => x.Clothes)
-                           .ThenInclude(x=>x.Photos)
-               .Include(x => x.UserPersona)
-               .Include(x=> x.Suggestions)
-                   .ThenInclude(x=> x.SuggestedLook)
-                           .ThenInclude(x=>x.Photos)
-               .FirstOrDefaultAsync(x => x.Id == id);
+                    .Include(x => x.UserGarderobe)
+                       .ThenInclude(x => x.ClothesCategory)
+                           .ThenInclude(x => x.Clothes)
+                               .ThenInclude(x=>x.Photos)
+                    .Include(x => x.UserPersona)
+                    .Include(x=> x.Suggestions)
+                       .ThenInclude(x=> x.SuggestedLook)
+                               .ThenInclude(x=>x.Photos)
+                    .Include(x => x.Followers)
+                    .Include(x => x.Following)
+                    .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
