@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Yconic.Application.Services.UserServices;
 using Yconic.Domain.Dtos.User;
+using Yconic.Domain.Dtos.UserDtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
@@ -50,6 +51,23 @@ namespace Yconic.API.Controllers
             return Ok(updatedUser);
         }
 
+        // update user
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> AddProfilePhoto(Guid id, [FromForm] AddProfilePhotoDto profilePhoto)
+        {
+            var updatedUser = await _userService.AddProfilePhoto(id,profilePhoto);
+            return Ok(updatedUser);
+        }
+
+        //patch user private or public 
+        [HttpPatch]
+        [Route("change-privacy/{id}")]
+        public async Task<IActionResult> UserUpdatePrivacy(Guid id)
+        {
+            var updatedUser = await _userService.UpdatePrivacy(id);
+            return Ok(updatedUser);
+        }
         // delete user
         [HttpDelete]
         [Route("{id}")]
