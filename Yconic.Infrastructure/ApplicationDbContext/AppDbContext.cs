@@ -16,7 +16,8 @@ public class AppDbContext:DbContext
     public DbSet<Suggestion> Suggestions { get; set; }
     public DbSet<Clothe> Clothes { get; set; }
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
-    public DbSet<Friendship> Friendships { get; set; }
+    public DbSet<Follow> Follows { get; set; }
+    public DbSet<FollowRequest> FollowRequests { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +35,22 @@ public class AppDbContext:DbContext
             entity.Property(u => u.Password).IsRequired();
             entity.Property(u => u.IsActive).HasConversion<string>();
             entity.Property(u => u.Role).HasConversion<string>();
+            entity.HasMany(entity => entity.FollowRequestsSent)
+                  .WithOne(fr => fr.TargetUser)
+                  .HasForeignKey(fr => fr.TargetUserId)
+                  .OnDelete(DeleteBehavior.NoAction);
+            entity.HasMany(u => u.FollowRequestsReceived)
+                  .WithOne(fr => fr.Requester)
+                  .HasForeignKey(fr => fr.RequesterId)
+                  .OnDelete(DeleteBehavior.NoAction);
+            entity.HasMany(u => u.Followers)
+                  .WithOne(f => f.Followed)
+                  .HasForeignKey(f => f.FollowedId)
+                  .OnDelete(DeleteBehavior.NoAction);
+            entity.HasMany(u => u.Following)
+                    .WithOne(f => f.Follower)
+                    .HasForeignKey(f => f.FollowerId)
+                    .OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(u => u.UserGarderobe)
                   .WithOne(g => g.User)
                   .HasForeignKey<Garderobe>(g => g.UserId)
@@ -59,26 +76,6 @@ public class AppDbContext:DbContext
                   .HasForeignKey<Persona>(p => p.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
-
-        // Configure Friendship
-        modelBuilder.Entity<Friendship>(entity =>
-        {
-            entity.HasKey(f => f.Id);
-
-            entity.Property(f => f.Status)
-                  .HasConversion<string>();
-
-            entity.HasOne(f => f.Requester)
-                  .WithMany(u => u.FriendsSent)
-                  .HasForeignKey(f => f.RequesterId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(f => f.Addressee)
-                  .WithMany(u => u.FriendsReceived)
-                  .HasForeignKey(f => f.AddresseeId)
-                  .OnDelete(DeleteBehavior.Restrict);
-        });
-
 
         // Configure Garderobe
         modelBuilder.Entity<Garderobe>(entity =>
