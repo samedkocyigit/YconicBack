@@ -16,7 +16,8 @@ namespace Yconic.Domain.Models;
         public decimal? Height { get; set; }
         public decimal? Weight { get; set; }
         public string? PhoneNumber { get; set; }
-        
+        public string? ProfilePhoto { get; set; }
+        public string? Bio { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpiry { get; set; }
     
@@ -33,7 +34,9 @@ namespace Yconic.Domain.Models;
         public Garderobe? UserGarderobe { get; set; }
 
         public ICollection<Suggestion>? Suggestions { get; set; } = new List<Suggestion>();
-        public ICollection<Friendship> FriendsSent { get; set; } = new List<Friendship>();     
-        public ICollection<Friendship> FriendsReceived { get; set; } = new List<Friendship>(); 
+        public ICollection<Follow>? Followers { get; set; } = new List<Follow>();
+        public ICollection<Follow>? Following { get; set; } = new List<Follow>();
 
+        public ICollection<FollowRequest>? FollowRequestsReceived { get; set; } = new List<FollowRequest>();
+        public ICollection<FollowRequest>? FollowRequestsSent { get; set; } = new List<FollowRequest>();
 }
