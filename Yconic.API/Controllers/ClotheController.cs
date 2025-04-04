@@ -36,8 +36,6 @@ namespace Yconic.API.Controllers
                 return BadRequest("At least one photo is required.");
             }
 
-            // Save the clothe object to the database
-            //var createdClothe = 
                 await _clotheService.CreateClothe(request);
 
             return Ok();
@@ -63,22 +61,5 @@ namespace Yconic.API.Controllers
             await _clotheService.DeleteClothe(id);
             return Ok();
         }
-        private async Task<string> SavePhoto(IFormFile photo)
-        {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-            Directory.CreateDirectory(uploadsFolder); 
-
-            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(photo.FileName)}";
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await photo.CopyToAsync(fileStream);
-            }
-
-            return $"/uploads/{uniqueFileName}";
-        }
-
-
     }
 }
