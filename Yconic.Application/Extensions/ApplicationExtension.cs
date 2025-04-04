@@ -14,6 +14,8 @@ using System.Reflection;
 using Yconic.Application.Services.AiSuggestionServices;
 using Microsoft.Extensions.Configuration;
 using Yconic.Application.Services.MigrationServices;
+using Yconic.Application.Services.FollowServices;
+using Yconic.Application.Services.FollowRequestServices;
 
 namespace Yconic.Application.Extensions
 {
@@ -34,6 +36,8 @@ namespace Yconic.Application.Extensions
             services.AddScoped<IPersonasService, PersonasService>();
             services.AddScoped<IClotheService, ClotheService>();
             services.AddScoped<IClothePhotoService, ClothePhotoService>();
+            services.AddScoped<IFollowService, FollowService>();
+            services.AddScoped<IFollowRequestService, FollowRequestService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAiSuggestionService, AiSuggestionService>();
