@@ -48,7 +48,24 @@ namespace Yconic.Application.Services.GarderobeServices
         }
         public async Task DeleteGarderobe(Guid id)
         {
+            var garderobe = await _garderobeRepository.GetById(id);
+            foreach( var category in garderobe.ClothesCategory)
+            {
+                foreach (var clothe in category.Clothes)
+                {
+                    foreach (var photo in clothe.Photos)
+                    {
+                        DeletePhotoFile(photo.Url);
+                    }
+                }
+            }
             await _garderobeRepository.Delete(id);
+        }
+
+        private void DeletePhotoFile(string photoUrl)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", photoUrl.TrimStart('/'));
+            if (File.Exists(filePath)) { File.Delete(filePath); }
         }
     }   
 }
