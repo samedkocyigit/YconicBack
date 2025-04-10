@@ -16,8 +16,9 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
 
         public async Task<Follow> GetFollow(Guid followerId, Guid followedId)
         {
-            return await _context.Follows.FirstOrDefaultAsync(f =>
-                f.FollowerId == followerId && f.FollowedId == followedId);
+            return await _context.Follows.Where(f=>
+                            f.FollowerId == followerId &&
+                            f.FollowedId == followedId).FirstOrDefaultAsync();
         }
         public async Task<bool> ExistsAsync(Guid followerId, Guid followedId)
         {
@@ -29,7 +30,7 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
         {
             return await _context.Follows
                 .Include(f => f.Follower)
-                .Where(f => f.FollowedId == userId)
+                .Where(f => f.FollowedId == userId && f.IsFollowing ==true)
                 .ToListAsync();
         }
 
@@ -37,7 +38,7 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
         {
             return await _context.Follows
                 .Include(f => f.Followed)
-                .Where(f => f.FollowerId == userId)
+                .Where(f => f.FollowerId == userId && f.IsFollowing == true)
                 .ToListAsync();
         }
     }

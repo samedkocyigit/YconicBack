@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.ApplicationDbContext;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
@@ -24,14 +25,14 @@ namespace Yconic.Infrastructure.Repositories.FollowRequestRepositories
             return await _context.FollowRequests.FirstOrDefaultAsync(r =>
                 r.RequesterId == requesterId &&
                 r.TargetUserId == targetUserId &&
-                !r.IsApproved && !r.IsRejected);
+                r.RequestStatus == RequestStatus.Pending);
         }
 
         public async Task<List<FollowRequest>> GetPendingRequestsForUser(Guid targetUserId)
         {
             return await _context.FollowRequests
                 .Include(r => r.Requester)
-                .Where(r => r.TargetUserId == targetUserId && !r.IsApproved && !r.IsRejected)
+                .Where(r => r.TargetUserId == targetUserId && r.RequestStatus == RequestStatus.Pending)
                 .ToListAsync();
         }
 
@@ -40,7 +41,7 @@ namespace Yconic.Infrastructure.Repositories.FollowRequestRepositories
             return await _context.FollowRequests.AnyAsync(r =>
                 r.RequesterId == requesterId &&
                 r.TargetUserId == targetUserId &&
-                !r.IsApproved && !r.IsRejected);
+                r.RequestStatus == RequestStatus.Pending);
         }
     }
 }
