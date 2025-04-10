@@ -8,8 +8,9 @@ namespace Yconic.Domain.Dtos.UserDtos
 {
     public class UserMiniDto
     {
-        public Guid id { get; set; }
-        public string username { get; set; }
+        public required Guid id { get; set; }
+        public required string username { get; set; }
+        public required bool isPrivate { get; set; }
         public string? profilePhoto { get; set; }
     }
 
