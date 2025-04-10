@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Yconic.Application.Services.AiSuggestionServices;
 using Yconic.Application.Services.SuggestionService;
 using Yconic.Domain.Models;
 
@@ -9,9 +10,11 @@ namespace Yconic.API.Controllers
     public class SuggestionController:ControllerBase
     {
         protected readonly ISuggestionService _suggestionService;
-        public SuggestionController(ISuggestionService suggestionService)
+        protected readonly IAiSuggestionService _aiSuggestionService;
+        public SuggestionController(ISuggestionService suggestionService,IAiSuggestionService aiSuggestionService)
         {
             _suggestionService = suggestionService;
+            _aiSuggestionService = aiSuggestionService;
         }
 
         [HttpGet]
@@ -30,7 +33,7 @@ namespace Yconic.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateSuggestion(Guid userId)
         {
-            var createdSuggestion = await _suggestionService.CreateSuggestion(userId);
+            var createdSuggestion = await _aiSuggestionService.GenerateSuggestedLook(userId);
             return Ok(createdSuggestion);
         }
         [HttpPut]
