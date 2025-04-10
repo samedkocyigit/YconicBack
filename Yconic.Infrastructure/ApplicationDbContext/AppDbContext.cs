@@ -35,22 +35,23 @@ public class AppDbContext:DbContext
             entity.Property(u => u.Password).IsRequired();
             entity.Property(u => u.IsActive).HasConversion<string>();
             entity.Property(u => u.Role).HasConversion<string>();
+            entity.Property(u=> u.Birthday).HasColumnType("date");
             entity.HasMany(entity => entity.FollowRequestsSent)
-                  .WithOne(fr => fr.TargetUser)
-                  .HasForeignKey(fr => fr.TargetUserId)
-                  .OnDelete(DeleteBehavior.NoAction);
-            entity.HasMany(u => u.FollowRequestsReceived)
                   .WithOne(fr => fr.Requester)
                   .HasForeignKey(fr => fr.RequesterId)
-                  .OnDelete(DeleteBehavior.NoAction);
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(u => u.FollowRequestsReceived)
+                  .WithOne(fr => fr.TargetUser)
+                  .HasForeignKey(fr => fr.TargetUserId)
+                  .OnDelete(DeleteBehavior.Cascade);
             entity.HasMany(u => u.Followers)
                   .WithOne(f => f.Followed)
                   .HasForeignKey(f => f.FollowedId)
-                  .OnDelete(DeleteBehavior.NoAction);
+                  .OnDelete(DeleteBehavior.Cascade);
             entity.HasMany(u => u.Following)
                     .WithOne(f => f.Follower)
                     .HasForeignKey(f => f.FollowerId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(u => u.UserGarderobe)
                   .WithOne(g => g.User)
                   .HasForeignKey<Garderobe>(g => g.UserId)
