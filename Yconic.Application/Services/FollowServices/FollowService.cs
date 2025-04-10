@@ -22,7 +22,13 @@ namespace Yconic.Application.Services.FollowServices
                 return ApiResult<string>.Fail("Cannot follow yourself.");
 
             if (await _followRepo.ExistsAsync(followerId, followedId))
-                return ApiResult<string>.Fail("Already following.");
+            {
+                var existing = await _followRepo.GetFollow(followerId, followedId);
+                existing.IsFollowing = true;
+                existing.UpdatedAt = DateTime.UtcNow;
+                await _followRepo.Update(existing);
+                return ApiResult<string>.Success("Followed successfully.");
+            }
 
             var follower = await _userRepo.GetUserById(followerId);
             var followed = await _userRepo.GetUserById(followedId);
@@ -38,12 +44,13 @@ namespace Yconic.Application.Services.FollowServices
 
             follower.Following.Add(follow);
             followed.Followers.Add(follow);
+
             await _userRepo.Update(follower);
             await _userRepo.Update(followed);
             return ApiResult<string>.Success("Followed successfully.");
         }
 
-        public async Task<ApiResult<string>> UnfollowUser(Guid followerId, Guid followedId)
+        public async Task<ApiResult<string>> UnfollowUser(Guid followerId, Guid followedId) // a is me follower b is folowed
         {
             var existing = await _followRepo
                 .GetFollow(followerId ,followedId);
@@ -51,10 +58,21 @@ namespace Yconic.Application.Services.FollowServices
             if (existing == null)
                 return ApiResult<string>.Fail("Not following.");
 
-            await _followRepo.Delete(existing.Id);
+            existing.IsFollowing = false;
+            existing.UpdatedAt = DateTime.UtcNow;
+            await _followRepo.Update(existing);
+
+            var follower = await _userRepo.GetUserById(followerId);
+            var followed = await _userRepo.GetUserById(followedId);
+            
+            follower.Following.Remove(existing);
+            followed.Followers.Remove(existing);
+
+            await _userRepo.Update(follower);
+            await _userRepo.Update(followed);
+
             return ApiResult<string>.Success("Unfollowed successfully.");
         }
-
         public async Task<ApiResult<List<Guid>>> GetFollowers(Guid userId)
         {
             var list = await _followRepo.GetFollowers(userId);
