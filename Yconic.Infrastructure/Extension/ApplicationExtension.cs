@@ -18,7 +18,7 @@ namespace Yconic.Infrastructure.Extension
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Database=yconic;Username=postgres;Password=samed123"));
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql("Host=db;Port=5432;Database=yconic;Username=postgres;Password=samed123"));
             services.AddScoped<IPersonaRepository, PersonaRepository>();
             services.AddScoped<IClotheCategoriesRepository, ClotheCategoriesRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
