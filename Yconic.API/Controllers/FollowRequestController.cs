@@ -14,6 +14,13 @@ namespace Yconic.API.Controllers
             _followRequestService = followRequestService;
         }
 
+        [HttpPost("{requesterId}/sendRequest/{targetUserId}")]
+        public async Task<IActionResult> SendFollowRequest(Guid requesterId,Guid targetUserId)
+        {
+            var response = await _followRequestService.SendRequest(requesterId,targetUserId);
+            return Ok(response);
+        }
+
         [HttpGet("{targetUserId}/pending")]
         public async Task<IActionResult> GetPendingRequests(Guid targetUserId)
         {
