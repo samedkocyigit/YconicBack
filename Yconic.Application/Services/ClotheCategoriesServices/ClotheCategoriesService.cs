@@ -78,8 +78,25 @@ namespace Yconic.Application.Services.ClotheCategoriesServices
 
         public async Task DeleteClotheCategories(Guid id)
         {
+            var clotheCategory = await _clotheCategoriesRepository.GetClotheCategoryById(id);
+
+            if (clotheCategory.Clothes.Count > 0)
+            {
+                foreach(var clothe in clotheCategory.Clothes)
+                {
+                    foreach (var photo in clothe.Photos)
+                    {
+                        DeletePhotoFile(photo.Url);
+                    }
+                }
+            }
             await _clotheCategoriesRepository.Delete(id);
         }
 
+        private void DeletePhotoFile(string photoUrl)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", photoUrl.TrimStart('/'));
+            if (File.Exists(filePath)) { File.Delete(filePath); }
+        }
     }
 }

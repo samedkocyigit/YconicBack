@@ -91,7 +91,7 @@ namespace Yconic.Application.Services.ClotheServices
 
         private async Task<string> SavePhoto(IFormFile photo)
         {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/clothe-photos");
             Directory.CreateDirectory(uploadsFolder);
 
             var originalName = Path.GetFileNameWithoutExtension(photo.FileName);
@@ -106,7 +106,7 @@ namespace Yconic.Application.Services.ClotheServices
                 await photo.CopyToAsync(fileStream);
             }
 
-            return $"/uploads/{uniqueFileName}";
+            return $"/uploads/clothe-photos/{uniqueFileName}";
         }
 
 
@@ -131,7 +131,22 @@ namespace Yconic.Application.Services.ClotheServices
         }
         public async Task DeleteClothe(Guid id)
         {
+            var clothe = await _clotheRepository.GetClotheById(id);
             await _clotheRepository.Delete(id);
+            if (clothe.Photos.Count > 0)
+            {
+                foreach(var photo in clothe.Photos)
+                {
+                    DeletePhotoFile(photo.Url);
+                    await _clothePhotoRepository.Delete(photo.Id);
+                }
+            }
+        }
+
+        private void DeletePhotoFile(string photoUrl)
+        { 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", photoUrl.TrimStart('/'));
+            if (File.Exists(filePath)) { File.Delete(filePath); }
         }
     }
 }
