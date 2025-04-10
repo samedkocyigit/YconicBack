@@ -23,5 +23,10 @@ namespace Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories
         {
            return await _context.ClotheCategories.Include(s=> s.Clothes).ToListAsync();
         }
+
+        public async Task<ClotheCategory> GetClotheCategoryById(Guid id)
+        {
+            return await _context.ClotheCategories.Include(s => s.Clothes).ThenInclude(s=>s.Photos).FirstOrDefaultAsync(s => s.Id == id);
+        }
     }
 }
