@@ -26,6 +26,23 @@ namespace Yconic.API.Controllers
             return Ok(users);
         }
 
+        //get all user simple dto
+        [HttpGet]
+        [Route("simple")]
+        public async Task<IActionResult> GetAllUsersSimple()
+        {
+            var users = await _userService.GetAllSimpleUsers();
+            return Ok(users);
+        }
+
+        // get user public datas
+        [HttpGet]
+        [Route("{id}/public-profile")]
+        public async Task<IActionResult> GetUserPublicProfile(Guid id)
+        {
+            var user = await _userService.GetUserPublicProfile(id);
+            return Ok(user);
+        }
         // get user by id
         [HttpGet]
         [Route("{id}")]
@@ -52,11 +69,37 @@ namespace Yconic.API.Controllers
         }
 
         // update user
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPost]
+        [Route("add-profile-photo/{id}")]
         public async Task<IActionResult> AddProfilePhoto(Guid id, [FromForm] AddProfilePhotoDto profilePhoto)
         {
             var updatedUser = await _userService.AddProfilePhoto(id,profilePhoto);
+            return Ok(updatedUser);
+        }
+        //patch personal info
+        [HttpPatch]
+        [Route("personal-info/{id}")]
+        public async Task<IActionResult> UserUpdatePersonalInfo(Guid id, [FromBody] UserPersonalPatchDto user)
+        {
+            var updatedUser = await _userService.UpdateUserPersonal(id,user);
+            return Ok(updatedUser);
+        }
+
+        //patch account info
+        [HttpPatch]
+        [Route("account-info/{id}")]
+        public async Task<IActionResult> UserUpdateAccountInfo(Guid id, [FromBody] UserAccountPatchDto user)
+        {
+            var updatedUser = await _userService.UpdateUserAccount(id,user);
+            return Ok(updatedUser);
+        }
+
+        //patch user password
+        [HttpPatch]
+        [Route("change-password/{id}")]
+        public async Task<IActionResult> UserUpdatePassword(Guid id, [FromBody] ChangePasswordDto user)
+        {
+            var updatedUser = await _userService.UpdateUserPassword(id, user);
             return Ok(updatedUser);
         }
 
