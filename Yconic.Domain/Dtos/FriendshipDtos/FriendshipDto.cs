@@ -12,6 +12,6 @@ namespace Yconic.Domain.Dtos.FriendshipDtos
         public Guid id { get; set; }
         public Guid requesterId { get; set; }
         public Guid addresseeId { get; set; }
-        public FriendshipStatus status { get; set; }
+        public RequestStatus status { get; set; }
     }
 }
