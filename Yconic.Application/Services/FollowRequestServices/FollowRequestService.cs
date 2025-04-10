@@ -1,4 +1,5 @@
-﻿using Yconic.Domain.Models;
+﻿using Yconic.Domain.Enums;
+using Yconic.Domain.Models;
 using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.FollowRepositories;
 using Yconic.Infrastructure.Repositories.FollowRequestRepositories;
@@ -27,11 +28,13 @@ namespace Yconic.Application.Services.FollowRequestServices
                 return ApiResult<string>.Fail("Already following.");
             if (await _requestRepo.ExistsAsync(requesterId, targetUserId))
                 return ApiResult<string>.Fail("Request already sent.");
+
             var request = new FollowRequest
             {
                 RequesterId = requesterId,
                 TargetUserId = targetUserId
             };
+
             var friendRequest = await _requestRepo.Add(request);
 
             var requester = await _userRepo.GetUserById(requesterId);
@@ -57,7 +60,7 @@ namespace Yconic.Application.Services.FollowRequestServices
             if (request == null)
                 return ApiResult<string>.Fail("Request not found");
 
-            request.IsApproved = true;
+            request.RequestStatus = RequestStatus.Accepted;
             await _requestRepo.Update(request);
 
             var newFollow = await _followRepo.Add(new Follow
@@ -83,7 +86,7 @@ namespace Yconic.Application.Services.FollowRequestServices
             if (request == null)
                 return ApiResult<string>.Fail("Request not found");
 
-            request.IsRejected = true;
+            request.RequestStatus = RequestStatus.Declined;
             await _requestRepo.Update(request);
 
             var requester = await _userRepo.GetUserById(requesterId);
@@ -104,7 +107,7 @@ namespace Yconic.Application.Services.FollowRequestServices
             if (request == null)
                 return ApiResult<string>.Fail("Request not found");
 
-            await _requestRepo.Delete(request.Id);
+            request.RequestStatus = RequestStatus.Canselled;
 
             var requester = await _userRepo.GetUserById(requesterId);
             var targetUser = await _userRepo.GetUserById(targetUserId);
