@@ -1,10 +1,10 @@
 ﻿namespace Yconic.Domain.Enums
 {
-    public enum FriendshipStatus
+    public enum RequestStatus
     {
         Pending,
         Accepted,
         Declined,
-        Blocked
+        Canselled
     }
 }
