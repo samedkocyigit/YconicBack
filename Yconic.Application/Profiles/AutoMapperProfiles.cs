@@ -45,7 +45,31 @@ namespace Yconic.Application.Profiles
             CreateMap<User, UserMiniDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.isPrivate, opt=> opt.MapFrom(src=> src.IsPrivate))
                 .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto));
+
+            CreateMap<User, UserPublicDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.surname, opt => opt.MapFrom(src => src.Surname))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto))
+                .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.Bio))
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.IsPrivate))
+                .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.Weight))
+                .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
+                .ForMember(dest => dest.followerCount, opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.followingCount, opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.garderobe, opt => opt.MapFrom(src => src.UserGarderobe))
+                .ForMember(dest => dest.suggestions, opt => opt.MapFrom(src => src.Suggestions.OrderByDescending(s => s.CreatedAt)))
+                .ForMember(dest => dest.followers, opt => 
+                                            opt.MapFrom(src => src.Followers
+                                                .Where(f => f.IsFollowing)
+                                                .Select(f => f.Follower)))
+                .ForMember(dest => dest.following, opt =>
+                                            opt.MapFrom(src => src.Following
+                                                .Where(f => f.IsFollowing)
+                                                .Select(f => f.Followed)));
 
             CreateMap<User,UserDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
@@ -60,10 +84,18 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto))
                 .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.Bio))
                 .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.IsPrivate))
-                .ForMember(dest => dest.followerCount,opt => opt.MapFrom(src => src.Followers.Count))
-                .ForMember(dest => dest.followingCount,opt => opt.MapFrom(src => src.Following.Count))
-                .ForMember(dest => dest.followers, opt => opt.MapFrom(src => src.Followers.Select(f=> f.Follower)))
-                .ForMember(dest => dest.following, opt => opt.MapFrom(src => src.Following.Select(f => f.Followed)))
+                .ForMember(dest => dest.followerCount,opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.followingCount,opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.followers, opt => 
+                                            opt.MapFrom(src => src.Followers
+                                                .Where(f => f.IsFollowing)
+                                                .Select(f => f.Follower)))
+                .ForMember(dest => dest.following, opt =>
+                                            opt.MapFrom(src => src.Following
+                                                .Where(f => f.IsFollowing)
+                                                .Select(f => f.Followed)))
+                .ForMember(dest => dest.recievedFollowRequest, opt => opt.MapFrom(src => src.FollowRequestsReceived.Where(f=> f.RequestStatus == RequestStatus.Pending).Select(f=> f.Requester)))
+                .ForMember(dest => dest.sentFollowRequest, opt => opt.MapFrom(src => src.FollowRequestsSent.Where(f=>f.RequestStatus == RequestStatus.Pending).Select(f => f.TargetUser)))
                 .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.userPersonaId, opt => opt.MapFrom(src => src.UserPersonaId))
                 .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
