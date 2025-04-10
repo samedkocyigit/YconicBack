@@ -19,6 +19,6 @@ namespace Yconic.Domain.Models
         public Guid CategoryId { get; set; } 
         [JsonIgnore]
         public ClotheCategory? Category { get; set; } 
-        public ICollection<ClothePhoto>? Photos { get; set; } 
+        public ICollection<ClothePhoto>? Photos { get; set; } = new List<ClothePhoto>();
     }
 }

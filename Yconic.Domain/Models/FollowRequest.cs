@@ -16,8 +16,7 @@ namespace Yconic.Domain.Models
         public User? TargetUser { get; set; }
 
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
-        public bool IsApproved { get; set; } = false;
-        public bool IsRejected { get; set; } = false;
+        public RequestStatus RequestStatus { get; set; } = RequestStatus.Pending;
     }
 
 }

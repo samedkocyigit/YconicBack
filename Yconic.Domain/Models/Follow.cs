@@ -20,6 +20,7 @@ namespace Yconic.Domain.Models
         public User? Followed { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+        public bool IsFollowing { get; set; } = true;
     }
-
 }

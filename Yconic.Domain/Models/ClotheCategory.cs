@@ -12,5 +12,5 @@ public class ClotheCategory
     public Guid GarderobeId { get; set; }
     [JsonIgnore]
     public Garderobe? Garderobe { get; set; }
-    public  ICollection<Clothe>? Clothes { get; set; }
+    public  ICollection<Clothe>? Clothes { get; set; } = new List<Clothe>();
 }
