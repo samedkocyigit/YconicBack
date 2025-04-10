@@ -17,8 +17,8 @@ namespace Yconic.API.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDto loginModel)
         {
-            var token = await _authService.Login(loginModel);
-            return Ok(token);
+            var response = await _authService.Login(loginModel);
+            return Ok(response);
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterDto registerModel)
