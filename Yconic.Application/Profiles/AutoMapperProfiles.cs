@@ -19,19 +19,17 @@ namespace Yconic.Application.Profiles
         {
 
             // For ai
-            CreateMap<Clothe, ClotheItemDto>()
-                .ForMember(dest => dest.clotheId, opt => opt.MapFrom(src => src.Id.ToString()))
-                .ForMember(dest => dest.image_path, opt => opt.MapFrom(src => src.MainPhoto))
-                .ForMember(dest => dest.categoryId,opt => opt.MapFrom(src => src.CategoryId));
+            CreateMap<ClotheDto, ClotheItemDto>()
+                .ForMember(dest => dest.clotheId, opt => opt.MapFrom(src => src.id.ToString()))
+                .ForMember(dest => dest.image_path, opt => opt.MapFrom(src => src.mainPhoto))
+                .ForMember(dest => dest.categoryId,opt => opt.MapFrom(src => src.categoryId));
 
-            CreateMap<Garderobe, AiGarderobeDto>()
+            CreateMap<GarderobeDto, AiGarderobeDto>()
                 .ForMember(dest => dest.categories, opt => opt.MapFrom(src =>
-                    src.ClothesCategory
-                        .OrderByDescending(c=> c.CreatedAt)
+                    src.categories
                         .ToDictionary(
-                            cat => cat.Name,
-                            cat => cat.Clothes
-                                .OrderByDescending(cl=> cl.CreatedAt)
+                            cat => cat.name,
+                            cat => cat.clothes
                                 .ToList()
                     )
                 ));
@@ -128,8 +126,7 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.mainPhoto, opt => opt.MapFrom(src => src.MainPhoto))
                 .ForMember(dest => dest.categoryId, opt => opt.MapFrom(src => src.CategoryId))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.Photos.OrderByDescending(p => p.CreatedAt)))
-                .ReverseMap();
+                .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.Photos.OrderBy(p => p.CreatedAt)));
 
             //For clothe-photo
             CreateMap<ClothePhoto, ClothePhotoDto>()
