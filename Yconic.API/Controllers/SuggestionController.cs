@@ -10,11 +10,9 @@ namespace Yconic.API.Controllers
     public class SuggestionController:ControllerBase
     {
         protected readonly ISuggestionService _suggestionService;
-        protected readonly IAiSuggestionService _aiSuggestionService;
-        public SuggestionController(ISuggestionService suggestionService,IAiSuggestionService aiSuggestionService)
+        public SuggestionController(ISuggestionService suggestionService)
         {
             _suggestionService = suggestionService;
-            _aiSuggestionService = aiSuggestionService;
         }
 
         [HttpGet]
@@ -31,9 +29,10 @@ namespace Yconic.API.Controllers
             return Ok(suggestion);
         }
         [HttpPost]
+        [Route("{userId}")]
         public async Task<IActionResult> CreateSuggestion(Guid userId)
         {
-            var createdSuggestion = await _aiSuggestionService.GenerateSuggestedLook(userId);
+            var createdSuggestion = await _suggestionService.CreateSuggestion(userId);
             return Ok(createdSuggestion);
         }
         [HttpPut]
