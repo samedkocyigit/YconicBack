@@ -47,13 +47,13 @@ namespace Yconic.Application.Services.SuggestionService
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
-                Description = "AI-Generated Suggestion Look"
+                Description = "AI-Generated Suggestion Look",
+                SuggestedLook = new List<Clothe>()
             };
 
             foreach (var item in suggestedClothes)
             {
-                var itemDto = _mapper.Map<Clothe>(item);
-                suggestion.SuggestedLook.Add(itemDto);
+                suggestion.SuggestedLook.Add(item);
             }
 
             var newSug = await _suggestionRepository.Add(suggestion);
