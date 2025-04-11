@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yconic.Domain.Dtos.ClotheDtos;
+using Yconic.Domain.Models;
 
 namespace Yconic.Domain.Dtos.SuggestionDtos
 {
@@ -13,6 +14,6 @@ namespace Yconic.Domain.Dtos.SuggestionDtos
         public Guid userId { get; set; }
         public string description { get; set; }
         public string image { get; set; }
-        public List<ClotheDto> suggestedLook { get; set; }
+        public List<Clothe> suggestedLook { get; set; }
     }
 }
