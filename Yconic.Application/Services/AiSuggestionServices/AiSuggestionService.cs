@@ -13,6 +13,7 @@ using Yconic.Application.Services.UserServices;
 using Yconic.Domain.Dtos.Ai;
 using Yconic.Domain.Dtos.ClotheDtos;
 using Yconic.Domain.Models;
+using Yconic.Infrastructure.Repositories.ClotheRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Application.Services.AiSuggestionServices
@@ -24,18 +25,18 @@ namespace Yconic.Application.Services.AiSuggestionServices
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        private readonly IClotheService _clotheService;
+        private readonly IClotheRepository _clotheRepo;
 
-        public AiSuggestionService(HttpClient httpClient,IUserService userService,IClotheService clotheService,IMapper mapper)
+        public AiSuggestionService(HttpClient httpClient,IUserService userService,IClotheRepository clotheRepo,IMapper mapper)
         {
             _httpClient = httpClient;
             _userService = userService;
-            _clotheService = clotheService;
+            _clotheRepo = clotheRepo;
             _mapper = mapper;
             _apiKey = Environment.GetEnvironmentVariable("OpenAiApiKey");
         }
 
-        public async Task<List<ClotheDto>> GenerateSuggestedLook(Guid userId)
+        public async Task<List<Clothe>> GenerateSuggestedLook(Guid userId)
         {
             var user = await _userService.GetUserById(userId);
             var mapperUserDto = _mapper.Map<AiUserDto>(user.Data);
@@ -70,7 +71,8 @@ namespace Yconic.Application.Services.AiSuggestionServices
 
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var requestUrl = "http://ai-service:8000/analyze-garderobe";
-
+            Console.WriteLine($"Request URL: {requestUrl}");
+            Console.WriteLine($"Request Body: {jsonPayload}");
             var response = await _httpClient.PostAsync(requestUrl, content);
             if (!response.IsSuccessStatusCode)
             {
@@ -78,6 +80,7 @@ namespace Yconic.Application.Services.AiSuggestionServices
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response from AI service: {responseJson}");
             var aiResponse = JsonSerializer.Deserialize<AiSuggestionResponse>(responseJson, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -93,16 +96,14 @@ namespace Yconic.Application.Services.AiSuggestionServices
             var suggestedClothes = new List<Clothe>();
             foreach (var id in suggestedImageIds)
             {
-                var clothe = await _clotheService.GetClotheById(Guid.Parse(id));
-                var mappedClothe = _mapper.Map<Clothe>(clothe);
+                var clothe = await _clotheRepo.GetClotheById(Guid.Parse(id));
                 if (clothe != null)
                 {
-                    suggestedClothes.Add(mappedClothe);
+                    suggestedClothes.Add(clothe);
                 }
             }
-            var mappedClothes = _mapper.Map<List<ClotheDto>>(suggestedClothes);
 
-            return mappedClothes;
+            return suggestedClothes;
         }
 
 
