@@ -37,29 +37,25 @@ namespace Yconic.Application.Services.SuggestionService
             var mappedSuggestion = _mapper.Map<SuggestionDto>(suggestion);
             return ApiResult<SuggestionDto>.Success(mappedSuggestion);
         }
+        
         public async Task<ApiResult<SuggestionDto>> CreateSuggestion(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
-
-            var suggestedClothes = await _aiSuggestionService.GenerateSuggestedLook(user.Id);
-
+            var result = await _aiSuggestionService.GenerateSuggestedLook(user.Id);
             var suggestion = new Suggestion
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 Description = "AI-Generated Suggestion Look",
-                SuggestedLook = new List<Clothe>()
+                Image = result.MainImageUrl, 
+                SuggestedLook = result.Clothes
             };
-
-            foreach (var item in suggestedClothes)
-            {
-                suggestion.SuggestedLook.Add(item);
-            }
 
             var newSug = await _suggestionRepository.Add(suggestion);
             var mappedSug = _mapper.Map<SuggestionDto>(newSug);
             return ApiResult<SuggestionDto>.Success(mappedSug);
         }
+
 
         public async Task<ApiResult<SuggestionDto>> UpdateSuggestion(Suggestion suggestion)
         {
