@@ -5,6 +5,7 @@ public class AiSuggestionResponse
     public string userPersona { get; set; }
     public string prompt { get; set; }
     public List<AiSuggestionItem> suggested_combination { get; set; }
+    public string mainImageUrl {get; set;}
 }
 
 public class AiSuggestionItem
