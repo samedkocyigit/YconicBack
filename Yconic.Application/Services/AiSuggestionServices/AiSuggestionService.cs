@@ -36,15 +36,13 @@ namespace Yconic.Application.Services.AiSuggestionServices
             _apiKey = Environment.GetEnvironmentVariable("OpenAiApiKey");
         }
 
-        public async Task<List<Clothe>> GenerateSuggestedLook(Guid userId)
+        public async Task<SuggestedLookResult> GenerateSuggestedLook(Guid userId)
         {
             var user = await _userService.GetUserById(userId);
             var mapperUserDto = _mapper.Map<AiUserDto>(user.Data);
-
             var clothesCategories = user.Data.garderobe.categories;
 
             var groupedGarderobe = new Dictionary<string, List<object>>();
-
             foreach (var category in mapperUserDto.userGarderobe.categories)
             {
                 var type = clothesCategories.FirstOrDefault(cat => cat.name == category.Key)?.categoryType.ToString().ToLower();
@@ -67,29 +65,21 @@ namespace Yconic.Application.Services.AiSuggestionServices
             };
 
             var jsonPayload = JsonSerializer.Serialize(payload);
-            Console.WriteLine($"Payload like this {jsonPayload}");
-
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var requestUrl = "http://ai-service:8000/analyze-garderobe";
-            Console.WriteLine($"Request URL: {requestUrl}");
-            Console.WriteLine($"Request Body: {jsonPayload}");
             var response = await _httpClient.PostAsync(requestUrl, content);
+
             if (!response.IsSuccessStatusCode)
-            {
                 throw new Exception($"AI service call failed with status: {response.StatusCode}");
-            }
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Response from AI service: {responseJson}");
             var aiResponse = JsonSerializer.Deserialize<AiSuggestionResponse>(responseJson, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
             if (aiResponse == null || aiResponse.suggested_combination == null)
-            {
                 throw new Exception("Invalid response from AI service");
-            }
 
             var suggestedImageIds = aiResponse.suggested_combination.Select(item => item.clotheId).ToList();
 
@@ -98,13 +88,16 @@ namespace Yconic.Application.Services.AiSuggestionServices
             {
                 var clothe = await _clotheRepo.GetClotheById(Guid.Parse(id));
                 if (clothe != null)
-                {
                     suggestedClothes.Add(clothe);
-                }
             }
 
-            return suggestedClothes;
+            return new SuggestedLookResult
+            {
+                Clothes = suggestedClothes,
+                MainImageUrl = aiResponse.mainImageUrl
+            };
         }
+
 
 
         // public async Task<List<Clothe>> GenerateSuggestedLook(Persona persona, User user, object otherParameters)
