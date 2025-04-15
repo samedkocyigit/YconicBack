@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Yconic.Domain.Dtos.GarderobeDtos;
 using Yconic.Domain.Dtos.PersonaDtos;
+using Yconic.Domain.Dtos.SharedLookDtos;
 using Yconic.Domain.Dtos.SuggestionDtos;
 using Yconic.Domain.Enums;
 
@@ -24,7 +25,7 @@ namespace Yconic.Domain.Dtos.UserDtos
         public int? followingCount { get; set; }
         public string? bio { get; set; }
         public GarderobeDto? garderobe { get; set; }
-        public List<SuggestionDto>? suggestions { get; set; }
+        public List<SharedLookDto>? sharedLooks { get; set; } = new List<SharedLookDto>();
         public List<UserMiniDto>? followers { get; set; } = new List<UserMiniDto>();
         public List<UserMiniDto>? following { get; set; } = new List<UserMiniDto>();
     }

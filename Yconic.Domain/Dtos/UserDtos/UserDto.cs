@@ -1,5 +1,6 @@
 ﻿using Yconic.Domain.Dtos.GarderobeDtos;
 using Yconic.Domain.Dtos.PersonaDtos;
+using Yconic.Domain.Dtos.SharedLookDtos;
 using Yconic.Domain.Dtos.SuggestionDtos;
 using Yconic.Domain.Dtos.UserDtos;
 using Yconic.Domain.Enums;
@@ -29,7 +30,8 @@ namespace Yconic.Domain.Dtos.User
         public Guid userGarderobeId { get; set; }
         public GarderobeDto? garderobe { get; set; }
         public PersonaDto? persona { get; set; }
-        public List<SuggestionDto>? suggestions {get; set;}
+        public List<SimpleSuggestionDto>? suggestions {get; set;} = new List<SimpleSuggestionDto>();
+        public List<SharedLookDto>? sharedLooks { get; set; } = new List<SharedLookDto>();
         public List<UserMiniDto>? followers { get; set; } = new List<UserMiniDto>();
         public List<UserMiniDto>? following { get; set; } = new List<UserMiniDto>();
         public List<UserMiniDto>? recievedFollowRequest {get; set;} =new List<UserMiniDto>();
