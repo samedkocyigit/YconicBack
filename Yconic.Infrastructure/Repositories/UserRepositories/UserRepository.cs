@@ -33,6 +33,7 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                         .ThenInclude(x => x.Requester)
                     .Include(x=> x.FollowRequestsSent)
                         .ThenInclude(x => x.TargetUser)
+                    .Include(x=> x.SharedLooks)
                     .FirstOrDefaultAsync(x => x.Email == email);
         }
         public async Task<ICollection<User>> GetAllUsers()
@@ -46,6 +47,7 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                     .Include(x=> x.Suggestions)
                         .ThenInclude(x => x.SuggestedLook)
                             .ThenInclude(x=>x.Photos)
+                    .Include(x=>x.SharedLooks)
                     .Include(x => x.Followers)
                     .Include(x => x.Following)
                     .Include(x=> x.FollowRequestsReceived)
@@ -72,6 +74,7 @@ namespace Yconic.Infrastructure.Repositories.UserRepositories
                         .ThenInclude(x => x.Requester)
                     .Include(x=> x.FollowRequestsSent)
                         .ThenInclude(x => x.TargetUser)
+                    .Include(x=> x.SharedLooks)
                     .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
