@@ -4,7 +4,10 @@ using Yconic.Domain.Dtos.ClotheCategoryDtos;
 using Yconic.Domain.Dtos.ClotheDtos;
 using Yconic.Domain.Dtos.ClothePhotoDtos;
 using Yconic.Domain.Dtos.GarderobeDtos;
+using Yconic.Domain.Dtos.LikesDtos;
 using Yconic.Domain.Dtos.PersonaDtos;
+using Yconic.Domain.Dtos.ReviewDtos;
+using Yconic.Domain.Dtos.SharedLookDtos;
 using Yconic.Domain.Dtos.SuggestionDtos;
 using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Dtos.UserDtos;
@@ -59,7 +62,7 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.followerCount, opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
                 .ForMember(dest => dest.followingCount, opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)))
                 .ForMember(dest => dest.garderobe, opt => opt.MapFrom(src => src.UserGarderobe))
-                .ForMember(dest => dest.suggestions, opt => opt.MapFrom(src => src.Suggestions.OrderByDescending(s => s.CreatedAt)))
+                .ForMember(dest => dest.sharedLooks, opt => opt.MapFrom(src => src.SharedLooks.OrderByDescending(s => s.CreatedAt)))
                 .ForMember(dest => dest.followers, opt => 
                                             opt.MapFrom(src => src.Followers
                                                 .Where(f => f.IsFollowing)
@@ -99,7 +102,9 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
                 .ForMember(dest => dest.garderobe,opt => opt.MapFrom(src => src.UserGarderobe))
                 .ForMember(dest => dest.persona, opt => opt.MapFrom(src=> src.UserPersona))
+                .ForMember(dest => dest.sharedLooks, opt => opt.MapFrom(src => src.SharedLooks.OrderByDescending(s => s.CreatedAt)))
                 .ForMember(dest => dest.suggestions, opt => opt.MapFrom(src => src.Suggestions.OrderByDescending(s=> s.CreatedAt)));
+
 
             //For garderobe
             CreateMap<Garderobe, GarderobeDto>()
@@ -149,6 +154,59 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.image, opt => opt.MapFrom(src => src.Image))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.suggestedLook, opt => opt.MapFrom(src => src.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)))
+                .ReverseMap();
+
+            CreateMap<Suggestion, SimpleSuggestionDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.mainImage, opt => opt.MapFrom(src => src.Image));
+
+            //For shared-look
+            CreateMap<SharedLook, SharedLookDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image));
+
+            CreateMap<SharedLook, SharedLookDetailDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.User.Username))
+                .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image))
+                .ForMember(dest => dest.likesCount, opt => opt.MapFrom(src => src.Likes.Count(l => l.IsLiked == true)))
+                .ForMember(dest => dest.reviewCount, opt => opt.MapFrom(src => src.Reviews.Count(r => r.IsDeleted == false)))
+                .ForMember(dest => dest.reviews, opt => opt.MapFrom(src => src.Reviews.Where(r=> !r.IsDeleted)))
+                .ForMember(dest => dest.likes, opt => opt.MapFrom(src => src.Likes.Where(l=> l.IsLiked)))
+                .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.Suggestion.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)));
+
+            CreateMap<CreateSharedLookDto, SharedLook>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.SuggestionId, opt => opt.MapFrom(src => src.SuggestionId))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ReverseMap();
+
+            //For like
+            CreateMap<SharedLookLike, LikeDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.LikedUser.ProfilePhoto))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.LikedUser.Username))
+                .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.LikedUserId))
+                .ReverseMap();
+
+            //For review
+            CreateMap<SharedLookReview, ReviewDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.reviewerUserId, opt => opt.MapFrom(src => src.ReviewerUserId))
+                .ForMember(dest => dest.review, opt => opt.MapFrom(src => src.Review))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.ReviewerUser.ProfilePhoto))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.ReviewerUser.Username))
+                .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
+                .ReverseMap();
+
+            CreateMap<CreateSharedLookReviewDto, SharedLookReview>()
+                .ForMember(dest => dest.ReviewerUserId, opt => opt.MapFrom(src => src.ReviewerUserId))
+                .ForMember(dest => dest.ReviewedSharedLookId, opt => opt.MapFrom(src => src.ReviewedSharedLookId))
+                .ForMember(dest => dest.Review, opt => opt.MapFrom(src => src.Review))
                 .ReverseMap();
         }
     }
