@@ -14,6 +14,9 @@ public class AppDbContext:DbContext
     public DbSet<Garderobe> Garderobes { get; set; }
     public DbSet<ClotheCategory> ClotheCategories { get; set; }
     public DbSet<Suggestion> Suggestions { get; set; }
+    public DbSet<SharedLook> SharedLooks { get; set; }
+    public DbSet<SharedLookLike> SharedLookLikes { get; set; }
+    public DbSet<SharedLookReview> SharedLookReviews { get; set; }
     public DbSet<Clothe> Clothes { get; set; }
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
     public DbSet<Follow> Follows { get; set; }
@@ -122,6 +125,40 @@ public class AppDbContext:DbContext
                   .WithMany(cl => cl.Photos)
                   .HasForeignKey(cp => cp.ClotheId)
                   .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure Suggestion
+        modelBuilder.Entity<Suggestion>(entity =>
+        {
+            entity.HasKey(s => s.Id);
+            entity.HasOne(s => s.User)
+                  .WithMany(u => u.Suggestions)
+                  .HasForeignKey(s => s.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(s => s.SuggestedLook)
+                  .WithMany();
+        });
+
+        // Configure SharedLook
+        modelBuilder.Entity<SharedLook>(entity =>
+        {
+            entity.HasKey(sl => sl.Id);
+            entity.HasOne(sl => sl.Suggestion)
+                    .WithMany()
+                    .HasForeignKey(sl => sl.SuggestionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(sl => sl.User)
+                    .WithMany(u => u.SharedLooks)
+                    .HasForeignKey(sl => sl.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(sl => sl.Likes)
+                    .WithOne(sll => sll.LikedSharedLook)
+                    .HasForeignKey(sll => sll.LikedSharedLookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(sl => sl.Reviews)
+                    .WithOne(slr => slr.ReviewedSharedLook)
+                    .HasForeignKey(slr => slr.ReviewedSharedLookId)
+                    .OnDelete(DeleteBehavior.Cascade);
         });
     }
 
