@@ -34,6 +34,7 @@ namespace Yconic.Domain.Models;
         public Garderobe? UserGarderobe { get; set; }
 
         public ICollection<Suggestion>? Suggestions { get; set; } = new List<Suggestion>();
+        public ICollection<SharedLook>? SharedLooks { get; set; } = new List<SharedLook>();
         public ICollection<Follow>? Followers { get; set; } = new List<Follow>();
         public ICollection<Follow>? Following { get; set; } = new List<Follow>();
 
