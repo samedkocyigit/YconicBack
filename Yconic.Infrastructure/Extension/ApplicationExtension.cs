@@ -11,6 +11,9 @@ using Yconic.Infrastructure.Repositories.ClotheRepositories;
 using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
 using Yconic.Infrastructure.Repositories.FollowRepositories;
 using Yconic.Infrastructure.Repositories.FollowRequestRepositories;
+using Yconic.Infrastructure.Repositories.SharedLookRepositories;
+using Yconic.Infrastructure.Repositories.SharedLookLikeRepositories;
+using Yconic.Infrastructure.Repositories.SharedLookReviewRepositories;
 
 namespace Yconic.Infrastructure.Extension
 {
@@ -28,6 +31,9 @@ namespace Yconic.Infrastructure.Extension
             services.AddScoped<IClothePhotoRepository , ClothePhotoRepository>();
             services.AddScoped<IFollowRepository, FollowRepository>();
             services.AddScoped<IFollowRequestRepository,FollowRequestRepository>();
+            services.AddScoped<ISharedLookRepository, SharedLookRepository>();
+            services.AddScoped<ISharedLookReviewRepository, SharedLookReviewRepository>();
+            services.AddScoped<ISharedLookLikeRepository, SharedLookLikeRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             return services;
         }
