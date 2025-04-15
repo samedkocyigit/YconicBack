@@ -16,6 +16,9 @@ using Microsoft.Extensions.Configuration;
 using Yconic.Application.Services.MigrationServices;
 using Yconic.Application.Services.FollowServices;
 using Yconic.Application.Services.FollowRequestServices;
+using Yconic.Application.Services.SharedLookServices;
+using Yconic.Application.Services.SharedLookReviewServices;
+using Yconic.Application.Services.SharedLookLikeServices;
 
 namespace Yconic.Application.Extensions
 {
@@ -32,6 +35,9 @@ namespace Yconic.Application.Extensions
             services.AddScoped<IClotheCategoriesService, ClotheCategoriesService>();
             services.AddScoped<IGarderobeService, GarderobeService>();
             services.AddScoped<ISuggestionService, SuggestionService>();
+            services.AddScoped<ISharedLookService, SharedLookService>();
+            services.AddScoped<ISharedLookReviewService, SharedLookReviewService>();
+            services.AddScoped<ISharedLookLikeService, SharedLookLikeService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPersonasService, PersonasService>();
             services.AddScoped<IClotheService, ClotheService>();
