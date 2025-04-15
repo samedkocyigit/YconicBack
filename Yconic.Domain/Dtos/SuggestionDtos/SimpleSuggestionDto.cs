@@ -9,7 +9,6 @@ namespace Yconic.Domain.Dtos.SuggestionDtos
     public class SimpleSuggestionDto
     {
         public Guid id { get; set; }
-        public Guid suggestionId { get; set; }
         public Guid userId { get; set; }
         public string mainImage { get; set; }
     }
