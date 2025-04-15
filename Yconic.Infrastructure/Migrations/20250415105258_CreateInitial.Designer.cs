@@ -12,8 +12,8 @@ using Yconic.Infrastructure.ApplicationDbContext;
 namespace Yconic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250405150134_FollowUpdate")]
-    partial class FollowUpdate
+    [Migration("20250415105258_CreateInitial")]
+    partial class CreateInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace Yconic.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ClotheSuggestion", b =>
+                {
+                    b.Property<Guid>("SuggestedLookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SuggestionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("SuggestedLookId", "SuggestionId");
+
+                    b.HasIndex("SuggestionId");
+
+                    b.ToTable("ClotheSuggestion");
+                });
 
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
@@ -50,17 +65,12 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SuggestionId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("SuggestionId");
 
                     b.ToTable("Clothes");
                 });
@@ -220,6 +230,106 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("Personas");
                 });
 
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLook", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("SuggestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SuggestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SharedLooks");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLookLike", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsLiked")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("LikedSharedLookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LikedUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LikedSharedLookId");
+
+                    b.HasIndex("LikedUserId");
+
+                    b.ToTable("SharedLookLikes");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLookReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ReviewedSharedLookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ReviewerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewedSharedLookId");
+
+                    b.HasIndex("ReviewerUserId");
+
+                    b.ToTable("SharedLookReviews");
+                });
+
             modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -258,7 +368,7 @@ namespace Yconic.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("Birthday")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -337,6 +447,21 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ClotheSuggestion", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.Clothe", null)
+                        .WithMany()
+                        .HasForeignKey("SuggestedLookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Yconic.Domain.Models.Suggestion", null)
+                        .WithMany()
+                        .HasForeignKey("SuggestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Yconic.Domain.Models.Clothe", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.ClotheCategory", "Category")
@@ -344,10 +469,6 @@ namespace Yconic.Infrastructure.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Yconic.Domain.Models.Suggestion", null)
-                        .WithMany("SuggestedLook")
-                        .HasForeignKey("SuggestionId");
 
                     b.Navigation("Category");
                 });
@@ -434,6 +555,63 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLook", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.Suggestion", "Suggestion")
+                        .WithMany()
+                        .HasForeignKey("SuggestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Yconic.Domain.Models.User", "User")
+                        .WithMany("SharedLooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Suggestion");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLookLike", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.SharedLook", "LikedSharedLook")
+                        .WithMany("Likes")
+                        .HasForeignKey("LikedSharedLookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Yconic.Domain.Models.User", "LikedUser")
+                        .WithMany()
+                        .HasForeignKey("LikedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LikedSharedLook");
+
+                    b.Navigation("LikedUser");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLookReview", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.SharedLook", "ReviewedSharedLook")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ReviewedSharedLookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Yconic.Domain.Models.User", "ReviewerUser")
+                        .WithMany()
+                        .HasForeignKey("ReviewerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReviewedSharedLook");
+
+                    b.Navigation("ReviewerUser");
+                });
+
             modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
                 {
                     b.HasOne("Yconic.Domain.Models.User", "User")
@@ -460,9 +638,11 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("ClothesCategory");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.SharedLook", b =>
                 {
-                    b.Navigation("SuggestedLook");
+                    b.Navigation("Likes");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.User", b =>
@@ -474,6 +654,8 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Following");
+
+                    b.Navigation("SharedLooks");
 
                     b.Navigation("Suggestions");
 
