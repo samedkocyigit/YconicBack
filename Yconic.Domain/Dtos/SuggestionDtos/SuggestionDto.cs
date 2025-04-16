@@ -13,7 +13,7 @@ namespace Yconic.Domain.Dtos.SuggestionDtos
         public Guid id { get; set; }
         public Guid userId { get; set; }
         public string description { get; set; }
-        public string image { get; set; }
+        public string mainUrlPhoto { get; set; }
         public List<Clothe> suggestedLook { get; set; }
     }
 }
