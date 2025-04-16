@@ -12,5 +12,6 @@ namespace Yconic.Domain.Dtos.LikesDtos
         public Guid userId { get; set; }
         public string userPhoto { get; set; }
         public string username { get; set; }
+        public bool isPrivate { get; set; } 
     }
 }
