@@ -17,16 +17,36 @@ namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<SharedLook>> GetAllList()
+        public async Task<IEnumerable<SharedLook>> GetAllListsPublicUsers()
         {
             return await _context.SharedLooks
                 .Include(sl => sl.Suggestion)
                     .ThenInclude(s => s.SuggestedLook)
                 .Include(sl=> sl.User)
+                    
                 .Include(sl => sl.Likes)
                     .ThenInclude(l => l.LikedUser)
                 .Include(sl => sl.Reviews)
                     .ThenInclude(r => r.ReviewerUser)
+                .Where(sl=> sl.User.IsPrivate == false)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SharedLook>> GetSharedLooksUserWhoFollowed(Guid userId)
+        {
+            var followedUserIds = await _context.Follows
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowedId)
+                .ToListAsync();
+            return await _context.SharedLooks
+                .Include(sl => sl.Suggestion)
+                    .ThenInclude(s => s.SuggestedLook)
+                .Include(sl => sl.User)
+                .Include(sl => sl.Likes)
+                    .ThenInclude(l => l.LikedUser)
+                .Include(sl => sl.Reviews)
+                    .ThenInclude(r => r.ReviewerUser)
+                .Where(sl => followedUserIds.Contains(sl.UserId))
                 .ToListAsync();
         }
         public async Task<IEnumerable<SharedLook>> GetSharedLooksByUserId(Guid userId)

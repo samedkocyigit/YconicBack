@@ -10,8 +10,9 @@ namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
 {
     public interface ISharedLookRepository:IGenericRepository<SharedLook>
     {
-        Task<IEnumerable<SharedLook>> GetAllList();
+        Task<IEnumerable<SharedLook>> GetAllListsPublicUsers();
         Task<IEnumerable<SharedLook>> GetSharedLooksByUserId(Guid userId);
+        Task<IEnumerable<SharedLook>> GetSharedLooksUserWhoFollowed(Guid userId);
         Task<SharedLook> GetById(Guid id);
     }
 }
