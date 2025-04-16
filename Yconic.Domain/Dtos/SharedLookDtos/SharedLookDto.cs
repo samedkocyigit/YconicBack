@@ -9,6 +9,7 @@ namespace Yconic.Domain.Dtos.SharedLookDtos
     public class SharedLookDto
     {
         public Guid id { get; set; }
+        public Guid userId {get; set;}
         public string mainUrlPhoto { get; set; }
     }
 }
