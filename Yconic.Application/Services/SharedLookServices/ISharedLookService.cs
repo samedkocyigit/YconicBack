@@ -11,8 +11,9 @@ namespace Yconic.Application.Services.SharedLookServices
 {
     public interface ISharedLookService
     {
-        Task<ApiResult<List<SharedLookDto>>> GetAllSharedLookList();
-        Task<ApiResult<List<SharedLookDto>>> GetAllSharedLooksByUserId(Guid userId);
+        Task<ApiResult<List<SharedLookDto>>> GetAllPublicSharedLookList();
+        Task<ApiResult<List<SharedLookDetailDto>>> GetAllSharedLooksByUserId(Guid userId);
+        Task<ApiResult<List<SharedLookDetailDto>>> GetSharedLooksUserWhoFollowed(Guid userId);
         Task<ApiResult<SharedLookDetailDto>> GetSharedLookById(Guid id);
         Task<ApiResult<SharedLookDto>> CreateSharedLook(CreateSharedLookDto sharedLook);
         Task<ApiResult<SharedLookDto>> UpdateSharedLook(SharedLook sharedLook);

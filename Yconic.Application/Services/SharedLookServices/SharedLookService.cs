@@ -23,17 +23,24 @@ namespace Yconic.Application.Services.SharedLookServices
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public async Task<ApiResult<List<SharedLookDto>>> GetAllSharedLookList()
+        public async Task<ApiResult<List<SharedLookDto>>> GetAllPublicSharedLookList()
         {
-            var sharedLooks = await _sharedLookRepository.GetAllList();
+            var sharedLooks = await _sharedLookRepository.GetAllListsPublicUsers();
             var mappedLooks=    _mapper.Map<List<SharedLookDto>>(sharedLooks);
             return ApiResult<List<SharedLookDto>>.Success(mappedLooks);
         }
-        public async Task<ApiResult<List<SharedLookDto>>> GetAllSharedLooksByUserId(Guid userId)
+
+        public async Task<ApiResult<List<SharedLookDetailDto>>> GetSharedLooksUserWhoFollowed(Guid userId)
+        {
+            var sharedLooks = await _sharedLookRepository.GetSharedLooksUserWhoFollowed(userId);
+            var mappedLooks = _mapper.Map<List<SharedLookDetailDto>>(sharedLooks);
+            return ApiResult<List<SharedLookDetailDto>>.Success(mappedLooks);
+        }
+        public async Task<ApiResult<List<SharedLookDetailDto>>> GetAllSharedLooksByUserId(Guid userId)
         {
             var sharedLooks = await _sharedLookRepository.GetSharedLooksByUserId(userId);
-            var mappedLook=    _mapper.Map<List<SharedLookDto>>(sharedLooks);
-            return ApiResult<List<SharedLookDto>>.Success(mappedLook);
+            var mappedLook=    _mapper.Map<List<SharedLookDetailDto>>(sharedLooks);
+            return ApiResult<List<SharedLookDetailDto>>.Success(mappedLook);
         }
         public async Task<ApiResult<SharedLookDetailDto>> GetSharedLookById(Guid id)
         {
