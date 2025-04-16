@@ -16,10 +16,10 @@ namespace Yconic.API.Controllers
             _sharedLookService = sharedLookService;
         }
 
-        [HttpGet("GetAllSharedLooks")]
+        [HttpGet("GetAllPublicSharedLooks")]
         public async Task<IActionResult> GetAllSharedLooks()
         {
-            var result = await _sharedLookService.GetAllSharedLookList();
+            var result = await _sharedLookService.GetAllPublicSharedLookList();
             return Ok(result);
         }
         
@@ -36,7 +36,13 @@ namespace Yconic.API.Controllers
             var result = await _sharedLookService.GetAllSharedLooksByUserId(userId);
             return Ok(result);
         }
-     
+        [HttpGet("GetSharedLooksUserWhoFollowed/{userId}")]
+        public async Task<IActionResult> GetSharedLooksUserWhoFollowed(Guid userId)
+        {
+            var result = await _sharedLookService.GetSharedLooksUserWhoFollowed(userId);
+            return Ok(result);
+        }
+
         [HttpPost("CreateSharedLook")]
         public async Task<IActionResult> CreateSharedLook([FromBody] CreateSharedLookDto sharedLook)
         {
