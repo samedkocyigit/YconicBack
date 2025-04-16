@@ -151,7 +151,7 @@ namespace Yconic.Application.Profiles
             CreateMap<Suggestion, SuggestionDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
-                .ForMember(dest => dest.image, opt => opt.MapFrom(src => src.Image))
+                .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Image))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.suggestedLook, opt => opt.MapFrom(src => src.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)))
                 .ReverseMap();
@@ -159,25 +159,27 @@ namespace Yconic.Application.Profiles
             CreateMap<Suggestion, SimpleSuggestionDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
-                .ForMember(dest => dest.mainImage, opt => opt.MapFrom(src => src.Image));
+                .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Image));
 
             //For shared-look
             CreateMap<SharedLook, SharedLookDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.userId , opt=> opt.MapFrom(src=> src.UserId))
                 .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image));
 
             CreateMap<SharedLook, SharedLookDetailDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto))
+                .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.User.Username))
                 .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image))
                 .ForMember(dest => dest.likesCount, opt => opt.MapFrom(src => src.Likes.Count(l => l.IsLiked == true)))
-                .ForMember(dest => dest.reviewCount, opt => opt.MapFrom(src => src.Reviews.Count(r => r.IsDeleted == false)))
+                .ForMember(dest => dest.reviewsCount, opt => opt.MapFrom(src => src.Reviews.Count(r => r.IsDeleted == false)))
                 .ForMember(dest => dest.reviews, opt => opt.MapFrom(src => src.Reviews.Where(r=> !r.IsDeleted)))
                 .ForMember(dest => dest.likes, opt => opt.MapFrom(src => src.Likes.Where(l=> l.IsLiked)))
                 .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.Suggestion.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)));
+                .ForMember(dest => dest.clothes, opt => opt.MapFrom(src => src.Suggestion.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)));
 
             CreateMap<CreateSharedLookDto, SharedLook>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
@@ -191,6 +193,7 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.LikedUser.ProfilePhoto))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.LikedUser.Username))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.LikedUserId))
+                .ForMember(dest=> dest.isPrivate, opt => opt.MapFrom(src => src.LikedUser.IsPrivate))
                 .ReverseMap();
 
             //For review
