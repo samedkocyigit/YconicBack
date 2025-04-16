@@ -10,6 +10,6 @@ namespace Yconic.Domain.Dtos.SuggestionDtos
     {
         public Guid id { get; set; }
         public Guid userId { get; set; }
-        public string mainImage { get; set; }
+        public string mainUrlPhoto { get; set; }
     }
 }
