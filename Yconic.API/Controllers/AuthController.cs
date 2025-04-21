@@ -14,19 +14,28 @@ namespace Yconic.API.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("Login")]
+
+        // Login
+        [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> Login(LoginDto loginModel)
         {
             var response = await _authService.Login(loginModel);
             return Ok(response);
         }
-        [HttpPost("Register")]
+
+        // register
+        [HttpPost]
+        [Route("register")]
         public async Task<IActionResult> Register(RegisterDto registerModel)
         {
             var token = await _authService.Register(registerModel);
             return Ok(token);
         }
-        [HttpPost("ForgotPassword")]
+
+        // forgot password
+        [HttpPost]
+        [Route("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             try
@@ -39,7 +48,10 @@ namespace Yconic.API.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [HttpPost("ResetPassword")]
+
+        // reset password
+        [HttpPost]
+        [Route("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordModel)
         {
             try
