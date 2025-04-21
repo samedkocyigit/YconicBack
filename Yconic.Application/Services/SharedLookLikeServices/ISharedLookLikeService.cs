@@ -11,9 +11,9 @@ namespace Yconic.Application.Services.SharedLookLikeServices
 {
     public interface ISharedLookLikeService
     {
-        Task<ApiResult<List<LikeDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId);
+        Task<ApiResult<List<LikeDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId, int page, int pageSize);
         //Task<ApiResult<List<Guid>>> GetSharedLookLikesListByUserId(Guid userId);
-        Task<ApiResult<bool>> LikeSharedLook(CreateSharedLookLikeDto dto);
+        Task<ApiResult<bool>> LikeSharedLook(Guid sharedLookId,Guid userId);
         Task<ApiResult<bool>> UnlikeSharedLook(Guid id);
     }
 }

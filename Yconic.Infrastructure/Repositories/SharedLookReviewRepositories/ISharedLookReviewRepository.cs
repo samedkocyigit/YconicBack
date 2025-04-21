@@ -10,9 +10,9 @@ namespace Yconic.Infrastructure.Repositories.SharedLookReviewRepositories
 {
     public interface ISharedLookReviewRepository: IGenericRepository<SharedLookReview>
     {
-        Task<IEnumerable<SharedLookReview>> GetSharedLookReviewsBySharedLookId(Guid sharedLookId);
+        Task<IEnumerable<SharedLookReview>> GetSharedLookReviewsBySharedLookId(Guid sharedLookId, int page, int pageSize);
         Task<IEnumerable<SharedLookReview>> GetByIdWithUser(Guid id);
-        Task<IEnumerable<SharedLookReview>> GetUsersReviewsList(Guid userId);
+        Task<IEnumerable<SharedLookReview>> GetUsersReviewsList(Guid userId, int page, int pageSize);
         Task<SharedLookReview> GetById(Guid id);
     }
 }

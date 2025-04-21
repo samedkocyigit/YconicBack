@@ -30,15 +30,16 @@ namespace Yconic.Application.Services.SharedLookServices
             return ApiResult<List<SharedLookDto>>.Success(mappedLooks);
         }
 
-        public async Task<ApiResult<List<SharedLookDetailDto>>> GetSharedLooksUserWhoFollowed(Guid userId)
+        public async Task<ApiResult<List<SharedLookDetailDto>>> GetSharedLooksUserWhoFollowedPaginated(Guid userId, int page, int pageSize)
         {
-            var sharedLooks = await _sharedLookRepository.GetSharedLooksUserWhoFollowed(userId);
-            var mappedLooks = _mapper.Map<List<SharedLookDetailDto>>(sharedLooks);
-            return ApiResult<List<SharedLookDetailDto>>.Success(mappedLooks);
+            var sharedLooks = await _sharedLookRepository.GetSharedLooksUserWhoFollowedPaginated(userId, page, pageSize);
+            var mapped = _mapper.Map<List<SharedLookDetailDto>>(sharedLooks);
+            return ApiResult<List<SharedLookDetailDto>>.Success(mapped);
         }
-        public async Task<ApiResult<List<SharedLookDetailDto>>> GetAllSharedLooksByUserId(Guid userId)
+
+        public async Task<ApiResult<List<SharedLookDetailDto>>> GetAllSharedLooksByUserId(Guid userId, int page, int pageSize)
         {
-            var sharedLooks = await _sharedLookRepository.GetSharedLooksByUserId(userId);
+            var sharedLooks = await _sharedLookRepository.GetSharedLooksByUserId(userId,page,pageSize);
             var mappedLook=    _mapper.Map<List<SharedLookDetailDto>>(sharedLooks);
             return ApiResult<List<SharedLookDetailDto>>.Success(mappedLook);
         }
@@ -48,7 +49,7 @@ namespace Yconic.Application.Services.SharedLookServices
             var mapped =    _mapper.Map<SharedLookDetailDto>(sharedLook);
             return ApiResult<SharedLookDetailDto>.Success(mapped);
         }
-        public async Task<ApiResult<SharedLookDto>> CreateSharedLook(CreateSharedLookDto sharedLookDto)
+        public async Task<ApiResult<SharedLookDetailDto>> CreateSharedLook(CreateSharedLookDto sharedLookDto)
         {
             var user = await _userRepository.GetById(sharedLookDto.UserId);
             var mappedSharedLook = _mapper.Map<SharedLook>(sharedLookDto);
@@ -57,9 +58,9 @@ namespace Yconic.Application.Services.SharedLookServices
             
             user.SharedLooks.Add(createdSharedLook);
             await _userRepository.Update(user);
-            
-            var mappedLook = _mapper.Map<SharedLookDto>(createdSharedLook);
-            return ApiResult<SharedLookDto>.Success(mappedLook);
+            var addedSharedLook = await _sharedLookRepository.GetById(createdSharedLook.Id);
+            var mappedLook = _mapper.Map<SharedLookDetailDto>(addedSharedLook);
+            return ApiResult<SharedLookDetailDto>.Success(mappedLook);
         }
         public async Task<ApiResult<SharedLookDto>> UpdateSharedLook(SharedLook sharedLook)
         {

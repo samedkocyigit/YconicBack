@@ -1,10 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Yconic.Domain.Dtos.LikeDtos;
 using Yconic.Domain.Dtos.LikesDtos;
 using Yconic.Domain.Models;
 using Yconic.Domain.Wrapper;
@@ -26,19 +20,19 @@ namespace Yconic.Application.Services.SharedLookLikeServices
             _mapper = mapper;
         }
 
-        public async Task<ApiResult<bool>> LikeSharedLook(CreateSharedLookLikeDto dto)
+        public async Task<ApiResult<bool>> LikeSharedLook(Guid sharedLookId,Guid userId)
         {
-            var sharedLook = await _sharedLookRepository.GetById(dto.sharedLookId);
+            var sharedLook = await _sharedLookRepository.GetById(sharedLookId);
             
             if(sharedLook == null)
             {
                 return ApiResult<bool>.Fail("Shared look not found");
             }
             
-            var isExist = await _sharedLookLikeRepository.IsLikeExist(dto.sharedLookId, dto.userId);
+            var isExist = await _sharedLookLikeRepository.IsLikeExist(sharedLookId, userId);
             if (isExist)
             {
-                var existingLike = await _sharedLookLikeRepository.GetExistingLike(dto.sharedLookId,dto.userId);
+                var existingLike = await _sharedLookLikeRepository.GetExistingLike(sharedLookId,userId);
                 existingLike.UpdatedAt = DateTime.UtcNow;
                 existingLike.IsLiked = true;
                 await _sharedLookLikeRepository.Update(existingLike);
@@ -47,8 +41,8 @@ namespace Yconic.Application.Services.SharedLookLikeServices
 
             var like = new SharedLookLike
             {
-                LikedSharedLookId = dto.sharedLookId,
-                LikedUserId = dto.userId,
+                LikedSharedLookId = sharedLookId,
+                LikedUserId = userId,
             };
             
             var createdLike = await _sharedLookLikeRepository.Add(like);
@@ -76,9 +70,9 @@ namespace Yconic.Application.Services.SharedLookLikeServices
 
             return ApiResult<bool>.Success(true);
         }
-        public async Task<ApiResult<List<LikeDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId)
+        public async Task<ApiResult<List<LikeDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId, int page, int pageSize)
         {
-            var likes = await _sharedLookLikeRepository.GetSharedLookLikesBySharedLookId(sharedLookId);
+            var likes = await _sharedLookLikeRepository.GetSharedLookLikesBySharedLookId(sharedLookId,page,pageSize);
             var mappedLikes = _mapper.Map<List<LikeDto>>(likes);
             return ApiResult<List<LikeDto>>.Success(mappedLikes);
         }

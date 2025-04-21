@@ -18,11 +18,14 @@ namespace Yconic.Infrastructure.Repositories.SharedLookReviewRepositories
             _context = context;
         }
 
-        public async Task<IEnumerable<SharedLookReview>> GetSharedLookReviewsBySharedLookId(Guid sharedLookId)
+        public async Task<IEnumerable<SharedLookReview>> GetSharedLookReviewsBySharedLookId(Guid sharedLookId, int page, int pageSize)
         {
             return await _context.SharedLookReviews
                 .Include(x => x.ReviewerUser)
                 .Where(x => x.ReviewedSharedLookId == sharedLookId && x.IsDeleted ==false)
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
         public async Task<IEnumerable<SharedLookReview>> GetByIdWithUser(Guid id)
@@ -33,9 +36,15 @@ namespace Yconic.Infrastructure.Repositories.SharedLookReviewRepositories
                 .ToListAsync();
         }
         
-        public async Task<IEnumerable<SharedLookReview>> GetUsersReviewsList(Guid userId)
+        public async Task<IEnumerable<SharedLookReview>> GetUsersReviewsList(Guid userId, int page, int pageSize)
         {
-            return await _context.SharedLookReviews.Include(r => r.ReviewerUser).Where(r => r.ReviewerUserId == userId).ToListAsync();
+            return await _context.SharedLookReviews
+                .Include(r => r.ReviewerUser)
+                .Where(r => r.ReviewerUserId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
         public async Task<SharedLookReview> GetById(Guid id)
         {

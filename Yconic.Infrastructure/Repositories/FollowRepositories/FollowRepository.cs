@@ -26,19 +26,23 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
                 f.FollowerId == followerId && f.FollowedId == followedId);
         }
 
-        public async Task<List<Follow>> GetFollowers(Guid userId)
+        public async Task<List<Follow>> GetFollowers(Guid userId, int page, int pageSize)
         {
             return await _context.Follows
                 .Include(f => f.Follower)
                 .Where(f => f.FollowedId == userId && f.IsFollowing ==true)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<List<Follow>> GetFollowing(Guid userId)
+        public async Task<List<Follow>> GetFollowing(Guid userId, int page, int pageSize)
         {
             return await _context.Follows
                 .Include(f => f.Followed)
                 .Where(f => f.FollowerId == userId && f.IsFollowing == true)
+                .Skip((page-1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
     }

@@ -26,15 +26,15 @@ namespace Yconic.Application.Services.SharedLookReviewServices
             _mapper = mapper;
         }
 
-        public async Task<ApiResult<List<ReviewDto>>> GetAllReviewsByUserId(Guid userId)
+        public async Task<ApiResult<List<ReviewDto>>> GetAllReviewsByUserId(Guid userId, int page, int pageSize)
         {
-            var reviews = await _sharedLookReviewRepository.GetUsersReviewsList(userId);
+            var reviews = await _sharedLookReviewRepository.GetUsersReviewsList(userId, page, pageSize);
             var mappedReviews = _mapper.Map<List<ReviewDto>>(reviews);
             return ApiResult<List<ReviewDto>>.Success(mappedReviews);
         }
-        public async Task<ApiResult<List<ReviewDto>>> GetAllReviewsBySharedLookId(Guid sharedLookId)
+        public async Task<ApiResult<List<ReviewDto>>> GetAllReviewsBySharedLookId(Guid sharedLookId, int page, int pageSize)
         {
-            var reviews = await _sharedLookReviewRepository.GetSharedLookReviewsBySharedLookId(sharedLookId);
+            var reviews = await _sharedLookReviewRepository.GetSharedLookReviewsBySharedLookId(sharedLookId, page, pageSize);
             var mappedReviews = _mapper.Map<List<ReviewDto>>(reviews);
             return ApiResult<List<ReviewDto>>.Success(mappedReviews);
         }

@@ -32,24 +32,26 @@ namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<SharedLook>> GetSharedLooksUserWhoFollowed(Guid userId)
+        public async Task<IEnumerable<SharedLook>> GetSharedLooksUserWhoFollowedPaginated(Guid userId, int page, int pageSize)
         {
             var followedUserIds = await _context.Follows
                 .Where(f => f.FollowerId == userId)
                 .Select(f => f.FollowedId)
                 .ToListAsync();
+
             return await _context.SharedLooks
-                .Include(sl => sl.Suggestion)
-                    .ThenInclude(s => s.SuggestedLook)
+                .Include(sl => sl.Suggestion).ThenInclude(s => s.SuggestedLook)
                 .Include(sl => sl.User)
-                .Include(sl => sl.Likes)
-                    .ThenInclude(l => l.LikedUser)
-                .Include(sl => sl.Reviews)
-                    .ThenInclude(r => r.ReviewerUser)
+                .Include(sl => sl.Likes).ThenInclude(l => l.LikedUser)
+                .Include(sl => sl.Reviews).ThenInclude(r => r.ReviewerUser)
                 .Where(sl => followedUserIds.Contains(sl.UserId))
+                .OrderByDescending(sl => sl.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<SharedLook>> GetSharedLooksByUserId(Guid userId)
+
+        public async Task<IEnumerable<SharedLook>> GetSharedLooksByUserId(Guid userId, int page, int pageSize)
         {
             return await _context.SharedLooks
                 .Include(sl => sl.Suggestion)
@@ -60,6 +62,9 @@ namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
                 .Include(sl => sl.Reviews)
                     .ThenInclude(r => r.ReviewerUser)
                 .Where(sl => sl.UserId == userId)
+                .OrderByDescending(sl => sl.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
         public async Task<SharedLook> GetById(Guid id)

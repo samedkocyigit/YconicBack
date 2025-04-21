@@ -12,8 +12,8 @@ namespace Yconic.Application.Services.SharedLookReviewServices
 {
     public interface ISharedLookReviewService
     {
-        Task<ApiResult<List<ReviewDto>>> GetAllReviewsByUserId(Guid userId);
-        Task<ApiResult<List<ReviewDto>>> GetAllReviewsBySharedLookId(Guid sharedLookId);
+        Task<ApiResult<List<ReviewDto>>> GetAllReviewsByUserId(Guid userId, int page, int pageSize);
+        Task<ApiResult<List<ReviewDto>>> GetAllReviewsBySharedLookId(Guid sharedLookId, int page, int pageSize);
         Task<ApiResult<ReviewDto>> CreateReview(CreateSharedLookReviewDto dto);
         Task<ApiResult<ReviewDto>> PatchReview(PatchSharedLookReviewDto review);
         Task<ApiResult<bool>> DeleteReview(Guid id);

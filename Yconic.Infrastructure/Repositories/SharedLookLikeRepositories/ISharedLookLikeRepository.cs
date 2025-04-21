@@ -10,7 +10,7 @@ namespace Yconic.Infrastructure.Repositories.SharedLookLikeRepositories
 {
     public interface ISharedLookLikeRepository:IGenericRepository<SharedLookLike>
     {
-        Task<IEnumerable<SharedLookLike>> GetSharedLookLikesBySharedLookId(Guid sharedLookId);
+        Task<IEnumerable<SharedLookLike>> GetSharedLookLikesBySharedLookId(Guid sharedLookId, int page, int pageSize);
         Task<IEnumerable<SharedLookLike>> GetByIdWithUser(Guid userId);
         Task<bool> IsLikeExist(Guid sharedLookId, Guid userId);
         Task<SharedLookLike> GetExistingLike(Guid sharedLookId, Guid userId);

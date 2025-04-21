@@ -73,16 +73,16 @@ namespace Yconic.Application.Services.FollowServices
 
             return ApiResult<string>.Success("Unfollowed successfully.");
         }
-        public async Task<ApiResult<List<Guid>>> GetFollowers(Guid userId)
+        public async Task<ApiResult<List<Guid>>> GetFollowers(Guid userId, int page, int pageSize)
         {
-            var list = await _followRepo.GetFollowers(userId);
+            var list = await _followRepo.GetFollowers(userId, page, pageSize);
             var ids = list.Select(f => f.FollowerId).ToList();
             return ApiResult<List<Guid>>.Success(ids);
         }
 
-        public async Task<ApiResult<List<Guid>>> GetFollowing(Guid userId)
+        public async Task<ApiResult<List<Guid>>> GetFollowing(Guid userId, int page, int pageSize)
         {
-            var list = await _followRepo.GetFollowing(userId);
+            var list = await _followRepo.GetFollowing(userId, page, pageSize );
             var ids = list.Select(f => f.FollowedId).ToList();
             return ApiResult<List<Guid>>.Success(ids);
         }

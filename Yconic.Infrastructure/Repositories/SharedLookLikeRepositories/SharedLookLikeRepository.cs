@@ -18,11 +18,13 @@ namespace Yconic.Infrastructure.Repositories.SharedLookLikeRepositories
             _context = context;
         }
 
-        public async Task<IEnumerable<SharedLookLike>> GetSharedLookLikesBySharedLookId(Guid sharedLookId)
+        public async Task<IEnumerable<SharedLookLike>> GetSharedLookLikesBySharedLookId(Guid sharedLookId, int page, int pageSize)
         {
             return await _context.SharedLookLikes
                 .Include(x => x.LikedUser)
                 .Where(x => x.LikedSharedLookId == sharedLookId && x.IsLiked == true)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
         public async Task<IEnumerable<SharedLookLike>> GetByIdWithUser(Guid userId)
