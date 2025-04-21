@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Yconic.Application.Services.FollowRequestServices;
 
 namespace Yconic.API.Controllers
@@ -14,38 +16,60 @@ namespace Yconic.API.Controllers
             _followRequestService = followRequestService;
         }
 
-        [HttpPost("{requesterId}/sendRequest/{targetUserId}")]
-        public async Task<IActionResult> SendFollowRequest(Guid requesterId,Guid targetUserId)
+        Guid GetUserId() =>
+            Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        // send follow request
+        [HttpPost]
+        [Authorize]
+        [Route("{targetUserId}/send")]
+        public async Task<IActionResult> SendFollowRequest(Guid targetUserId)
         {
+            var requesterId = GetUserId();
             var response = await _followRequestService.SendRequest(requesterId,targetUserId);
             return Ok(response);
         }
 
-        [HttpGet("{targetUserId}/pending")]
+        // get all pending requests
+        [HttpGet]
+        [Authorize]
+        [Route("{targetUserId}/pending")]
         public async Task<IActionResult> GetPendingRequests(Guid targetUserId)
         {
             var result = await _followRequestService.GetPendingRequests(targetUserId);
             return Ok(result);
         }
 
-        [HttpPost("{targetUserId}/approve/{requesterId}")]
-        public async Task<IActionResult> Approve(Guid targetUserId, Guid requesterId)
+        // accept follow request
+        [HttpPost]
+        [Authorize]
+        [Route("{requesterId}/approve")]
+        public async Task<IActionResult> Approve(Guid requesterId)
         {
-            var result = await _followRequestService.ApproveRequest(targetUserId, requesterId);
+            var currentUserId = GetUserId();
+            var result = await _followRequestService.ApproveRequest(currentUserId, requesterId);
             return Ok(result);
         }
 
-        [HttpPost("{targetUserId}/reject/{requesterId}")]
-        public async Task<IActionResult> Reject(Guid targetUserId, Guid requesterId)
+        // reject follow request
+        [HttpPost]
+        [Authorize]
+        [Route("{requesterId}/reject")]
+        public async Task<IActionResult> Reject( Guid requesterId)
         {
+            var targetUserId = GetUserId();
             var result = await _followRequestService.RejectRequest(targetUserId, requesterId);
             return Ok(result);
         }
 
-        [HttpDelete("{requesterId}/cancel/{targetUserId}")]
-        public async Task<IActionResult> Cancel(Guid requesterId, Guid targetUserId)
+        // cancel follow request
+        [HttpDelete]
+        [Authorize]
+        [Route("{requesterId}/cancel")]
+        public async Task<IActionResult> Cancel(Guid requesterId)
         {
-            var result = await _followRequestService.CancelRequest(requesterId, targetUserId);
+            var currentUserId = GetUserId();
+            var result = await _followRequestService.CancelRequest(requesterId, currentUserId);
             return Ok(result);
         }
     }

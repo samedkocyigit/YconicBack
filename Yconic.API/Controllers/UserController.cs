@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Yconic.Application.Services.UserServices;
-using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Dtos.UserDtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
 {
     [ApiController]
-    // [Authorize]
     [Route("api/[controller]")]
     public class UserController:ControllerBase
     {
@@ -18,8 +17,15 @@ namespace Yconic.API.Controllers
             _userService = userService;
         }
 
+        private Guid GetUserId() =>
+
+            Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        
+
         // get all users    
         [HttpGet]
+        [Authorize]
+        [Route("get-all-users")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsers();
@@ -28,7 +34,8 @@ namespace Yconic.API.Controllers
 
         //get all user simple dto
         [HttpGet]
-        [Route("simple")]
+        [Authorize]
+        [Route("get-all-simple-users")]
         public async Task<IActionResult> GetAllUsersSimple()
         {
             var users = await _userService.GetAllSimpleUsers();
@@ -37,15 +44,18 @@ namespace Yconic.API.Controllers
 
         // get user public datas
         [HttpGet]
+        [Authorize]
         [Route("{id}/public-profile")]
         public async Task<IActionResult> GetUserPublicProfile(Guid id)
         {
             var user = await _userService.GetUserPublicProfile(id);
             return Ok(user);
         }
+
         // get user by id
         [HttpGet]
-        [Route("{id}")]
+        [Authorize]
+        [Route("get-user-by-id/{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _userService.GetUserById(id);
@@ -54,6 +64,8 @@ namespace Yconic.API.Controllers
 
         // create user
         [HttpPost]
+        [Authorize]
+        [Route("create-user")]
         public async Task<IActionResult> CreateUser( User user)
         {
             var createdUser = await _userService.CreateUser(user);
@@ -62,58 +74,73 @@ namespace Yconic.API.Controllers
 
         // update user
         [HttpPut]
+        [Authorize]
+        [Route("update-user")]
         public async Task<IActionResult> UpdateUser( User user)
         {
             var updatedUser = await _userService.UpdateUser(user);
             return Ok(updatedUser);
         }
 
-        // update user
+        // update user profile photo
         [HttpPost]
-        [Route("add-profile-photo/{id}")]
-        public async Task<IActionResult> AddProfilePhoto(Guid id, [FromForm] AddProfilePhotoDto profilePhoto)
+        [Authorize]
+        [Route("add-profile-photo")]
+        public async Task<IActionResult> AddProfilePhoto([FromForm] AddProfilePhotoDto profilePhoto)
         {
-            var updatedUser = await _userService.AddProfilePhoto(id,profilePhoto);
+            var userId = GetUserId();
+            var updatedUser = await _userService.AddProfilePhoto(userId,profilePhoto);
             return Ok(updatedUser);
         }
+
         //patch personal info
         [HttpPatch]
-        [Route("personal-info/{id}")]
-        public async Task<IActionResult> UserUpdatePersonalInfo(Guid id, [FromBody] UserPersonalPatchDto user)
+        [Authorize]
+        [Route("personal-info")]
+        public async Task<IActionResult> UserUpdatePersonalInfo([FromBody] UserPersonalPatchDto user)
         {
+            var id = GetUserId();
             var updatedUser = await _userService.UpdateUserPersonal(id,user);
             return Ok(updatedUser);
         }
 
         //patch account info
         [HttpPatch]
-        [Route("account-info/{id}")]
-        public async Task<IActionResult> UserUpdateAccountInfo(Guid id, [FromBody] UserAccountPatchDto user)
+        [Authorize]
+        [Route("account-info")]
+        public async Task<IActionResult> UserUpdateAccountInfo([FromBody] UserAccountPatchDto user)
         {
-            var updatedUser = await _userService.UpdateUserAccount(id,user);
+            var userId = GetUserId();
+            var updatedUser = await _userService.UpdateUserAccount(userId,user);
             return Ok(updatedUser);
         }
 
         //patch user password
         [HttpPatch]
-        [Route("change-password/{id}")]
-        public async Task<IActionResult> UserUpdatePassword(Guid id, [FromBody] ChangePasswordDto user)
+        [Authorize]
+        [Route("change-password")]
+        public async Task<IActionResult> UserUpdatePassword([FromBody] ChangePasswordDto user)
         {
-            var updatedUser = await _userService.UpdateUserPassword(id, user);
+            var userId = GetUserId();
+            var updatedUser = await _userService.UpdateUserPassword(userId, user);
             return Ok(updatedUser);
         }
 
         //patch user private or public 
         [HttpPatch]
-        [Route("change-privacy/{id}")]
-        public async Task<IActionResult> UserUpdatePrivacy(Guid id)
+        [Authorize]
+        [Route("change-privacy")]
+        public async Task<IActionResult> UserUpdatePrivacy()
         {
-            var updatedUser = await _userService.UpdatePrivacy(id);
+            var userId = GetUserId();
+            var updatedUser = await _userService.UpdatePrivacy(userId);
             return Ok(updatedUser);
         }
+
         // delete user
         [HttpDelete]
-        [Route("{id}")]
+        [Authorize]
+        [Route("delete-user/{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             await _userService.DeleteUser(id);
