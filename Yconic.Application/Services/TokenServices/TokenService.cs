@@ -22,6 +22,7 @@ namespace Yconic.Application.Services.TokenServices
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email), 
                 new Claim(ClaimTypes.Name, user.Username),  
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role.ToString()) 
             };
