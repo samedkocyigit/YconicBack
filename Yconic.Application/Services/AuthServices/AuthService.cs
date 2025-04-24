@@ -11,21 +11,23 @@ using Yconic.Application.Services.TokenServices;
 using Yconic.Domain.Dtos.Auth;
 using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Application.Services.AuthServices
 {
-    public class AuthService:IAuthService
+    public class AuthService : IAuthService
     {
-        protected readonly IUserRepository  _userRepository;
+        protected readonly IUserRepository _userRepository;
         protected readonly IGarderobeRepository _garderobeRepository;
         protected readonly IEmailService _emailService;
         protected readonly ITokenService _tokenService;
         protected readonly IMapper _mapper;
         protected readonly ILogger<AuthService> _logger;
-        public AuthService(IUserRepository userRepository,IGarderobeRepository garderobeRepository, IEmailService emailService,ITokenService tokenService,IMapper mapper,ILogger<AuthService> logger)
+
+        public AuthService(IUserRepository userRepository, IGarderobeRepository garderobeRepository, IEmailService emailService, ITokenService tokenService, IMapper mapper, ILogger<AuthService> logger)
         {
             _userRepository = userRepository;
             _garderobeRepository = garderobeRepository;
@@ -38,12 +40,12 @@ namespace Yconic.Application.Services.AuthServices
         public async Task<ApiResult<LoginResponse>> Login(LoginDto loginModel)
         {
             var user = await _userRepository.GetUserByEmail(loginModel.Email);
-            if(user == null)
+            if (user == null)
             {
                 _logger.LogError("User not found");
                 throw new Exception("User not found");
             }
-            else if(!BCrypt.Net.BCrypt.Verify(loginModel.Password,user.Password))
+            else if (!BCrypt.Net.BCrypt.Verify(loginModel.Password, user.Password))
             {
                 _logger.LogError("Invalid password");
                 throw new Exception("Invalid password");
@@ -52,7 +54,7 @@ namespace Yconic.Application.Services.AuthServices
             {
                 var token = _tokenService.CreateToken(user);
                 var userDto = _mapper.Map<UserDto>(user);
-                var loginResponse =new LoginResponse
+                var loginResponse = new LoginResponse
                 {
                     token = token,
                     user = userDto
@@ -60,6 +62,7 @@ namespace Yconic.Application.Services.AuthServices
                 return ApiResult<LoginResponse>.Success(loginResponse);
             }
         }
+
         public async Task<ApiResult<UserDto>> Register(RegisterDto registerModel)
         {
             var user = new User
@@ -76,17 +79,18 @@ namespace Yconic.Application.Services.AuthServices
             };
 
             var newGarderobe = await _garderobeRepository.Add(garderobe);
-            createdUser.UserGarderobeId = newGarderobe.Id;
             createdUser.UserGarderobe = newGarderobe;
+            createdUser.UserGarderobe.Id = newGarderobe.Id;
             createdUser.UpdatedAt = DateTime.UtcNow;
             var lastSeen = await _userRepository.Update(createdUser);
             var mappedUser = _mapper.Map<UserDto>(lastSeen);
             return ApiResult<UserDto>.Success(mappedUser);
         }
+
         public async Task ForgotPassword(string email)
         {
             var user = await _userRepository.GetUserByEmail(email);
-            if(user == null)
+            if (user == null)
             {
                 _logger.LogError("User not found");
                 throw new Exception("User not found");
@@ -105,15 +109,17 @@ namespace Yconic.Application.Services.AuthServices
                           $"here is token={token} to reset your password. This link is valid for 1 hour.");
             }
         }
+
         private string GenerateResetToken()
         {
             using (var rng = RandomNumberGenerator.Create())
             {
-                var tokenBytes = new byte[32]; 
+                var tokenBytes = new byte[32];
                 rng.GetBytes(tokenBytes);
                 return Convert.ToBase64String(tokenBytes);
             }
         }
+
         public async Task ResetPassword(string email, string token, string newPassword)
         {
             var user = await _userRepository.GetUserByEmail(email);
@@ -134,7 +140,6 @@ namespace Yconic.Application.Services.AuthServices
             user.UpdatedAt = DateTime.UtcNow;
             await _userRepository.Update(user);
         }
-
 
         private string GenerateToken(User user)
         {
