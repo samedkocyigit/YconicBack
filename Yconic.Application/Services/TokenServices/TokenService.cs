@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
-using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Application.Services.TokenServices
 {
