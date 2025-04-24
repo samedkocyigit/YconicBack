@@ -1,9 +1,9 @@
 using Moq;
-using Yconic.Infrastructure.Repositories.UserRepositories;
 using Yconic.Application.Services.UserServices;
 using Microsoft.Extensions.Logging;
-using Yconic.Domain.Models;
 using AutoMapper;
+using Yconic.Domain.Models.UserModels;
+using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Tests.Application.TestUser.UserTests
 {
@@ -12,7 +12,8 @@ namespace Yconic.Tests.Application.TestUser.UserTests
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly IUserService _userService;
         private readonly Mock<ILogger<UserService>> _loggerMock;
-        private readonly Mock<IMapper> _mapperMock; 
+        private readonly Mock<IMapper> _mapperMock;
+
         public UserTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
@@ -24,7 +25,8 @@ namespace Yconic.Tests.Application.TestUser.UserTests
         [Fact]
         public async Task CreateUser_Should_Return_Success()
         {
-            var user = new User{
+            var user = new User
+            {
                 Name = "Test",
                 Email = "test@example.com",
                 Password = "123456",
@@ -44,4 +46,4 @@ namespace Yconic.Tests.Application.TestUser.UserTests
             _userRepositoryMock.Verify(x => x.Add(It.IsAny<User>()), Times.Once);
         }
     }
-} 
+}
