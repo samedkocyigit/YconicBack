@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Yconic.Application.Services.UserServices;
 using Yconic.Domain.Dtos.UserDtos;
-using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController:ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -20,9 +21,8 @@ namespace Yconic.API.Controllers
         private Guid GetUserId() =>
 
             Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        
 
-        // get all users    
+        // get all users
         [HttpGet]
         [Authorize]
         [Route("get-all-users")]
@@ -66,7 +66,7 @@ namespace Yconic.API.Controllers
         [HttpPost]
         [Authorize]
         [Route("create-user")]
-        public async Task<IActionResult> CreateUser( User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
             var createdUser = await _userService.CreateUser(user);
             return Ok(createdUser);
@@ -76,7 +76,7 @@ namespace Yconic.API.Controllers
         [HttpPut]
         [Authorize]
         [Route("update-user")]
-        public async Task<IActionResult> UpdateUser( User user)
+        public async Task<IActionResult> UpdateUser(User user)
         {
             var updatedUser = await _userService.UpdateUser(user);
             return Ok(updatedUser);
@@ -89,7 +89,7 @@ namespace Yconic.API.Controllers
         public async Task<IActionResult> AddProfilePhoto([FromForm] AddProfilePhotoDto profilePhoto)
         {
             var userId = GetUserId();
-            var updatedUser = await _userService.AddProfilePhoto(userId,profilePhoto);
+            var updatedUser = await _userService.AddProfilePhoto(userId, profilePhoto);
             return Ok(updatedUser);
         }
 
@@ -100,7 +100,7 @@ namespace Yconic.API.Controllers
         public async Task<IActionResult> UserUpdatePersonalInfo([FromBody] UserPersonalPatchDto user)
         {
             var id = GetUserId();
-            var updatedUser = await _userService.UpdateUserPersonal(id,user);
+            var updatedUser = await _userService.UpdateUserPersonal(id, user);
             return Ok(updatedUser);
         }
 
@@ -111,7 +111,7 @@ namespace Yconic.API.Controllers
         public async Task<IActionResult> UserUpdateAccountInfo([FromBody] UserAccountPatchDto user)
         {
             var userId = GetUserId();
-            var updatedUser = await _userService.UpdateUserAccount(userId,user);
+            var updatedUser = await _userService.UpdateUserAccount(userId, user);
             return Ok(updatedUser);
         }
 
@@ -126,7 +126,7 @@ namespace Yconic.API.Controllers
             return Ok(updatedUser);
         }
 
-        //patch user private or public 
+        //patch user private or public
         [HttpPatch]
         [Authorize]
         [Route("change-privacy")]

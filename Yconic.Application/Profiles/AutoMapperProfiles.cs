@@ -13,19 +13,19 @@ using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Dtos.UserDtos;
 using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Application.Profiles
 {
-    public class AutoMapperProfiles:Profile
+    public class AutoMapperProfiles : Profile
     {
         public AutoMapperProfiles()
         {
-
             // For ai
             CreateMap<ClotheDto, ClotheItemDto>()
                 .ForMember(dest => dest.clotheId, opt => opt.MapFrom(src => src.id.ToString()))
                 .ForMember(dest => dest.image_path, opt => opt.MapFrom(src => src.mainPhoto))
-                .ForMember(dest => dest.categoryId,opt => opt.MapFrom(src => src.categoryId));
+                .ForMember(dest => dest.categoryId, opt => opt.MapFrom(src => src.categoryId));
 
             CreateMap<GarderobeDto, AiGarderobeDto>()
                 .ForMember(dest => dest.categories, opt => opt.MapFrom(src =>
@@ -37,79 +37,52 @@ namespace Yconic.Application.Profiles
                     )
                 ));
 
-            CreateMap<UserDto, AiUserDto>()
-                .ForMember(dest => dest.persona, opt => opt.MapFrom(src => src.persona.usertype))
-                .ForMember(dest => dest.userGarderobe, opt => opt.MapFrom(src => src.garderobe))
-                .ReverseMap();
+            //CreateMap<UserDto, AiUserDto>()
+            //    .ForMember(dest => dest.persona, opt => opt.MapFrom(src => src.persona.usertype))
+            //    .ForMember(dest => dest.userGarderobe, opt => opt.MapFrom(src => src.garderobe))
+            //    .ReverseMap();
 
             //For user
             CreateMap<User, UserMiniDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.Username))
-                .ForMember(dest => dest.isPrivate, opt=> opt.MapFrom(src=> src.IsPrivate))
-                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto));
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.UserAccount.IsPrivate))
+                .ForMember(dest => dest.isFollower, opt => opt.MapFrom(src => src.Followers.FirstOrDefault(f => f.FollowerId == src.Id && f.IsFollowing == true) != null))
+                .ForMember(dest => dest.isFollowing, opt => opt.MapFrom(src => src.Following.FirstOrDefault(f => f.FollowedId == src.Id && f.IsFollowing == true) != null))
+                .ForMember(dest => dest.isRequested, opt => opt.MapFrom(src => src.FollowRequestsSent.FirstOrDefault(f => f.RequesterId == src.Id && f.RequestStatus == RequestStatus.Pending) != null))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.UserPersonal.ProfilePhoto));
 
             CreateMap<User, UserPublicDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.UserPersonal.Name))
+                .ForMember(dest => dest.surname, opt => opt.MapFrom(src => src.UserPersonal.Surname))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.UserPersonal.ProfilePhoto))
+                .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.UserPersonal.Bio))
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.UserAccount.IsPrivate))
+                .ForMember(dest => dest.followerCount, opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.followingCount, opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)));
+
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.UserPersonal.Name))
+                .ForMember(dest => dest.surname, opt => opt.MapFrom(src => src.UserPersonal.Surname))
+                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.UserPersonal.ProfilePhoto))
+                .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.UserPersonal.Bio))
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.UserAccount.IsPrivate))
+                .ForMember(dest => dest.followerCount, opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
+                .ForMember(dest => dest.followingCount, opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)));
+            //For user-personal
+            CreateMap<UserPersonal, UpdatedPersonalInfoDto>()
                 .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.surname, opt => opt.MapFrom(src => src.Surname))
-                .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto))
                 .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.Bio))
-                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.IsPrivate))
-                .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.Weight))
-                .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
-                .ForMember(dest => dest.followerCount, opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
-                .ForMember(dest => dest.followingCount, opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)))
-                .ForMember(dest => dest.garderobe, opt => opt.MapFrom(src => src.UserGarderobe))
-                .ForMember(dest => dest.sharedLooks, opt => opt.MapFrom(src => src.SharedLooks.OrderByDescending(s => s.CreatedAt)))
-                .ForMember(dest => dest.followers, opt => 
-                                            opt.MapFrom(src => src.Followers
-                                                .Where(f => f.IsFollowing)
-                                                .Select(f => f.Follower)))
-                .ForMember(dest => dest.following, opt =>
-                                            opt.MapFrom(src => src.Following
-                                                .Where(f => f.IsFollowing)
-                                                .Select(f => f.Followed)));
-
-            CreateMap<User,UserDto>()
-                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.surname,opt => opt.MapFrom(src => src.Surname))
-                .ForMember(dest => dest.role, opt => opt.MapFrom(src => src.Role))
-                .ForMember(dest => dest.age, opt => opt.MapFrom(src => src.Age))
-                .ForMember(dest => dest.birthday, opt => opt.MapFrom(opt => opt.Birthday))
-                .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.Weight))
-                .ForMember(dest => dest.height, opt => opt.MapFrom(src => src.Height))
                 .ForMember(dest => dest.profilePhoto, opt => opt.MapFrom(src => src.ProfilePhoto))
-                .ForMember(dest => dest.bio, opt => opt.MapFrom(src => src.Bio))
-                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.IsPrivate))
-                .ForMember(dest => dest.followerCount,opt => opt.MapFrom(src => src.Followers.Count(f => f.IsFollowing)))
-                .ForMember(dest => dest.followingCount,opt => opt.MapFrom(src => src.Following.Count(f => f.IsFollowing)))
-                .ForMember(dest => dest.followers, opt => 
-                                            opt.MapFrom(src => src.Followers
-                                                .Where(f => f.IsFollowing)
-                                                .Select(f => f.Follower)))
-                .ForMember(dest => dest.following, opt =>
-                                            opt.MapFrom(src => src.Following
-                                                .Where(f => f.IsFollowing)
-                                                .Select(f => f.Followed)))
-                .ForMember(dest => dest.recievedFollowRequest, opt => opt.MapFrom(src => src.FollowRequestsReceived.Where(f=> f.RequestStatus == RequestStatus.Pending).Select(f=> f.Requester)))
-                .ForMember(dest => dest.sentFollowRequest, opt => opt.MapFrom(src => src.FollowRequestsSent.Where(f=>f.RequestStatus == RequestStatus.Pending).Select(f => f.TargetUser)))
-                .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.userPersonaId, opt => opt.MapFrom(src => src.UserPersonaId))
-                .ForMember(dest => dest.userGarderobeId, opt => opt.MapFrom(src => src.UserGarderobeId))
-                .ForMember(dest => dest.garderobe,opt => opt.MapFrom(src => src.UserGarderobe))
-                .ForMember(dest => dest.persona, opt => opt.MapFrom(src=> src.UserPersona))
-                .ForMember(dest => dest.sharedLooks, opt => opt.MapFrom(src => src.SharedLooks.OrderByDescending(s => s.CreatedAt)))
-                .ForMember(dest => dest.suggestions, opt => opt.MapFrom(src => src.Suggestions.OrderByDescending(s=> s.CreatedAt)));
-
-
+                .ReverseMap();
             //For garderobe
             CreateMap<Garderobe, GarderobeDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.categories, opt => opt.MapFrom(src => src.ClothesCategory.OrderByDescending(cl=> cl.CreatedAt)))
+                .ForMember(dest => dest.categories, opt => opt.MapFrom(src => src.ClothesCategory.OrderByDescending(cl => cl.CreatedAt)))
                 .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
                 .ReverseMap();
@@ -119,12 +92,12 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.garderobeId, opt => opt.MapFrom(src => src.GarderobeId))
-                .ForMember(dest => dest.categoryType, opt => opt.MapFrom(src => src.CategoryType))
+                .ForMember(dest => dest.categoryTypeId, opt => opt.MapFrom(src => src.ClotheCategoryType.Id))
                 .ForMember(dest => dest.clothes, opt => opt.MapFrom(src => src.Clothes.OrderByDescending(cl => cl.CreatedAt)))
                 .ReverseMap();
 
             //For clothe
-            CreateMap<Clothe,ClotheDto>()
+            CreateMap<Clothe, ClotheDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.brand, opt => opt.MapFrom(src => src.Brand))
@@ -164,19 +137,19 @@ namespace Yconic.Application.Profiles
             //For shared-look
             CreateMap<SharedLook, SharedLookDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.userId , opt=> opt.MapFrom(src=> src.UserId))
+                .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image));
 
             CreateMap<SharedLook, SharedLookDetailDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.User.UserPersonal.ProfilePhoto))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.User.Username))
                 .ForMember(dest => dest.mainUrlPhoto, opt => opt.MapFrom(src => src.Suggestion.Image))
                 .ForMember(dest => dest.likesCount, opt => opt.MapFrom(src => src.Likes.Count(l => l.IsLiked == true)))
                 .ForMember(dest => dest.reviewsCount, opt => opt.MapFrom(src => src.Reviews.Count(r => r.IsDeleted == false)))
-                .ForMember(dest => dest.reviews, opt => opt.MapFrom(src => src.Reviews.Where(r=> !r.IsDeleted)))
-                .ForMember(dest => dest.likes, opt => opt.MapFrom(src => src.Likes.Where(l=> l.IsLiked)))
+                .ForMember(dest => dest.reviews, opt => opt.MapFrom(src => src.Reviews.Where(r => !r.IsDeleted)))
+                .ForMember(dest => dest.likes, opt => opt.MapFrom(src => src.Likes.Where(l => l.IsLiked)))
                 .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.clothes, opt => opt.MapFrom(src => src.Suggestion.SuggestedLook.OrderByDescending(cl => cl.CreatedAt)));
@@ -190,10 +163,10 @@ namespace Yconic.Application.Profiles
             //For like
             CreateMap<SharedLookLike, LikeDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.LikedUser.ProfilePhoto))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.LikedUser.UserPersonal.ProfilePhoto))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.LikedUser.Username))
                 .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.LikedUserId))
-                .ForMember(dest=> dest.isPrivate, opt => opt.MapFrom(src => src.LikedUser.IsPrivate))
+                .ForMember(dest => dest.isPrivate, opt => opt.MapFrom(src => src.LikedUser.UserAccount.IsPrivate))
                 .ReverseMap();
 
             //For review
@@ -201,7 +174,7 @@ namespace Yconic.Application.Profiles
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.reviewerUserId, opt => opt.MapFrom(src => src.ReviewerUserId))
                 .ForMember(dest => dest.review, opt => opt.MapFrom(src => src.Review))
-                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.ReviewerUser.ProfilePhoto))
+                .ForMember(dest => dest.userPhoto, opt => opt.MapFrom(src => src.ReviewerUser.UserPersonal.ProfilePhoto))
                 .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.ReviewerUser.Username))
                 .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ReverseMap();

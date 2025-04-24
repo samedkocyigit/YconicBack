@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Dtos.UserDtos;
-using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 using Yconic.Domain.Wrapper;
 
 namespace Yconic.Application.Services.UserServices

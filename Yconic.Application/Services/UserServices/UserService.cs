@@ -8,25 +8,30 @@ using Yconic.Domain.Dtos.User;
 using Yconic.Domain.Dtos.UserDtos;
 using Yconic.Domain.Enums;
 using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 using Yconic.Domain.Wrapper;
 using Yconic.Infrastructure.Repositories.FollowRepositories;
 using Yconic.Infrastructure.Repositories.FollowRequestRepositories;
 using Yconic.Infrastructure.Repositories.PersonaRepositories;
+using Yconic.Infrastructure.Repositories.UserPersonalRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Application.Services.UserServices
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
         protected readonly IUserRepository _userRepository;
+        protected readonly IUserPersonalRepository _userPersonalRepo;
         protected readonly IFollowRequestRepository _followRequestRepository;
         protected readonly IFollowService _followService;
         protected readonly IPersonaRepository _personasRepository;
         protected readonly ILogger<UserService> _logger;
         protected readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository , IFollowRequestRepository followRequestRepository,IPersonaRepository personaRepository, IFollowService followService, ILogger<UserService> logger,IMapper mapper)
+
+        public UserService(IUserRepository userRepository, IUserPersonalRepository userPersonalRepo, IFollowRequestRepository followRequestRepository, IPersonaRepository personaRepository, IFollowService followService, ILogger<UserService> logger, IMapper mapper)
         {
             _userRepository = userRepository;
+            _userPersonalRepo = userPersonalRepo;
             _followRequestRepository = followRequestRepository;
             _personasRepository = personaRepository;
             _followService = followService;
@@ -47,12 +52,14 @@ namespace Yconic.Application.Services.UserServices
             var listUser = _mapper.Map<List<UserMiniDto>>(users);
             return ApiResult<List<UserMiniDto>>.Success(listUser);
         }
+
         public async Task<ApiResult<UserDto>> GetUserById(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
-            var mappedUser = _mapper.Map<UserDto>(user);    
+            var mappedUser = _mapper.Map<UserDto>(user);
             return ApiResult<UserDto>.Success(mappedUser);
         }
+
         public async Task<ApiResult<UserPublicDto>> GetUserPublicProfile(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
@@ -63,12 +70,14 @@ namespace Yconic.Application.Services.UserServices
             var mappedUser = _mapper.Map<UserPublicDto>(user);
             return ApiResult<UserPublicDto>.Success(mappedUser);
         }
+
         public async Task<ApiResult<UserDto>> CreateUser(User user)
         {
             var newUser = await _userRepository.Add(user);
             var mappedUser = _mapper.Map<UserDto>(newUser);
             return ApiResult<UserDto>.Success(mappedUser);
         }
+
         public async Task<ApiResult<UserDto>> UpdateUser(User user)
         {
             var updatedUser = await _userRepository.Update(user);
@@ -84,11 +93,11 @@ namespace Yconic.Application.Services.UserServices
             {
                 return ApiResult<UserDto>.Fail("User not found");
             }
-            if(user.ProfilePhoto != null)
+            if (user.ProfilePhoto != null)
             {
                 DeletePhotoFile(user.ProfilePhoto);
             }
-            
+
             var photoUrl = await SavePhoto(profilePhotoDto.photo);
             user.ProfilePhoto = photoUrl;
             var updatedUser = await _userRepository.Update(user);
@@ -96,84 +105,82 @@ namespace Yconic.Application.Services.UserServices
             return ApiResult<UserDto>.Success(mappedUser);
         }
 
-        public async Task<ApiResult<UserDto>> UpdateUserPersonal(Guid id,UserPersonalPatchDto personalPatchDto)
+        public async Task<ApiResult<UserDto>> UpdateUserPersonal(Guid id, UserPersonalPatchDto personalPatchDto)
         {
-            var user = await _userRepository.GetUserById(id);
-            if (personalPatchDto.username != null)
-            {
-                user.Username = personalPatchDto.username;
-            }
+            var user = await _userPersonalRepo.GetUserPersonalByUserId(id);
             if (personalPatchDto.bio != null)
             {
                 user.Bio = personalPatchDto.bio;
             }
             if (personalPatchDto.name != null)
             {
-                user.Name= personalPatchDto.name;
+                user.Name = personalPatchDto.name;
             }
             if (personalPatchDto.surname != null)
             {
                 user.Surname = personalPatchDto.surname;
             }
-            var updatetUser = await _userRepository.Update(user);
+            user.UpdatedAt = DateTime.UtcNow;
+            var updatetUser = await _userPersonalRepo.Update(user);
             var mappedUser = _mapper.Map<UserDto>(updatetUser);
             return ApiResult<UserDto>.Success(mappedUser);
         }
+
         public async Task<ApiResult<UserDto>> UpdateUserAccount(Guid id, UserAccountPatchDto userAccountPatchDto)
         {
             var user = await _userRepository.GetUserById(id);
-            if (user == null)
-            {
-                return ApiResult<UserDto>.Fail("User not found");
-            }
-            if (string.IsNullOrEmpty(userAccountPatchDto.phoneNumber))
-            {
-                user.PhoneNumber = userAccountPatchDto.phoneNumber;
-            }
-            if(userAccountPatchDto.weight != null)
-            {
-                user.Weight = userAccountPatchDto.weight;
-            }
-            if (userAccountPatchDto.height != null)
-            {
-                user.Height = userAccountPatchDto.height;
-            }
-            if (userAccountPatchDto.birthday != null)
-            {
-                user.Birthday = userAccountPatchDto.birthday;
+            //if (user == null)
+            //{
+            //    return ApiResult<UserDto>.Fail("User not found");
+            //}
+            //if (string.IsNullOrEmpty(userAccountPatchDto.phoneNumber))
+            //{
+            //    user.UserAccount.PhoneNumber = userAccountPatchDto.phoneNumber;
+            //}
+            //if (userAccountPatchDto.weight != null)
+            //{
+            //    user.UserPhysical.Weight = userAccountPatchDto.weight;
+            //}
+            //if (userAccountPatchDto.height != null)
+            //{
+            //    user..Height = userAccountPatchDto.height;
+            //}
+            //if (userAccountPatchDto.birthday != null)
+            //{
+            //    user.Birthday = userAccountPatchDto.birthday;
 
-                DateTime today = DateTime.Today;
+            //    DateTime today = DateTime.Today;
 
-                DateTime birthDate = userAccountPatchDto.birthday.Value;
+            //    DateTime birthDate = userAccountPatchDto.birthday.Value;
 
-                int age = today.Year - birthDate.Year;
+            //    int age = today.Year - birthDate.Year;
 
-                if (birthDate > today.AddYears(-age))
-                {
-                    age--;
-                }
+            //    if (birthDate > today.AddYears(-age))
+            //    {
+            //        age--;
+            //    }
 
-                user.Age = age;
-            }
-            if(userAccountPatchDto.personaType != null)
-            {
-                if(user.UserPersonaId == null)
-                {
-                    var newPersona = new Persona()
-                    {
-                        UserId = user.Id,
-                        Usertype = GetUserPersonaType((int)userAccountPatchDto.personaType)
-                    };
-                    var addedPersona =  await _personasRepository.Add(newPersona);
-                    user.UserPersonaId = addedPersona.Id;
-                }
-                else
-                {
-                    var persona = await _personasRepository.GetById(user.UserPersonaId.Value);
-                    persona.Usertype = GetUserPersonaType((int)userAccountPatchDto.personaType);
-                    await _personasRepository.Update(persona);
-                }
-            }
+            //    user.Age = age;
+            //}
+            //if (userAccountPatchDto.personaType != null)
+            //{
+            //    if (user.UserPersonaId == null)
+            //    {
+            //        var newPersona = new Persona()
+            //        {
+            //            UserId = user.Id,
+            //            Usertype = GetUserPersonaType((int)userAccountPatchDto.personaType)
+            //        };
+            //        var addedPersona = await _personasRepository.Add(newPersona);
+            //        user.UserPersonaId = addedPersona.Id;
+            //    }
+            //    else
+            //    {
+            //        var persona = await _personasRepository.GetById(user.UserPersonaId.Value);
+            //        persona.Usertype = GetUserPersonaType((int)userAccountPatchDto.personaType);
+            //        await _personasRepository.Update(persona);
+            //    }
+            //}
 
             var updatedUser = await _userRepository.Update(user);
             var mappedUser = _mapper.Map<UserDto>(updatedUser);
@@ -200,11 +207,10 @@ namespace Yconic.Application.Services.UserServices
             return ApiResult<bool>.Success(true);
         }
 
-
         public async Task<ApiResult<UserDto>> UpdatePrivacy(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
-            
+
             if (user == null)
             {
                 return ApiResult<UserDto>.Fail("User not found");
@@ -219,26 +225,26 @@ namespace Yconic.Application.Services.UserServices
                             .ToList();
                 foreach (var request in pendingRequests)
                 {
-                    await _followService.FollowUser(request.RequesterId,user.Id);
+                    await _followService.FollowUser(request.RequesterId, user.Id);
 
                     request.RequestStatus = RequestStatus.Accepted;
                     await _followRequestRepository.Update(request);
                 }
-
             }
-            
+
             var updatedUser = await _userRepository.Update(user);
             var mappedUser = _mapper.Map<UserDto>(updatedUser);
             return ApiResult<UserDto>.Success(mappedUser);
         }
+
         public async Task DeleteUser(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
-            if(user.ProfilePhoto != null)
+            if (user.ProfilePhoto != null)
             {
                 DeletePhotoFile(user.ProfilePhoto);
             }
-            foreach(var category in user.UserGarderobe.ClothesCategory)
+            foreach (var category in user.UserGarderobe.ClothesCategory)
             {
                 foreach (var clothe in category.Clothes)
                 {
@@ -268,7 +274,6 @@ namespace Yconic.Application.Services.UserServices
 
             return Regex.Replace(normalized, @"[^a-zA-Z0-9_\.\-]", "");
         }
-
 
         private Personas GetUserPersonaType(int id)
         {

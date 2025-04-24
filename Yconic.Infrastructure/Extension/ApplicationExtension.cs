@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 using Yconic.Infrastructure.Repositories.PersonaRepositories;
-using Yconic.Infrastructure.Repositories.UserRepositories;
 using Yconic.Infrastructure.Repositories.SuggestionRepositories;
 using Yconic.Infrastructure.Repositories.GenericRepositories;
 using Yconic.Infrastructure.ApplicationDbContext;
@@ -14,6 +13,7 @@ using Yconic.Infrastructure.Repositories.FollowRequestRepositories;
 using Yconic.Infrastructure.Repositories.SharedLookRepositories;
 using Yconic.Infrastructure.Repositories.SharedLookLikeRepositories;
 using Yconic.Infrastructure.Repositories.SharedLookReviewRepositories;
+using Yconic.Infrastructure.Repositories.UserRepositories;
 
 namespace Yconic.Infrastructure.Extension
 {
@@ -28,9 +28,9 @@ namespace Yconic.Infrastructure.Extension
             services.AddScoped<ISuggestionRepository, SuggestionRepository>();
             services.AddScoped<IGarderobeRepository, GarderobeRepository>();
             services.AddScoped<IClotheRepository, ClotheRepository>();
-            services.AddScoped<IClothePhotoRepository , ClothePhotoRepository>();
+            services.AddScoped<IClothePhotoRepository, ClothePhotoRepository>();
             services.AddScoped<IFollowRepository, FollowRepository>();
-            services.AddScoped<IFollowRequestRepository,FollowRequestRepository>();
+            services.AddScoped<IFollowRequestRepository, FollowRequestRepository>();
             services.AddScoped<ISharedLookRepository, SharedLookRepository>();
             services.AddScoped<ISharedLookReviewRepository, SharedLookReviewRepository>();
             services.AddScoped<ISharedLookLikeRepository, SharedLookLikeRepository>();

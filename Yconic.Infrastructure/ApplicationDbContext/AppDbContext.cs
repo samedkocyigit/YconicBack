@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Yconic.Domain.Dtos.Ai;
 using Yconic.Domain.Models;
+using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Infrastructure.ApplicationDbContext;
-public class AppDbContext:DbContext
+
+public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions options) : base(options)
     {
-        
     }
+
     public DbSet<Persona> Personas { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Garderobe> Garderobes { get; set; }
@@ -21,7 +23,10 @@ public class AppDbContext:DbContext
     public DbSet<ClothePhoto> ClothePhotos { get; set; }
     public DbSet<Follow> Follows { get; set; }
     public DbSet<FollowRequest> FollowRequests { get; set; }
-
+    public DbSet<UserAccount> UserAccounts { get; set; }
+    public DbSet<UserPersonal> UserPersonals { get; set; }
+    public DbSet<UserPhysical> UserPhysicals { get; set; }
+    public DbSet<ClotheCategoryType> ClotheCategoryTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,7 +43,7 @@ public class AppDbContext:DbContext
             entity.Property(u => u.Password).IsRequired();
             entity.Property(u => u.IsActive).HasConversion<string>();
             entity.Property(u => u.Role).HasConversion<string>();
-            entity.Property(u=> u.Birthday).HasColumnType("date");
+            entity.Property(u => u.Birthday).HasColumnType("date");
             entity.HasMany(entity => entity.FollowRequestsSent)
                   .WithOne(fr => fr.Requester)
                   .HasForeignKey(fr => fr.RequesterId)
@@ -74,7 +79,7 @@ public class AppDbContext:DbContext
         {
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Usertype)
-                  .HasConversion<string>(); 
+                  .HasConversion<string>();
             entity.HasOne(p => p.User)
                   .WithOne(u => u.UserPersona)
                   .HasForeignKey<Persona>(p => p.UserId)
@@ -161,5 +166,4 @@ public class AppDbContext:DbContext
                     .OnDelete(DeleteBehavior.Cascade);
         });
     }
-
 }
