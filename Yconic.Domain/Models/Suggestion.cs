@@ -1,14 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Domain.Models;
-public class Suggestion
+
+public class Suggestion : BaseClass
 {
-    public Guid Id { get; set; }
     public Guid UserId { get; set; }
+    public User? User { get; set; }
     public string? Description { get; set; }
     public string? Image { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<Clothe>? SuggestedLook { get; set; } = new List<Clothe>();
-    [JsonIgnore]
-    public User? User { get; set; }
 }

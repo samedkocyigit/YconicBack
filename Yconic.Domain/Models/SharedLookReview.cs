@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Domain.Models
 {
-    public class SharedLookReview
+    public class SharedLookReview : BaseClass
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid ReviewerUserId { get; set; }
-        public Guid ReviewedSharedLookId { get; set; }
-        public required string Review { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; } = false;
         public User? ReviewerUser { get; set; }
+        public Guid ReviewedSharedLookId { get; set; }
         public SharedLook? ReviewedSharedLook { get; set; }
 
+        public string Review { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

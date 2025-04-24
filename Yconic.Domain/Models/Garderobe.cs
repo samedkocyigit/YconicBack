@@ -1,12 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.Domain.Models;
-public class Garderobe
+
+public class Garderobe : BaseClass
 {
-    public Guid Id { get; set; }
-    public string? Name { get; set; }
     public Guid UserId { get; set; }
-    [JsonIgnore]
     public User? User { get; set; }
+    public string? Name { get; set; }
     public ICollection<ClotheCategory>? ClothesCategory { get; set; } = new List<ClotheCategory>();
 }
