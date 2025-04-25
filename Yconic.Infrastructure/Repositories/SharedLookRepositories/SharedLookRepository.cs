@@ -10,25 +10,27 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
 {
-    public class SharedLookRepository: GenericRepository<SharedLook>, ISharedLookRepository
+    public class SharedLookRepository : GenericRepository<SharedLook>, ISharedLookRepository
     {
         private readonly AppDbContext _context;
+
         public SharedLookRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
+
         public async Task<IEnumerable<SharedLook>> GetAllListsPublicUsers()
         {
             return await _context.SharedLooks
                 .Include(sl => sl.Suggestion)
                     .ThenInclude(s => s.SuggestedLook)
-                .Include(sl=> sl.User)
-                    
+                .Include(sl => sl.User)
+
                 .Include(sl => sl.Likes)
                     .ThenInclude(l => l.LikedUser)
                 .Include(sl => sl.Reviews)
                     .ThenInclude(r => r.ReviewerUser)
-                .Where(sl=> sl.User.IsPrivate == false)
+                .Where(sl => sl.User.UserAccount.IsPrivate == false)
                 .ToListAsync();
         }
 
@@ -67,6 +69,7 @@ namespace Yconic.Infrastructure.Repositories.SharedLookRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
         public async Task<SharedLook> GetById(Guid id)
         {
             return await _context.SharedLooks
