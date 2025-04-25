@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Yconic.Application.Services.SharedLookLikeServices;
-using Yconic.Domain.Dtos.LikeDtos;
 
 namespace Yconic.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SharedLookLikeController:ControllerBase
+    public class SharedLookLikeController : ControllerBase
     {
         private readonly ISharedLookLikeService _sharedLookLikeService;
+
         public SharedLookLikeController(ISharedLookLikeService sharedLookLikeService)
         {
             _sharedLookLikeService = sharedLookLikeService;
@@ -24,9 +23,10 @@ namespace Yconic.API.Controllers
         [HttpGet]
         [Authorize]
         [Route("get-all-shared-looks-likes/{sharedLookId}")]
-        public async Task<IActionResult> GetAllSharedLooksLikes(Guid sharedLookId,int page=1,int pageSize=100)
+        public async Task<IActionResult> GetAllSharedLooksLikes(Guid sharedLookId, int page = 1, int pageSize = 100)
         {
-            var result = await _sharedLookLikeService.GetSharedLookLikesListBySharedLookId(sharedLookId, page,pageSize);
+            var authUserId = GetUserId();
+            var result = await _sharedLookLikeService.GetSharedLookLikesListBySharedLookId(sharedLookId, authUserId, page, pageSize);
             return Ok(result);
         }
 
@@ -37,7 +37,7 @@ namespace Yconic.API.Controllers
         public async Task<IActionResult> GetSharedLooksLikesByUserId(Guid sharedLookId)
         {
             var userId = GetUserId();
-            var result = await _sharedLookLikeService.LikeSharedLook(sharedLookId,userId);
+            var result = await _sharedLookLikeService.LikeSharedLook(sharedLookId, userId);
             return Ok(result);
         }
 
