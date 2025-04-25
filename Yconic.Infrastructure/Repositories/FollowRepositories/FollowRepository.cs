@@ -16,10 +16,11 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
 
         public async Task<Follow> GetFollow(Guid followerId, Guid followedId)
         {
-            return await _context.Follows.Where(f=>
+            return await _context.Follows.Where(f =>
                             f.FollowerId == followerId &&
                             f.FollowedId == followedId).FirstOrDefaultAsync();
         }
+
         public async Task<bool> ExistsAsync(Guid followerId, Guid followedId)
         {
             return await _context.Follows.AnyAsync(f =>
@@ -30,7 +31,8 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
         {
             return await _context.Follows
                 .Include(f => f.Follower)
-                .Where(f => f.FollowedId == userId && f.IsFollowing ==true)
+                    .ThenInclude(f => f.UserAccount)
+                .Where(f => f.FollowedId == userId && f.IsFollowing == true)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -40,9 +42,19 @@ namespace Yconic.Infrastructure.Repositories.FollowRepositories
         {
             return await _context.Follows
                 .Include(f => f.Followed)
+                    .ThenInclude(f => f.UserAccount)
                 .Where(f => f.FollowerId == userId && f.IsFollowing == true)
-                .Skip((page-1) * pageSize)
+                .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<List<Follow>> GetFollowRelationsAsync(Guid authUserId, List<Guid> targetUserIds)
+        {
+            return await _context.Follows
+                .Where(f =>
+                    (f.FollowerId == authUserId && targetUserIds.Contains(f.FollowedId)) ||
+                    (f.FollowedId == authUserId && targetUserIds.Contains(f.FollowerId)))
                 .ToListAsync();
         }
     }
