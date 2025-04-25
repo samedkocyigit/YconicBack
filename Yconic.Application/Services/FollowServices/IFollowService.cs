@@ -9,8 +9,8 @@ namespace Yconic.Application.Services.FollowServices
 
         Task<ApiResult<string>> UnfollowUser(Guid followerId, Guid followedId);
 
-        Task<ApiResult<List<UserMiniDto>>> GetFollowers(Guid userId, int page, int pageSize);
+        Task<ApiResult<List<UserMiniDto>>> GetFollowers(Guid userId, Guid authUser, int page, int pageSize);
 
-        Task<ApiResult<List<UserMiniDto>>> GetFollowing(Guid userId, int page, int pageSize);
+        Task<ApiResult<List<UserMiniDto>>> GetFollowing(Guid userId, Guid authUser, int page, int pageSize);
     }
 }
