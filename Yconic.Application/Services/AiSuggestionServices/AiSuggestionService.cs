@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Yconic.Application.Services.ClotheServices;
-using Yconic.Application.Services.UserServices;
 using Yconic.Domain.Dtos.Ai;
-using Yconic.Domain.Dtos.ClotheDtos;
+using Yconic.Domain.Dtos.GarderobeDtos;
+using Yconic.Domain.Dtos.PersonaDtos;
 using Yconic.Domain.Models;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
 using Yconic.Infrastructure.Repositories.UserRepositories;
@@ -22,15 +14,15 @@ namespace Yconic.Application.Services.AiSuggestionServices
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
 
         private readonly IClotheRepository _clotheRepo;
 
-        public AiSuggestionService(HttpClient httpClient,IUserService userService,IClotheRepository clotheRepo,IMapper mapper)
+        public AiSuggestionService(HttpClient httpClient, IUserRepository userRepo, IClotheRepository clotheRepo, IMapper mapper)
         {
             _httpClient = httpClient;
-            _userService = userService;
+            _userRepo = userRepo;
             _clotheRepo = clotheRepo;
             _mapper = mapper;
             _apiKey = Environment.GetEnvironmentVariable("OpenAiApiKey");
@@ -38,14 +30,20 @@ namespace Yconic.Application.Services.AiSuggestionServices
 
         public async Task<SuggestedLookResult> GenerateSuggestedLook(Guid userId)
         {
-            var user = await _userService.GetUserById(userId);
-            var mapperUserDto = _mapper.Map<AiUserDto>(user.Data);
-            var clothesCategories = user.Data.garderobe.categories;
+            var user = await _userRepo.GetUserById(userId);
+            var garderobeDto = _mapper.Map<GarderobeDto>(user.UserGarderobe);
+            var personaDto = _mapper.Map<PersonaDto>(user.UserPersona);
+            var mapperUserDto = new AiUserDto
+            {
+                userGarderobe = _mapper.Map<AiGarderobeDto>(garderobeDto),
+                persona = _mapper.Map<AiPersonaDto>(personaDto)
+            };
+            var clothesCategories = user.UserGarderobe.ClothesCategory;
 
             var groupedGarderobe = new Dictionary<string, List<object>>();
             foreach (var category in mapperUserDto.userGarderobe.categories)
             {
-                var type = clothesCategories.FirstOrDefault(cat => cat.name == category.Key)?.categoryType.ToString().ToLower();
+                var type = clothesCategories.FirstOrDefault(cat => cat.Name == category.Key)?.ClotheCategoryType.Name.ToString().ToLower();
                 if (type == null) continue;
 
                 if (!groupedGarderobe.ContainsKey(type))
@@ -98,8 +96,6 @@ namespace Yconic.Application.Services.AiSuggestionServices
             };
         }
 
-
-
         // public async Task<List<Clothe>> GenerateSuggestedLook(Persona persona, User user, object otherParameters)
         // {
         //     var clothesInGarderobe = user.UserGarderobe.ClothesCategory
@@ -109,12 +105,11 @@ namespace Yconic.Application.Services.AiSuggestionServices
 
         //     string prompt = $@"
         //                         Generate a full outfit suggestion (including tops, bottoms, shoes, and accessories) for a user with the persona '{persona.Usertype}'.
-        //                         Use only the provided clothing items by referencing their IDs.  
+        //                         Use only the provided clothing items by referencing their IDs.
         //                         Return only a JSON array of suggested clothing IDs with no extra text.
 
         //                         User's available clothes (JSON format): {JsonSerializer.Serialize(clothesInGarderobe)}
         //                         ";
-
 
         //     var request = new
         //     {
@@ -163,4 +158,3 @@ namespace Yconic.Application.Services.AiSuggestionServices
         // }
     }
 }
-
