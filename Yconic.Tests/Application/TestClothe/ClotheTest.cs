@@ -2,25 +2,25 @@ using Yconic.Application.Services.ClotheServices;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
 using Yconic.Domain.Models;
 using Moq;
-using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
 using Yconic.Infrastructure.Repositories.ClothePhotoRepositories;
 using Yconic.Domain.Dtos;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using Yconic.Infrastructure.Repositories.ClotheCategoryRepositories;
 
 namespace Yconic.Tests.Application.TestClothe;
 
 public class ClotheTest
 {
     private readonly Mock<IClotheRepository> _clotheRepositoryMock;
-    private readonly Mock<IClotheCategoriesRepository> _clotheCategoriesRepositoryMock;
+    private readonly Mock<IClotheCategoryRepository> _clotheCategoriesRepositoryMock;
     private readonly Mock<IClothePhotoRepository> _clothePhotoRepositoryMock;
     private readonly ClotheService _clotheService;
 
     public ClotheTest()
     {
         _clotheRepositoryMock = new Mock<IClotheRepository>();
-        _clotheCategoriesRepositoryMock = new Mock<IClotheCategoriesRepository>();
+        _clotheCategoriesRepositoryMock = new Mock<IClotheCategoryRepository>();
         _clothePhotoRepositoryMock = new Mock<IClothePhotoRepository>();
         _clotheService = new ClotheService(_clotheRepositoryMock.Object, _clothePhotoRepositoryMock.Object, _clotheCategoriesRepositoryMock.Object);
     }

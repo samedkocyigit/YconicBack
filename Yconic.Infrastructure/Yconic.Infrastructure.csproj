@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\ClotheCategoryTypeRepositories\NewFolder\**" />
+    <EmbeddedResource Remove="Repositories\ClotheCategoryTypeRepositories\NewFolder\**" />
+    <None Remove="Repositories\ClotheCategoryTypeRepositories\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
       <PrivateAssets>all</PrivateAssets>
