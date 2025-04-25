@@ -43,5 +43,14 @@ namespace Yconic.Infrastructure.Repositories.FollowRequestRepositories
                 r.TargetUserId == targetUserId &&
                 r.RequestStatus == RequestStatus.Pending);
         }
+
+        public async Task<List<FollowRequest>> GetRequestsSentByUserAsync(Guid authUserId, List<Guid> targetUserIds)
+        {
+            return await _context.FollowRequests
+                .Where(r => r.RequesterId == authUserId
+                         && targetUserIds.Contains(r.TargetUserId)
+                         && r.RequestStatus == RequestStatus.Pending)
+                .ToListAsync();
+        }
     }
 }

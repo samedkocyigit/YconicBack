@@ -11,7 +11,11 @@ namespace Yconic.Infrastructure.Repositories.FollowRequestRepositories
     public interface IFollowRequestRepository : IGenericRepository<FollowRequest>
     {
         Task<bool> ExistsAsync(Guid requesterId, Guid targetUserId);
+
         Task<FollowRequest?> GetPendingRequest(Guid requesterId, Guid targetUserId);
+
         Task<List<FollowRequest>> GetPendingRequestsForUser(Guid targetUserId);
+
+        Task<List<FollowRequest>> GetRequestsSentByUserAsync(Guid authUserId, List<Guid> targetUserIds);
     }
 }
