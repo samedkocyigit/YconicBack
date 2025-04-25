@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Yconic.Application.Services.PersonasServices;
+using Yconic.Application.Services.PersonaServices;
+using Yconic.Domain.Dtos.PersonaDtos;
 using Yconic.Domain.Models;
 
 namespace Yconic.API.Controllers
@@ -10,13 +11,14 @@ namespace Yconic.API.Controllers
     [Route("api/[controller]")]
     public class PersonaController : ControllerBase
     {
-        protected readonly IPersonasService _personaService;
-        public PersonaController(IPersonasService personaService)
+        protected readonly IPersonaService _personaService;
+
+        public PersonaController(IPersonaService personaService)
         {
             _personaService = personaService;
         }
 
-        Guid GetUserId() =>
+        private Guid GetUserId() =>
             Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         // get all personas
@@ -43,7 +45,7 @@ namespace Yconic.API.Controllers
         [HttpPost]
         [Authorize]
         [Route("create-persona")]
-        public async Task<IActionResult> CreatePersona(Persona persona)
+        public async Task<IActionResult> CreatePersona(CreatePersonaDto persona)
         {
             var createdPersona = await _personaService.CreatePersona(persona);
             return Ok(createdPersona);
