@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yconic.Domain.Dtos.UserDtos
+namespace Yconic.Domain.Dtos.UserAccountDtos
 {
     public class UserAccountPatchDto
     {

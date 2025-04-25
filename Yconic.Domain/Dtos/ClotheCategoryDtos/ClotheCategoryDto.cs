@@ -9,6 +9,7 @@ public class ClotheCategoryDto
     public Guid id { get; set; }
     public string name { get; set; }
     public ClotheCategoryType categoryTypeId { get; set; }
+    public string categoryTypeName { get; set; }
     public Guid garderobeId { get; set; }
 
     public List<ClotheDto> clothes { get; set; }

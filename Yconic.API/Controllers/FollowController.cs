@@ -16,14 +16,14 @@ namespace Yconic.API.Controllers
             _followService = followService;
         }
 
-        Guid GetUserId() =>
+        private Guid GetUserId() =>
             Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         // follow
         [HttpPost]
         [Authorize]
         [Route("{followedId}/follow")]
-        public async Task<IActionResult> Follow( Guid followedId)
+        public async Task<IActionResult> Follow(Guid followedId)
         {
             var followerId = GetUserId();
             var result = await _followService.FollowUser(followerId, followedId);
@@ -34,7 +34,7 @@ namespace Yconic.API.Controllers
         [HttpDelete]
         [Authorize]
         [Route("{followedId}/unfollow")]
-        public async Task<IActionResult> Unfollow( Guid followedId)
+        public async Task<IActionResult> Unfollow(Guid followedId)
         {
             var followerId = GetUserId();
             var result = await _followService.UnfollowUser(followerId, followedId);
@@ -45,9 +45,10 @@ namespace Yconic.API.Controllers
         [HttpGet]
         [Authorize]
         [Route("{userId}/get-followers")]
-        public async Task<IActionResult> GetFollowers(Guid userId,int page =1 ,int pageSize =100)
+        public async Task<IActionResult> GetFollowers(Guid userId, int page = 1, int pageSize = 100)
         {
-            var result = await _followService.GetFollowers(userId,page,pageSize);
+            var authUser = GetUserId();
+            var result = await _followService.GetFollowers(userId, authUser, page, pageSize);
             return Ok(result);
         }
 
@@ -55,9 +56,10 @@ namespace Yconic.API.Controllers
         [HttpGet]
         [Authorize]
         [Route("{userId}/get-following")]
-        public async Task<IActionResult> GetFollowing(Guid userId,int page=1, int pageSize=100)
+        public async Task<IActionResult> GetFollowing(Guid userId, int page = 1, int pageSize = 100)
         {
-            var result = await _followService.GetFollowing(userId,page,pageSize);
+            var authUser = GetUserId();
+            var result = await _followService.GetFollowing(userId, authUser, page, pageSize);
             return Ok(result);
         }
     }

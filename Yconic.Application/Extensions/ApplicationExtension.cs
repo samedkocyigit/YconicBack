@@ -3,9 +3,7 @@ using Microsoft.OpenApi.Models;
 using Yconic.Application.Services.AuthServices;
 using Yconic.Application.Services.ClothePhotoServices;
 using Yconic.Application.Services.ClotheServices;
-using Yconic.Application.Services.ClotheCategoriesServices;
 using Yconic.Application.Services.GarderobeServices;
-using Yconic.Application.Services.PersonasServices;
 using Yconic.Application.Services.SuggestionService;
 using Yconic.Application.Services.UserServices;
 using Yconic.Application.Services.EmailServices;
@@ -19,6 +17,10 @@ using Yconic.Application.Services.FollowRequestServices;
 using Yconic.Application.Services.SharedLookServices;
 using Yconic.Application.Services.SharedLookReviewServices;
 using Yconic.Application.Services.SharedLookLikeServices;
+using Yconic.Application.Services.ClotheCategoryServices;
+using Yconic.Application.Services.PersonaServices;
+using Yconic.Application.Services.ClotheCategoryTypeServices;
+using Yconic.Infrastructure.Repositories.ClotheCategoryTypeRepositories;
 
 namespace Yconic.Application.Extensions
 {
@@ -32,14 +34,16 @@ namespace Yconic.Application.Extensions
 
             services.AddScoped<MigrationService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IClotheCategoriesService, ClotheCategoriesService>();
+            services.AddScoped<IClotheCategoryTypeRepository, ClotheCategoryTypeRepository>();
+            services.AddScoped<IClotheCategoryService, ClotheCategoryService>();
             services.AddScoped<IGarderobeService, GarderobeService>();
             services.AddScoped<ISuggestionService, SuggestionService>();
             services.AddScoped<ISharedLookService, SharedLookService>();
             services.AddScoped<ISharedLookReviewService, SharedLookReviewService>();
             services.AddScoped<ISharedLookLikeService, SharedLookLikeService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IPersonasService, PersonasService>();
+            services.AddScoped<IPersonaService, PersonaService>();
+            services.AddScoped<IPersonaService, PersonaService>();
             services.AddScoped<IClotheService, ClotheService>();
             services.AddScoped<IClothePhotoService, ClothePhotoService>();
             services.AddScoped<IFollowService, FollowService>();
@@ -59,11 +63,11 @@ namespace Yconic.Application.Extensions
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-                    In = ParameterLocation.Header,  
-                    Name = "Authorization",         
-                    Type = SecuritySchemeType.Http, 
-                    Scheme = "bearer",              
-                    BearerFormat = "JWT"            
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
                 });
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();

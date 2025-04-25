@@ -10,9 +10,10 @@ using Yconic.Infrastructure.Repositories.GenericRepositories;
 
 namespace Yconic.Infrastructure.Repositories.SharedLookLikeRepositories
 {
-    public class SharedLookLikeRepository: GenericRepository<SharedLookLike> , ISharedLookLikeRepository
+    public class SharedLookLikeRepository : GenericRepository<SharedLookLike>, ISharedLookLikeRepository
     {
         private readonly AppDbContext _context;
+
         public SharedLookLikeRepository(AppDbContext context) : base(context)
         {
             _context = context;
@@ -22,11 +23,13 @@ namespace Yconic.Infrastructure.Repositories.SharedLookLikeRepositories
         {
             return await _context.SharedLookLikes
                 .Include(x => x.LikedUser)
+                    .ThenInclude(x => x.UserAccount)
                 .Where(x => x.LikedSharedLookId == sharedLookId && x.IsLiked == true)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
+
         public async Task<IEnumerable<SharedLookLike>> GetByIdWithUser(Guid userId)
         {
             return await _context.SharedLookLikes
@@ -34,7 +37,7 @@ namespace Yconic.Infrastructure.Repositories.SharedLookLikeRepositories
                 .Where(x => x.LikedUserId == userId)
                 .ToListAsync();
         }
-        
+
         public async Task<bool> IsLikeExist(Guid sharedLookId, Guid userId)
         {
             return await _context.SharedLookLikes

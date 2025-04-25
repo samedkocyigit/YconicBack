@@ -6,7 +6,6 @@ namespace Yconic.Domain.Models;
 public class ClotheCategory : BaseClass
 {
     public string Name { get; set; }
-
     public Guid ClotheCategoryTypeId { get; set; }
     public ClotheCategoryType? ClotheCategoryType { get; set; }
     public Guid GarderobeId { get; set; }

@@ -5,7 +5,8 @@ namespace Yconic.Domain.Models;
 
 public class Persona : BaseClass
 {
-    public Personas Usertype { get; set; }
+    public Guid PersonaTypeId { get; set; }
+    public PersonaType? PersonaType { get; set; }
     public Guid UserId { get; set; }
     public User? User { get; set; }
 }

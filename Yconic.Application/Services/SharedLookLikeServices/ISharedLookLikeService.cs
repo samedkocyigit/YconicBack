@@ -12,7 +12,7 @@ namespace Yconic.Application.Services.SharedLookLikeServices
 {
     public interface ISharedLookLikeService
     {
-        Task<ApiResult<List<UserMiniDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId, int page, int pageSize);
+        Task<ApiResult<List<UserMiniDto>>> GetSharedLookLikesListBySharedLookId(Guid sharedLookId, Guid authUserId, int page, int pageSize);
 
         //Task<ApiResult<List<Guid>>> GetSharedLookLikesListByUserId(Guid userId);
         Task<ApiResult<bool>> LikeSharedLook(Guid sharedLookId, Guid userId);

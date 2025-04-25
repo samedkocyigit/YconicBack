@@ -44,7 +44,6 @@ namespace Yconic.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Brand")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("CategoryId")
@@ -78,8 +77,8 @@ namespace Yconic.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("CategoryType")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ClotheCategoryTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -97,9 +96,33 @@ namespace Yconic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClotheCategoryTypeId");
+
                     b.HasIndex("GarderobeId");
 
                     b.ToTable("ClotheCategories");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategoryType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClotheCategoryTypes");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.ClothePhoto", b =>
@@ -112,6 +135,9 @@ namespace Yconic.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Url")
@@ -131,7 +157,16 @@ namespace Yconic.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("BlockedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FollowedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("FollowedId")
@@ -142,6 +177,12 @@ namespace Yconic.Infrastructure.Migrations
 
                     b.Property<bool>("IsFollowing")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UnblockedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UnfollowedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -161,6 +202,18 @@ namespace Yconic.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("RejectedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("RequestStatus")
                         .HasColumnType("integer");
 
@@ -172,6 +225,9 @@ namespace Yconic.Infrastructure.Migrations
 
                     b.Property<Guid>("TargetUserId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -188,9 +244,15 @@ namespace Yconic.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -212,19 +274,44 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("PersonaTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Usertype")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonaTypeId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Personas");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.PersonaType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PersonaTypes");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.SharedLook", b =>
@@ -302,6 +389,9 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -342,6 +432,9 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
@@ -352,20 +445,11 @@ namespace Yconic.Infrastructure.Migrations
                     b.ToTable("Suggestions");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.User", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<int?>("Age")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("Birthday")
-                        .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -378,19 +462,9 @@ namespace Yconic.Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<decimal?>("Height")
-                        .HasColumnType("numeric");
-
                     b.Property<string>("IsActive")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsPrivate")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -402,36 +476,17 @@ namespace Yconic.Infrastructure.Migrations
                     b.Property<DateTime?>("PasswordResetTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProfilePhoto")
-                        .HasColumnType("text");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UserGarderobeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserPersonaId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
-
-                    b.Property<decimal?>("Weight")
-                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -442,6 +497,119 @@ namespace Yconic.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EmailVerified")
+                        .IsRequired()
+                        .HasColumnType("character varying(1)");
+
+                    b.Property<string>("IsPrivate")
+                        .IsRequired()
+                        .HasColumnType("character varying(1)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("PhoneVerified")
+                        .IsRequired()
+                        .HasColumnType("character varying(1)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserAccounts");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserPersonal", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("ProfilePhoto")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Surname")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserPersonals");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserPhysical", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal?>("Height")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("Weight")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserPhysicals");
                 });
 
             modelBuilder.Entity("ClotheSuggestion", b =>
@@ -472,11 +640,19 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.ClotheCategory", b =>
                 {
+                    b.HasOne("Yconic.Domain.Models.ClotheCategoryType", "ClotheCategoryType")
+                        .WithMany("ClothesCategory")
+                        .HasForeignKey("ClotheCategoryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Yconic.Domain.Models.Garderobe", "Garderobe")
                         .WithMany("ClothesCategory")
                         .HasForeignKey("GarderobeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ClotheCategoryType");
 
                     b.Navigation("Garderobe");
                 });
@@ -494,13 +670,13 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Follow", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "Followed")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "Followed")
                         .WithMany("Followers")
                         .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "Follower")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "Follower")
                         .WithMany("Following")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -513,13 +689,13 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.FollowRequest", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "Requester")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "Requester")
                         .WithMany("FollowRequestsSent")
                         .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "TargetUser")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "TargetUser")
                         .WithMany("FollowRequestsReceived")
                         .HasForeignKey("TargetUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -532,7 +708,7 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Garderobe", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "User")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
                         .WithOne("UserGarderobe")
                         .HasForeignKey("Yconic.Domain.Models.Garderobe", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,11 +719,19 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Persona", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "User")
+                    b.HasOne("Yconic.Domain.Models.PersonaType", "PersonaType")
+                        .WithMany("Personas")
+                        .HasForeignKey("PersonaTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
                         .WithOne("UserPersona")
                         .HasForeignKey("Yconic.Domain.Models.Persona", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PersonaType");
 
                     b.Navigation("User");
                 });
@@ -560,7 +744,7 @@ namespace Yconic.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "User")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
                         .WithMany("SharedLooks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -579,7 +763,7 @@ namespace Yconic.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "LikedUser")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "LikedUser")
                         .WithMany()
                         .HasForeignKey("LikedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -598,7 +782,7 @@ namespace Yconic.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yconic.Domain.Models.User", "ReviewerUser")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "ReviewerUser")
                         .WithMany()
                         .HasForeignKey("ReviewerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -611,9 +795,42 @@ namespace Yconic.Infrastructure.Migrations
 
             modelBuilder.Entity("Yconic.Domain.Models.Suggestion", b =>
                 {
-                    b.HasOne("Yconic.Domain.Models.User", "User")
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
                         .WithMany("Suggestions")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserAccount", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
+                        .WithOne("UserAccount")
+                        .HasForeignKey("Yconic.Domain.Models.UserModels.UserAccount", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserPersonal", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
+                        .WithOne("UserPersonal")
+                        .HasForeignKey("Yconic.Domain.Models.UserModels.UserPersonal", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.UserPhysical", b =>
+                {
+                    b.HasOne("Yconic.Domain.Models.UserModels.User", "User")
+                        .WithOne("UserPhysical")
+                        .HasForeignKey("Yconic.Domain.Models.UserModels.UserPhysical", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -630,9 +847,19 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Clothes");
                 });
 
+            modelBuilder.Entity("Yconic.Domain.Models.ClotheCategoryType", b =>
+                {
+                    b.Navigation("ClothesCategory");
+                });
+
             modelBuilder.Entity("Yconic.Domain.Models.Garderobe", b =>
                 {
                     b.Navigation("ClothesCategory");
+                });
+
+            modelBuilder.Entity("Yconic.Domain.Models.PersonaType", b =>
+                {
+                    b.Navigation("Personas");
                 });
 
             modelBuilder.Entity("Yconic.Domain.Models.SharedLook", b =>
@@ -642,7 +869,7 @@ namespace Yconic.Infrastructure.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("Yconic.Domain.Models.User", b =>
+            modelBuilder.Entity("Yconic.Domain.Models.UserModels.User", b =>
                 {
                     b.Navigation("FollowRequestsReceived");
 
@@ -656,9 +883,15 @@ namespace Yconic.Infrastructure.Migrations
 
                     b.Navigation("Suggestions");
 
+                    b.Navigation("UserAccount");
+
                     b.Navigation("UserGarderobe");
 
                     b.Navigation("UserPersona");
+
+                    b.Navigation("UserPersonal");
+
+                    b.Navigation("UserPhysical");
                 });
 #pragma warning restore 612, 618
         }

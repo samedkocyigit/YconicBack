@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Yconic.Application.Services.ClotheCategoriesServices;
+using Yconic.Application.Services.ClotheCategoryServices;
 using Yconic.Domain.Dtos.ClotheCategoryDtos;
 using Yconic.Domain.Models;
 
@@ -8,11 +8,11 @@ namespace Yconic.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-
-    public class ClotheCategoryController:ControllerBase
+    public class ClotheCategoryController : ControllerBase
     {
-        protected readonly IClotheCategoriesService _clotheCategoryService;
-        public ClotheCategoryController(IClotheCategoriesService clotheCategoryService)
+        protected readonly IClotheCategoryService _clotheCategoryService;
+
+        public ClotheCategoryController(IClotheCategoryService clotheCategoryService)
         {
             _clotheCategoryService = clotheCategoryService;
         }
@@ -21,7 +21,6 @@ namespace Yconic.API.Controllers
         [HttpGet]
         [Authorize]
         [Route("get-all-clothe-categories")]
-
         public async Task<IActionResult> GetAllClotheCategories()
         {
             var garderobeCategories = await _clotheCategoryService.GetAllClotheCategories();
@@ -34,7 +33,7 @@ namespace Yconic.API.Controllers
         [Route("get-clothe-category-by-id/{id}")]
         public async Task<IActionResult> GetClotheCategoryById(Guid id)
         {
-            var garderobeCategory = await _clotheCategoryService.GetClotheCategoriesById(id);
+            var garderobeCategory = await _clotheCategoryService.GetClotheCategoryById(id);
             return Ok(garderobeCategory);
         }
 
@@ -42,9 +41,9 @@ namespace Yconic.API.Controllers
         [HttpPost]
         [Authorize]
         [Route("create-clothe-category")]
-        public async Task<IActionResult> CreateClotheCategory(ClotheCategory clotheCategory)
+        public async Task<IActionResult> CreateClotheCategory(CreateClotheCategoryDto clotheCategory)
         {
-            var createdClotheCategory = await _clotheCategoryService.CreateClotheCategories(clotheCategory);
+            var createdClotheCategory = await _clotheCategoryService.CreateClotheCategory(clotheCategory);
             return Ok(createdClotheCategory);
         }
 
@@ -54,7 +53,7 @@ namespace Yconic.API.Controllers
         [Route("update-clothe-category")]
         public async Task<IActionResult> UpdateClotheCategoryWithPut(ClotheCategory clotheCategory)
         {
-            var updatedClotheCategory = await _clotheCategoryService.UpdateClotheCategories(clotheCategory);
+            var updatedClotheCategory = await _clotheCategoryService.UpdateClotheCategory(clotheCategory);
             return Ok(updatedClotheCategory);
         }
 
@@ -62,9 +61,9 @@ namespace Yconic.API.Controllers
         [HttpPatch]
         [Authorize]
         [Route("patch-clothe-category/{id}")]
-        public async Task<IActionResult> UpdateClotheCategoryWithPatch(Guid id,[FromBody] UpdateClotheCategoryDto dto)
+        public async Task<IActionResult> UpdateClotheCategoryWithPatch(Guid id, [FromBody] UpdateClotheCategoryDto dto)
         {
-            var updatedCategory = await _clotheCategoryService.UpdateClotheCategoryWithPatch(id,dto);
+            var updatedCategory = await _clotheCategoryService.UpdateClotheCategoryWithPatch(id, dto);
             return Ok(updatedCategory);
         }
 
@@ -74,7 +73,7 @@ namespace Yconic.API.Controllers
         [Route("delete-clothe-category/{id}")]
         public async Task<IActionResult> DeleteClotheCategory(Guid id)
         {
-            await _clotheCategoryService.DeleteClotheCategories(id);
+            await _clotheCategoryService.DeleteClotheCategory(id);
             return Ok();
         }
     }

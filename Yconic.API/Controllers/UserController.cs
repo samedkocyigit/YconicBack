@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Yconic.Application.Services.UserServices;
+using Yconic.Domain.Dtos.UserAccountDtos;
 using Yconic.Domain.Dtos.UserDtos;
+using Yconic.Domain.Dtos.UserPersonalDtos;
 using Yconic.Domain.Models.UserModels;
 
 namespace Yconic.API.Controllers

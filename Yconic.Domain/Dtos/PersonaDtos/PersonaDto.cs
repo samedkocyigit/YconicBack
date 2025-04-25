@@ -10,7 +10,9 @@ namespace Yconic.Domain.Dtos.PersonaDtos
     public class PersonaDto
     {
         public Guid id { get; set; }
-        public Personas usertype { get; set; }
+        public string usertype { get; set; }
+        public Guid userTypeId { get; set; }
+        public string username { get; set; }
         public Guid userId { get; set; }
     }
 }

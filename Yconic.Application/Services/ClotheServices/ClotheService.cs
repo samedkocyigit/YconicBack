@@ -4,19 +4,20 @@ using Microsoft.AspNetCore.Http;
 using Yconic.Domain.Dtos.ClotheDtos;
 using Yconic.Domain.Models;
 using Yconic.Domain.Wrapper;
-using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
+using Yconic.Infrastructure.Repositories.ClotheCategoryRepositories;
 using Yconic.Infrastructure.Repositories.ClothePhotoRepositories;
 using Yconic.Infrastructure.Repositories.ClotheRepositories;
 
 namespace Yconic.Application.Services.ClotheServices
 {
-    public class ClotheService:IClotheService
+    public class ClotheService : IClotheService
     {
         protected readonly IClotheRepository _clotheRepository;
         protected readonly IClothePhotoRepository _clothePhotoRepository;
-        protected readonly IClotheCategoriesRepository _clotheCategoriesRepository;
+        protected readonly IClotheCategoryRepository _clotheCategoriesRepository;
         protected readonly IMapper _mapper;
-        public ClotheService(IClotheRepository clotheRepository ,IClothePhotoRepository clothePhotoRepository,IClotheCategoriesRepository clotheCategoriesRepository,IMapper mapper)
+
+        public ClotheService(IClotheRepository clotheRepository, IClothePhotoRepository clothePhotoRepository, IClotheCategoryRepository clotheCategoriesRepository, IMapper mapper)
         {
             _clotheRepository = clotheRepository;
             _clothePhotoRepository = clothePhotoRepository;
@@ -26,16 +27,18 @@ namespace Yconic.Application.Services.ClotheServices
 
         public async Task<ApiResult<List<ClotheDto>>> GetAllClothes()
         {
-            var clothes =  await _clotheRepository.GetAllClothes();
+            var clothes = await _clotheRepository.GetAllClothes();
             var mappedClothes = _mapper.Map<List<ClotheDto>>(clothes);
             return ApiResult<List<ClotheDto>>.Success(mappedClothes);
         }
+
         public async Task<ApiResult<ClotheDto>> GetClotheById(Guid id)
         {
             var clothe = await _clotheRepository.GetClotheById(id);
             var mappedClothe = _mapper.Map<ClotheDto>(clothe);
             return ApiResult<ClotheDto>.Success(mappedClothe);
         }
+
         public async Task CreateClothe(AddClotheRequestDto clothe)
         {
             var clotheObj = new Clothe
@@ -72,6 +75,7 @@ namespace Yconic.Application.Services.ClotheServices
             clotheCategory.Clothes.Add(newClothe);
             await _clotheCategoriesRepository.Update(clotheCategory);
         }
+
         private string NormalizeFileName(string fileName)
         {
             var normalized = fileName
@@ -86,8 +90,6 @@ namespace Yconic.Application.Services.ClotheServices
 
             return Regex.Replace(normalized, @"[^a-zA-Z0-9_\.\-]", "");
         }
-
-
 
         private async Task<string> SavePhoto(IFormFile photo)
         {
@@ -109,7 +111,6 @@ namespace Yconic.Application.Services.ClotheServices
             return $"/uploads/clothe-photos/{uniqueFileName}";
         }
 
-
         public async Task<Clothe> UpdateClothe(Clothe clothe)
         {
             await _clotheRepository.Update(clothe);
@@ -123,19 +124,20 @@ namespace Yconic.Application.Services.ClotheServices
                 clothe.Name = dto.Name;
             if (dto.Brand != null)
                 clothe.Brand = dto.Brand;
-            if(dto.Description != null)
+            if (dto.Description != null)
                 clothe.Description = dto.Description;
-            var updated =await _clotheRepository.Update(clothe);
+            var updated = await _clotheRepository.Update(clothe);
             var mapped = _mapper.Map<ClotheDto>(updated);
             return ApiResult<ClotheDto>.Success(mapped);
         }
+
         public async Task DeleteClothe(Guid id)
         {
             var clothe = await _clotheRepository.GetClotheById(id);
             await _clotheRepository.Delete(id);
             if (clothe.Photos.Count > 0)
             {
-                foreach(var photo in clothe.Photos)
+                foreach (var photo in clothe.Photos)
                 {
                     DeletePhotoFile(photo.Url);
                     await _clothePhotoRepository.Delete(photo.Id);
@@ -144,7 +146,7 @@ namespace Yconic.Application.Services.ClotheServices
         }
 
         private void DeletePhotoFile(string photoUrl)
-        { 
+        {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", photoUrl.TrimStart('/'));
             if (File.Exists(filePath)) { File.Delete(filePath); }
         }

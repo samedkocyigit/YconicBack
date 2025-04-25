@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yconic.Domain.Dtos.UserDtos
+namespace Yconic.Domain.Dtos.UserPersonalDtos
 {
-    public class UpdatedPersonalInfoDto
+    public class UserPersonalDto
     {
+        public Guid id { get; set; }
+        public Guid userId { get; set; }
         public string name { get; set; }
         public string surname { get; set; }
         public string bio { get; set; }

@@ -1,7 +1,7 @@
 using Moq;
-using Yconic.Application.Services.ClotheCategoriesServices;
+using Yconic.Application.Services.ClotheCategoryServices;
 using Yconic.Domain.Models;
-using Yconic.Infrastructure.Repositories.ClotheCategoriesRepositories;
+using Yconic.Infrastructure.Repositories.ClotheCategoryRepositories;
 using Yconic.Infrastructure.Repositories.GarderobeRepositories;
 
 
@@ -9,13 +9,13 @@ namespace Yconic.Tests.Application.TestClotheCategory
 {
     public class ClotheCategoryTests
     {
-        private readonly Mock<IClotheCategoriesRepository> _clotheCategoriesRepositoryMock;
+        private readonly Mock<IClotheCategoryRepository> _clotheCategoriesRepositoryMock;
         private readonly Mock<IGarderobeRepository> _garderobeRepositoryMock;
-        private readonly ClotheCategoriesService _clotheCategoriesService;
+        private readonly ClotheCategoryService _clotheCategoriesService;
 
         public ClotheCategoryTests()
         {
-            _clotheCategoriesRepositoryMock = new Mock<IClotheCategoriesRepository>();
+            _clotheCategoriesRepositoryMock = new Mock<IClotheCategoryRepository>();
             _garderobeRepositoryMock = new Mock<IGarderobeRepository>();
             _clotheCategoriesService = new ClotheCategoriesService(_clotheCategoriesRepositoryMock.Object, _garderobeRepositoryMock.Object);
         }
